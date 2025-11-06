@@ -90,7 +90,7 @@ export class XcodeDispatcher extends BaseDispatcher {
     }
     async executeBuild(params) {
         try {
-            const { runCommand, findXcodeProject } = await import('../utils/command.js');
+            const { runCommand, findXcodeProject, extractBuildErrors } = await import('../utils/command.js');
             const { ResponseCache } = await import('../state/response-cache.js');
             const projectPath = params.project_path || (await findXcodeProject());
             if (!projectPath) {
@@ -134,13 +134,17 @@ export class XcodeDispatcher extends BaseDispatcher {
                     success: result.code === 0,
                 },
             });
-            // Return summary
+            // Extract errors if build failed
+            const errors = result.code !== 0 ? extractBuildErrors(result.stdout + '\n' + result.stderr) : undefined;
+            // Return summary with errors if build failed
             const data = {
                 message: `Build ${result.code === 0 ? 'succeeded' : 'failed'} in ${duration}s`,
-                note: `Use get-details with cache_id to see full output`,
+                note: `Full output available via cache_id: ${cacheId}`,
                 params: params,
+                errors,
+                cache_id: cacheId,
             };
-            const summary = `Build completed. cache_id: ${cacheId}`;
+            const summary = `Build ${result.code === 0 ? 'succeeded' : 'failed'}. ${errors ? `${errors.length} error(s) detected.` : ''} cache_id: ${cacheId}`;
             return this.formatSuccess(data, summary);
         }
         catch (error) {

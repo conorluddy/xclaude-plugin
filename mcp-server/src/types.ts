@@ -83,6 +83,8 @@ export interface BuildResultData {
   message: string;
   note?: string;
   params?: BuildParams;
+  errors?: string[];
+  cache_id?: string;
 }
 
 export interface TestResultData {

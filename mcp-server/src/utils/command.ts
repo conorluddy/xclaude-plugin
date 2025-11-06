@@ -314,3 +314,34 @@ export async function findXcodeProject(searchPath: string = '.'): Promise<string
     return null;
   }
 }
+
+/**
+ * Extract error and warning lines from xcodebuild output.
+ * Returns first N errors/warnings for quick debugging.
+ *
+ * @param output - Full xcodebuild stdout/stderr
+ * @param maxLines - Maximum error lines to return (default: 10)
+ * @returns Array of error/warning lines
+ */
+export function extractBuildErrors(output: string, maxLines: number = 10): string[] {
+  const lines = output.split('\n');
+  const errors: string[] = [];
+
+  for (const line of lines) {
+    // Match Xcode error/warning patterns
+    if (
+      line.includes('error:') ||
+      line.includes('Error:') ||
+      line.includes('ERROR') ||
+      line.includes('warning:') ||
+      line.includes('fatal error')
+    ) {
+      errors.push(line.trim());
+      if (errors.length >= maxLines) {
+        break;
+      }
+    }
+  }
+
+  return errors;
+}

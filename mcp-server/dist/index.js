@@ -4855,6 +4855,7 @@ __export(command_exports, {
   executeCommand: () => executeCommand,
   executeCommandSync: () => executeCommandSync,
   executeCommandWithArgs: () => executeCommandWithArgs,
+  extractBuildErrors: () => extractBuildErrors,
   findXcodeProject: () => findXcodeProject,
   runCommand: () => runCommand
 });
@@ -5015,6 +5016,19 @@ async function findXcodeProject(searchPath = ".") {
   } catch {
     return null;
   }
+}
+function extractBuildErrors(output, maxLines = 10) {
+  const lines = output.split("\n");
+  const errors = [];
+  for (const line of lines) {
+    if (line.includes("error:") || line.includes("Error:") || line.includes("ERROR") || line.includes("warning:") || line.includes("fatal error")) {
+      errors.push(line.trim());
+      if (errors.length >= maxLines) {
+        break;
+      }
+    }
+  }
+  return errors;
 }
 var execAsync;
 var init_command = __esm({
@@ -6025,7 +6039,7 @@ var XcodeDispatcher = class extends BaseDispatcher {
   }
   async executeBuild(params) {
     try {
-      const { runCommand: runCommand2, findXcodeProject: findXcodeProject2 } = await Promise.resolve().then(() => (init_command(), command_exports));
+      const { runCommand: runCommand2, findXcodeProject: findXcodeProject2, extractBuildErrors: extractBuildErrors2 } = await Promise.resolve().then(() => (init_command(), command_exports));
       const { ResponseCache: ResponseCache2 } = await Promise.resolve().then(() => (init_response_cache(), response_cache_exports));
       const projectPath = params.project_path || await findXcodeProject2();
       if (!projectPath) {
@@ -6065,12 +6079,15 @@ var XcodeDispatcher = class extends BaseDispatcher {
           success: result.code === 0
         }
       });
+      const errors = result.code !== 0 ? extractBuildErrors2(result.stdout + "\n" + result.stderr) : void 0;
       const data = {
         message: `Build ${result.code === 0 ? "succeeded" : "failed"} in ${duration}s`,
-        note: `Use get-details with cache_id to see full output`,
-        params
+        note: `Full output available via cache_id: ${cacheId}`,
+        params,
+        errors,
+        cache_id: cacheId
       };
-      const summary = `Build completed. cache_id: ${cacheId}`;
+      const summary = `Build ${result.code === 0 ? "succeeded" : "failed"}. ${errors ? `${errors.length} error(s) detected.` : ""} cache_id: ${cacheId}`;
       return this.formatSuccess(data, summary);
     } catch (error) {
       logger.error("Build failed", error);

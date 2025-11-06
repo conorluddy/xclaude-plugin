@@ -56,4 +56,13 @@ export declare function runCommand(command: string, args: string[], options?: Co
  * @returns Path to the found project/workspace, or null if not found
  */
 export declare function findXcodeProject(searchPath?: string): Promise<string | null>;
+/**
+ * Extract error and warning lines from xcodebuild output.
+ * Returns first N errors/warnings for quick debugging.
+ *
+ * @param output - Full xcodebuild stdout/stderr
+ * @param maxLines - Maximum error lines to return (default: 10)
+ * @returns Array of error/warning lines
+ */
+export declare function extractBuildErrors(output: string, maxLines?: number): string[];
 //# sourceMappingURL=command.d.ts.map
