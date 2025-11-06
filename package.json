@@ -1,0 +1,36 @@
+{
+  "name": "xc-plugin",
+  "version": "2.0.0",
+  "description": "Token-efficient iOS development automation plugin for Claude Code",
+  "private": true,
+  "workspaces": [
+    "mcp-server"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=mcp-server",
+    "dev": "npm run dev --workspace=mcp-server",
+    "test": "npm run test --workspace=mcp-server",
+    "clean": "rm -rf mcp-server/dist"
+  },
+  "keywords": [
+    "xcode",
+    "ios",
+    "simulator",
+    "claude-code",
+    "plugin",
+    "mcp"
+  ],
+  "author": "Conor Luddy <conor@conorluddy.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/conorluddy/xc-plugin.git"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}

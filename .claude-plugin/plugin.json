@@ -1,0 +1,34 @@
+{
+  "name": "xc-plugin",
+  "version": "2.0.0",
+  "description": "Token-efficient iOS development automation with xcodebuild, simctl, and IDB. Features 3 MCP dispatchers (~2k tokens) plus 8 procedural Skills for comprehensive iOS workflows.",
+  "author": {
+    "name": "Conor Luddy",
+    "email": "conor@conorluddy.com",
+    "url": "https://github.com/conorluddy"
+  },
+  "homepage": "https://github.com/conorluddy/xc-plugin",
+  "repository": "https://github.com/conorluddy/xc-plugin",
+  "license": "MIT",
+  "keywords": [
+    "xcode",
+    "ios",
+    "simulator",
+    "testing",
+    "idb",
+    "accessibility",
+    "automation",
+    "xcodebuild",
+    "simctl"
+  ],
+  "mcpServers": {
+    "xcode": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-server/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info",
+        "XC_CACHE_ENABLED": "true"
+      }
+    }
+  }
+}
