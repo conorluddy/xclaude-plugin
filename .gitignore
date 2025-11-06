@@ -5,13 +5,13 @@ __pycache__/
 .venv/
 venv/
 
-# Build outputs
-dist/
+# Build outputs (but intentionally commit mcp-server/dist for marketplace)
 build/
 *.js
 *.js.map
 *.d.ts
-!mcp-server/dist/.gitkeep
+!mcp-server/dist/
+!mcp-server/dist/**
 
 # IDE
 .vscode/

@@ -18,7 +18,7 @@ pnpm-lock.yaml
 # ============================================================================
 
 # Compiled output
-dist/
+# dist/  - INTENTIONALLY COMMITTED for marketplace distribution
 build/
 *.js.map
 *.d.ts.map
