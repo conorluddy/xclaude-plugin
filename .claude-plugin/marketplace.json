@@ -12,7 +12,7 @@
   "plugins": [
     {
       "name": "xclaude-plugin",
-      "source": ".",
+      "source": "./",
       "description": "Complete iOS development automation with 3 consolidated dispatchers (Xcode, Simulator, IDB) and 8 procedural Skills. Build, test, and automate iOS apps with minimal token overhead.",
       "version": "0.0.1",
       "author": {
