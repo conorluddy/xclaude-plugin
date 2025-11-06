@@ -1,32 +1,32 @@
 # xclaude-plugin
 
-**Token-efficient iOS development automation for Claude Code**
+**Complete iOS development automation for Claude Code**
 
-88% reduction in context overhead (18.7k → 2.2k tokens) while maintaining full iOS development capabilities.
+Build, test, and automate iOS apps through natural conversation with Claude. Full Xcode, Simulator, and UI automation capabilities with minimal context overhead.
 
 ## Features
 
-### 🎯 Minimal Token Overhead
-- **At rest: ~2.2k tokens** (1.1% of context)
-- **In use: ~10k tokens** (still 45% less than xc-mcp at rest)
-- 88% token reduction through strategic architecture
+### 🎯 Token-Efficient Architecture
+- **At rest: ~2.2k tokens** (1% of Claude's context window)
+- **Active use: ~10k tokens** with skills and resources loaded
+- Progressive disclosure keeps context clean while maintaining full functionality
 
-### 🛠️ 3 MCP Dispatchers (~1.2k tokens)
-- **execute_xcode_command** - xcodebuild operations (build, test, clean, list)
-- **execute_simulator_command** - simctl device/app management
-- **execute_idb_command** - IDB UI automation and accessibility
+### 🛠️ 3 MCP Dispatchers
+- **execute_xcode_command** - Build, test, clean, list projects
+- **execute_simulator_command** - Device and app lifecycle management
+- **execute_idb_command** - UI automation and accessibility testing
 
-### 📚 8 Procedural Skills (~320 tokens metadata, loaded on-demand)
+### 📚 8 Procedural Skills (Loaded On-Demand)
 - **xcode-workflows** - Build system guidance and result analysis
-- **simulator-workflows** - Device and app lifecycle management
-- **ui-automation-workflows** - Accessibility-first automation patterns
+- **simulator-workflows** - Device and app lifecycle patterns
+- **ui-automation-workflows** - Accessibility-first automation
 - **accessibility-testing** - WCAG compliance and quality checks
 - **ios-testing-patterns** - Test execution and flaky test detection
 - **crash-debugging** - Crash log analysis and symbolication
-- **performance-profiling** - Instruments integration and optimization
-- **state-management** - Cache and configuration guidance
+- **performance-profiling** - Instruments integration
+- **state-management** - Cache and configuration management
 
-### 📖 MCP Resources (0 tokens at rest, loaded on-demand)
+### 📖 MCP Resources (On-Demand Documentation)
 - Operation references for all commands
 - Build settings dictionary
 - Error code lookup
@@ -65,7 +65,7 @@ Build my iOS app for the simulator
 
 → Claude uses execute_xcode_command with xcode-workflows Skill
 → Automatically detects project, selects scheme, builds
-→ Returns summary (~300 tokens) with cache ID for detailed logs
+→ Returns concise summary with full logs available via cache ID
 ```
 
 ### Running Tests
@@ -84,19 +84,18 @@ Run the tests and analyze any failures
 Tap the "Login" button on the simulator
 
 → Claude uses ui-automation-workflows Skill
-→ First tries idb-ui-describe (fast, 50 tokens)
-→ Finds element via accessibility tree
-→ execute_idb_command to tap coordinates
-→ Fallback to screenshot only if needed
+→ Queries accessibility tree (fast, minimal tokens)
+→ Finds element and taps coordinates
+→ Falls back to screenshot only if needed
 ```
 
 ## Architecture
 
-### Token Efficiency Strategy
+### Progressive Disclosure Design
 
 ```
 ┌─────────────────────────────────────────┐
-│   At Rest: ~2,220 tokens (88% reduction)│
+│   At Rest: ~2,220 tokens                │
 ├─────────────────────────────────────────┤
 │  MCP Dispatchers (3)        1,200 tokens│
 │  Skill Metadata (8)           320 tokens│
@@ -105,7 +104,7 @@ Tap the "Login" button on the simulator
 └─────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────┐
-│   In Use: Skills + Resources load on-demand│
+│   Active Use: On-Demand Loading         │
 ├─────────────────────────────────────────┤
 │  Base overhead              2,220 tokens│
 │  Active Skill (1 loaded)   +6,000 tokens│
@@ -114,50 +113,54 @@ Tap the "Login" button on the simulator
 └─────────────────────────────────────────┘
 ```
 
-### Why This Architecture?
+### Three-Layer Architecture
 
-**MCP Tools** = System command execution (must be tools)
-- execute_xcode_command → `xcodebuild`, `xcodebuild-test`
-- execute_simulator_command → `xcrun simctl`
-- execute_idb_command → `idb`
+**MCP Tools** = System command execution
+- `execute_xcode_command` → xcodebuild, swift build
+- `execute_simulator_command` → xcrun simctl
+- `execute_idb_command` → IDB (iOS Development Bridge)
 
-**Skills** = Procedural knowledge (loaded on-demand)
+**Skills** = Procedural knowledge (on-demand)
 - WHEN to use operations
 - HOW to interpret results
 - WHAT parameters to use
-- Progressive disclosure: metadata only (~40 tokens) until activated
+- Load only when relevant to user's request
 
-**Resources** = Reference documentation (0 tokens until queried)
+**Resources** = Reference documentation (on-demand)
 - Operation parameters
 - Error codes
-- Device specs
-- Only loaded when Claude requests them
+- Device specifications
+- Load only when Claude requests them
 
-## Token Comparison
+## Operations
 
-| Architecture | At Rest | Active Use | Reduction |
-|--------------|---------|------------|-----------|
-| xc-mcp (28 tools) | 18,700 | 18,700 | baseline |
-| xclaude-plugin | 2,220 | ~10,220 | **88%** |
+### Xcode Operations (5)
+- **build** - Compile projects with configuration options
+- **test** - Run test suites with result parsing
+- **clean** - Remove build artifacts
+- **list** - Enumerate schemes and targets
+- **version** - Check Xcode installation
 
-## From xc-mcp to xclaude-plugin
+### Simulator Operations (8)
+- **device-lifecycle** - Boot, shutdown, create, delete, erase, clone
+- **app-lifecycle** - Install, uninstall, launch, terminate apps
+- **io** - Screenshot capture, video recording
+- **push** - Simulate push notifications
+- **openurl** - Open URLs and deep links
+- **list** - Enumerate available simulators
+- **health-check** - Validate development environment
+- **get-app-container** - Retrieve app container paths
 
-### What Changed?
-
-- ✅ All 28 operations still available
-- ✅ Same underlying command execution
-- ✅ File-based processing preserved
-- ✅ Progressive disclosure enhanced
-- ✨ 88% token reduction
-- ✨ Skills add procedural guidance
-- ✨ Resources provide on-demand docs
-
-### Migration
-
-No code changes needed! xclaude-plugin is a drop-in replacement:
-- Same operations, different structure
-- Dispatchers route to familiar logic
-- Skills enhance (don't replace) functionality
+### IDB Operations (9)
+- **tap** - Tap at coordinates
+- **input** - Type text, press keys, key sequences
+- **gesture** - Swipe gestures, hardware buttons
+- **describe** - Query accessibility tree
+- **find-element** - Search UI elements by label
+- **app** - Install, launch, terminate via IDB
+- **list-apps** - Enumerate installed apps
+- **check-accessibility** - Assess accessibility data quality
+- **targets** - Manage IDB connections
 
 ## Development
 
@@ -191,7 +194,7 @@ xclaude-plugin/
 │   │   ├── index.ts          # Main entry point
 │   │   ├── dispatchers/      # 3 dispatcher implementations
 │   │   ├── resources/        # MCP resources (on-demand docs)
-│   │   └── utils/            # Shared utilities from xc-mcp
+│   │   └── utils/            # Shared utilities
 │   └── dist/                 # Compiled JavaScript
 ├── skills/                   # 8 Skills (markdown + YAML)
 │   ├── xcode-workflows/
@@ -205,6 +208,17 @@ xclaude-plugin/
 └── README.md
 ```
 
+## Design Philosophy
+
+### Token Efficiency
+Designed from the ground up for minimal context usage. The 3-dispatcher architecture groups operations semantically, while Skills and Resources use progressive disclosure to load documentation only when needed.
+
+### Accessibility-First
+UI automation prioritizes accessibility tree queries (fast, minimal tokens) before falling back to screenshots (slow, token-heavy). This approach is 3-4x faster and more reliable.
+
+### Smart Defaults
+Auto-detection and intelligent defaults reduce configuration burden. Claude can often infer project paths, scheme names, and device selections without explicit parameters.
+
 ## Contributing
 
 Contributions welcome! Please:
@@ -217,10 +231,6 @@ Contributions welcome! Please:
 
 MIT License - See [LICENSE](LICENSE) for details
 
-## Acknowledgments
-
-Built on the foundation of [xc-mcp](https://github.com/conorluddy/xc-mcp) with token efficiency as the primary design goal.
-
 ## Support
 
 - 🐛 [Report issues](https://github.com/conorluddy/xclaude-plugin/issues)
@@ -229,4 +239,4 @@ Built on the foundation of [xc-mcp](https://github.com/conorluddy/xc-mcp) with t
 
 ---
 
-**Token-efficient iOS automation for Claude Code** 🚀
+**Complete iOS development automation for Claude Code** 🚀

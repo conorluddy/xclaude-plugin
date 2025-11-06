@@ -2,7 +2,7 @@
 
 **Token-efficient iOS development automation via Model Context Protocol (MCP)**
 
-A consolidated MCP server that provides iOS development automation through three powerful dispatchers: Xcode operations, Simulator control, and IDB UI automation. Designed for maximal functionality with minimal token overhead (~2.2k at rest vs xc-mcp's 18.7k).
+A consolidated MCP server that provides iOS development automation through three powerful dispatchers: Xcode operations, Simulator control, and IDB UI automation. Designed for maximal functionality with minimal token overhead.
 
 ## Features
 
@@ -292,7 +292,7 @@ xclaude-plugin MCP Server (0.0.1)
     └── targets
 ```
 
-**Token Efficiency**: 3 tools at rest (~2.2k tokens) vs 28 granular tools (~18.7k tokens) = **88% reduction**
+**Token Efficiency**: 3 consolidated dispatchers at rest (~2.2k tokens) with progressive disclosure for on-demand documentation
 
 ### Project Structure
 
