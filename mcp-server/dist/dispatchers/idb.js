@@ -118,7 +118,7 @@ export class IDBDispatcher extends BaseDispatcher {
     }
     async executeTap(params) {
         try {
-            const { runCommand } = await import('../utils/command.js');
+            const { executeCommand } = await import('../utils/command.js');
             if (!params.parameters?.x || !params.parameters?.y) {
                 return this.formatError('x and y coordinates required', 'tap');
             }
@@ -126,17 +126,10 @@ export class IDBDispatcher extends BaseDispatcher {
             const x = params.parameters.x;
             const y = params.parameters.y;
             const duration = params.parameters.duration || 0.1;
-            // Execute idb ui tap
-            await runCommand('idb', [
-                '--udid',
-                target,
-                'ui',
-                'tap',
-                `${x}`,
-                `${y}`,
-                '--duration',
-                `${duration}`,
-            ]);
+            // Execute idb ui tap - CORRECT ordering: idb ui tap --udid UDID x y --duration dur
+            const command = `idb ui tap --udid "${target}" ${x} ${y} --duration ${duration}`;
+            logger.debug(`Executing tap: ${command}`);
+            await executeCommand(command);
             const data = {
                 message: `Tapped at coordinates (${x}, ${y})`,
                 params: { x, y, duration },
@@ -154,7 +147,7 @@ export class IDBDispatcher extends BaseDispatcher {
      */
     async executeInput(params) {
         try {
-            const { runCommand } = await import('../utils/command.js');
+            const { executeCommand } = await import('../utils/command.js');
             if (!params.parameters) {
                 return this.formatError('parameters required for input', 'input');
             }
@@ -162,7 +155,8 @@ export class IDBDispatcher extends BaseDispatcher {
             const { text, key, key_sequence } = params.parameters;
             // Handle text input
             if (text) {
-                await runCommand('idb', ['--udid', target, 'ui', 'text', text]);
+                const command = `idb ui text --udid "${target}" "${text}"`;
+                await executeCommand(command);
                 const data = {
                     message: `Typed text: "${text}"`,
                     note: 'Text input completed',
@@ -171,7 +165,8 @@ export class IDBDispatcher extends BaseDispatcher {
             }
             // Handle single key press
             if (key) {
-                await runCommand('idb', ['--udid', target, 'ui', 'key', key]);
+                const command = `idb ui key --udid "${target}" ${key}`;
+                await executeCommand(command);
                 const data = {
                     message: `Pressed key: ${key}`,
                     note: 'Key press completed',
@@ -181,7 +176,8 @@ export class IDBDispatcher extends BaseDispatcher {
             // Handle key sequence
             if (key_sequence && Array.isArray(key_sequence) && key_sequence.length > 0) {
                 for (const keyName of key_sequence) {
-                    await runCommand('idb', ['--udid', target, 'ui', 'key', keyName]);
+                    const command = `idb ui key --udid "${target}" ${keyName}`;
+                    await executeCommand(command);
                 }
                 const data = {
                     message: `Pressed ${key_sequence.length} key(s) in sequence`,
@@ -203,7 +199,7 @@ export class IDBDispatcher extends BaseDispatcher {
      */
     async executeGesture(params) {
         try {
-            const { runCommand } = await import('../utils/command.js');
+            const { executeCommand } = await import('../utils/command.js');
             if (!params.parameters?.gesture_type) {
                 return this.formatError('gesture_type required in parameters', 'gesture');
             }
@@ -218,18 +214,8 @@ export class IDBDispatcher extends BaseDispatcher {
                     end_y === undefined) {
                     return this.formatError('start_x, start_y, end_x, end_y required for swipe gesture', 'gesture');
                 }
-                await runCommand('idb', [
-                    '--udid',
-                    target,
-                    'ui',
-                    'swipe',
-                    String(start_x),
-                    String(start_y),
-                    String(end_x),
-                    String(end_y),
-                    '--duration',
-                    String(duration),
-                ]);
+                const command = `idb ui swipe --udid "${target}" ${start_x} ${start_y} ${end_x} ${end_y} --duration ${duration}`;
+                await executeCommand(command);
                 const data = {
                     message: `Swiped from (${start_x},${start_y}) to (${end_x},${end_y})`,
                     note: `Swipe duration: ${duration}ms`,
@@ -242,7 +228,8 @@ export class IDBDispatcher extends BaseDispatcher {
                 if (!button) {
                     return this.formatError('button required for button gesture', 'gesture');
                 }
-                await runCommand('idb', ['--udid', target, 'ui', 'button', button]);
+                const command = `idb ui button --udid "${target}" ${button}`;
+                await executeCommand(command);
                 const data = {
                     message: `Pressed ${button} button`,
                     note: 'Hardware button press completed',
@@ -258,19 +245,21 @@ export class IDBDispatcher extends BaseDispatcher {
     }
     async executeDescribe(params) {
         try {
-            const { runCommand } = await import('../utils/command.js');
+            const { executeCommand } = await import('../utils/command.js');
             const target = params.target || 'booted';
             const operation = params.parameters?.operation || 'all';
             // Execute idb ui describe-all (or describe-point for specific coordinates)
-            const args = ['ui'];
+            // CORRECT ordering: idb ui describe-all --udid UDID or idb ui describe-point x y --udid UDID
+            let command;
             if (operation === 'point' && params.parameters?.x && params.parameters?.y) {
-                args.push('describe-point', `${params.parameters.x}`, `${params.parameters.y}`);
+                const x = params.parameters.x;
+                const y = params.parameters.y;
+                command = `idb ui describe-point --udid "${target}" ${x} ${y}`;
             }
             else {
-                args.push('describe-all');
+                command = `idb ui describe-all --udid "${target}"`;
             }
-            args.unshift('--udid', target);
-            const result = await runCommand('idb', args);
+            const result = await executeCommand(command);
             const elements = JSON.parse(result.stdout);
             const data = {
                 message: `Retrieved accessibility tree with ${Array.isArray(elements) ? elements.length : 'unknown'} elements`,
@@ -287,14 +276,15 @@ export class IDBDispatcher extends BaseDispatcher {
     }
     async executeFindElement(params) {
         try {
-            const { runCommand } = await import('../utils/command.js');
+            const { executeCommand } = await import('../utils/command.js');
             if (!params.parameters?.query) {
                 return this.formatError('query required', 'find-element');
             }
             const target = params.target || 'booted';
             const query = params.parameters.query;
             // First, get the full accessibility tree
-            const describeResult = await runCommand('idb', ['--udid', target, 'ui', 'describe-all']);
+            const command = `idb ui describe-all --udid "${target}"`;
+            const describeResult = await executeCommand(command);
             const elements = JSON.parse(describeResult.stdout);
             // Search for matching elements
             const matches = Array.isArray(elements)
@@ -325,7 +315,7 @@ export class IDBDispatcher extends BaseDispatcher {
      */
     async executeApp(params) {
         try {
-            const { runCommand } = await import('../utils/command.js');
+            const { executeCommand } = await import('../utils/command.js');
             if (!params.parameters?.sub_operation) {
                 return this.formatError('sub_operation required in parameters', 'app');
             }
@@ -338,7 +328,8 @@ export class IDBDispatcher extends BaseDispatcher {
                     if (!appPath) {
                         return this.formatError('app_path required for install', 'app');
                     }
-                    await runCommand('idb', ['--udid', target, 'install', appPath]);
+                    const command = `idb install "${appPath}" --udid "${target}"`;
+                    await executeCommand(command);
                     const data = {
                         message: `App installed from: ${appPath}`,
                         note: 'App installation completed',
@@ -350,7 +341,8 @@ export class IDBDispatcher extends BaseDispatcher {
                     if (!bundleId) {
                         return this.formatError('bundle_id required for uninstall', 'app');
                     }
-                    await runCommand('idb', ['--udid', target, 'uninstall', bundleId]);
+                    const command = `idb uninstall "${bundleId}" --udid "${target}"`;
+                    await executeCommand(command);
                     const data = {
                         message: `App uninstalled: ${bundleId}`,
                         note: 'App uninstallation completed',
@@ -362,7 +354,8 @@ export class IDBDispatcher extends BaseDispatcher {
                     if (!bundleId) {
                         return this.formatError('bundle_id required for launch', 'app');
                     }
-                    const result = await runCommand('idb', ['--udid', target, 'launch', bundleId]);
+                    const command = `idb launch --udid "${target}" "${bundleId}"`;
+                    const result = await executeCommand(command);
                     // Parse PID from output if present
                     let pid;
                     const pidMatch = result.stdout.match(/pid:\s*(\d+)/i);
@@ -380,7 +373,8 @@ export class IDBDispatcher extends BaseDispatcher {
                     if (!bundleId) {
                         return this.formatError('bundle_id required for terminate', 'app');
                     }
-                    await runCommand('idb', ['--udid', target, 'terminate', bundleId]);
+                    const command = `idb terminate "${bundleId}" --udid "${target}"`;
+                    await executeCommand(command);
                     const data = {
                         message: `App terminated: ${bundleId}`,
                         note: 'App termination completed',
@@ -426,10 +420,11 @@ export class IDBDispatcher extends BaseDispatcher {
     }
     async executeCheckAccessibility(_params) {
         try {
-            const { runCommand } = await import('../utils/command.js');
+            const { executeCommand } = await import('../utils/command.js');
             const target = _params.target || 'booted';
             // Get accessibility tree
-            const result = await runCommand('idb', ['--udid', target, 'ui', 'describe-all']);
+            const command = `idb ui describe-all --udid "${target}"`;
+            const result = await executeCommand(command);
             const elements = JSON.parse(result.stdout);
             // Analyze accessibility quality
             let score = 0;
