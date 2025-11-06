@@ -1,6 +1,6 @@
-# xc-plugin Code Style Guide
+# xclaude-plugin Code Style Guide
 
-This document defines the coding standards and best practices for the xc-plugin project. Following these guidelines ensures consistent, maintainable, and high-quality code.
+This document defines the coding standards and best practices for the xclaude-plugin project. Following these guidelines ensures consistent, maintainable, and high-quality code.
 
 ## Table of Contents
 

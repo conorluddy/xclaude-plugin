@@ -1,14 +1,14 @@
 {
-  "name": "xc-plugin",
-  "version": "2.0.0",
+  "name": "xclaude-plugin",
+  "version": "0.0.1",
   "description": "Token-efficient iOS development automation with xcodebuild, simctl, and IDB. Features 3 MCP dispatchers (~2k tokens) plus 8 procedural Skills for comprehensive iOS workflows.",
   "author": {
     "name": "Conor Luddy",
     "email": "conor@conorluddy.com",
     "url": "https://github.com/conorluddy"
   },
-  "homepage": "https://github.com/conorluddy/xc-plugin",
-  "repository": "https://github.com/conorluddy/xc-plugin",
+  "homepage": "https://github.com/conorluddy/xclaude-plugin",
+  "repository": "https://github.com/conorluddy/xclaude-plugin",
   "license": "MIT",
   "keywords": [
     "xcode",

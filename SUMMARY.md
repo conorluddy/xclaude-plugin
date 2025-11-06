@@ -240,7 +240,7 @@ npm run typecheck       # Type check without build
 ### Phase 3: Distribution (1 day)
 
 - Push to GitHub (github.com/conorluddy/xc-plugin)
-- Tag v2.0.0 release
+- Tag v0.0.1 release
 - Submit to community marketplaces
 - Test marketplace installation
 - Gather initial feedback

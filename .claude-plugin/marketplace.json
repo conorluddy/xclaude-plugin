@@ -1,5 +1,5 @@
 {
-  "name": "xc-plugin-marketplace",
+  "name": "xclaude-plugin-marketplace",
   "owner": {
     "name": "Conor Luddy",
     "email": "conor@conorluddy.com",
@@ -7,14 +7,14 @@
   },
   "metadata": {
     "description": "iOS development automation plugin for Claude Code",
-    "version": "2.0.0"
+    "version": "0.0.1"
   },
   "plugins": [
     {
-      "name": "xc-plugin",
+      "name": "xclaude-plugin",
       "source": ".",
       "description": "Token-efficient iOS development automation with 88% reduction in context overhead. Includes xcodebuild, simctl, and IDB operations via 3 consolidated dispatchers, plus 8 procedural Skills for iOS workflows.",
-      "version": "2.0.0",
+      "version": "0.0.1",
       "author": {
         "name": "Conor Luddy",
         "url": "https://github.com/conorluddy"

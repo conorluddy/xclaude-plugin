@@ -163,7 +163,7 @@ Monitor these throughout development:
 
 **Week 5**: Plugin installs with one command
 
-**Week 6**: v2.0.0 released, documentation complete
+**Week 6**: v0.0.1 released, documentation complete
 
 **Month 1**: 100+ stars, community adoption
 
@@ -209,7 +209,7 @@ Monitor these throughout development:
 **6 weeks from now**:
 1. Complete Phase 3 (Plugin)
 2. Complete Phase 4 (Launch)
-3. Release xc-plugin v2.0.0! 🎉
+3. Release xc-plugin v0.0.1! 🎉
 
 ## 🎉 You're Ready!
 

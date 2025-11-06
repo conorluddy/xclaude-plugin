@@ -1,12 +1,12 @@
-# xc-plugin - AI Assistant Context
+# xclaude-plugin - AI Assistant Context
 
-This document provides essential context for AI assistants (like Claude) working on the xc-plugin MCP server codebase.
+This document provides essential context for AI assistants (like Claude) working on the xclaude-plugin MCP server codebase.
 
 ## Project Overview
 
-**xc-plugin** is a token-efficient MCP (Model Context Protocol) server for iOS development automation. It consolidates 28+ individual operations into 3 dispatchers, reducing at-rest token overhead by 88% (2.2k vs 18.7k tokens).
+**xclaude-plugin** is a token-efficient MCP (Model Context Protocol) server for iOS development automation. It consolidates 28+ individual operations into 3 dispatchers, reducing at-rest token overhead by 88% (2.2k vs 18.7k tokens).
 
-**Status**: ✅ Feature-complete (v2.0.0) - All operations fully implemented, zero placeholders remaining.
+**Status**: ✅ Feature-complete (v0.0.1) - All operations fully implemented, zero placeholders remaining.
 
 ## Core Architecture
 
@@ -502,7 +502,7 @@ Pre-commit hooks run automatically:
 ## Project History
 
 - **v1.0.0** - Initial skeleton with placeholder functions
-- **v2.0.0** - ✅ Feature-complete implementation
+- **v0.0.1** - ✅ Feature-complete implementation
   - All 8 placeholder functions implemented
   - Simulator: executeIO, executePush, executeOpenURL, executeGetAppContainer
   - IDB: executeInput, executeGesture, executeApp, executeTargets
@@ -511,7 +511,7 @@ Pre-commit hooks run automatically:
 ## Related Projects
 
 - **xc-mcp** - Original 28-tool granular implementation at `/Users/conor/Development/xc-mcp`
-- **xc-plugin** - This project, consolidated 3-dispatcher approach
+- **xclaude-plugin** - This project, consolidated 3-dispatcher approach
 
 ## Questions During Development?
 
@@ -538,4 +538,4 @@ Pre-commit hooks run automatically:
 
 ---
 
-**Status**: Feature-complete v2.0.0 - All operations functional, zero placeholders remaining.
+**Status**: Feature-complete v0.0.1 - All operations functional, zero placeholders remaining.

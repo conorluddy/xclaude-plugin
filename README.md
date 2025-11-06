@@ -1,4 +1,4 @@
-# xc-plugin
+# xclaude-plugin
 
 **Token-efficient iOS development automation for Claude Code**
 
@@ -38,15 +38,15 @@
 ### From GitHub (Recommended)
 
 ```bash
-/plugin marketplace add conorluddy/xc-plugin
-/plugin install xc-plugin
+/plugin marketplace add conorluddy/xclaude-plugin
+/plugin install xclaude-plugin
 ```
 
 ### From Local Development
 
 ```bash
-/plugin marketplace add /path/to/xc-plugin
-/plugin install xc-plugin
+/plugin marketplace add /path/to/xclaude-plugin
+/plugin install xclaude-plugin
 ```
 
 ## Requirements
@@ -138,9 +138,9 @@ Tap the "Login" button on the simulator
 | Architecture | At Rest | Active Use | Reduction |
 |--------------|---------|------------|-----------|
 | xc-mcp (28 tools) | 18,700 | 18,700 | baseline |
-| xc-plugin | 2,220 | ~10,220 | **88%** |
+| xclaude-plugin | 2,220 | ~10,220 | **88%** |
 
-## From xc-mcp to xc-plugin
+## From xc-mcp to xclaude-plugin
 
 ### What Changed?
 
@@ -154,7 +154,7 @@ Tap the "Login" button on the simulator
 
 ### Migration
 
-No code changes needed! xc-plugin is a drop-in replacement:
+No code changes needed! xclaude-plugin is a drop-in replacement:
 - Same operations, different structure
 - Dispatchers route to familiar logic
 - Skills enhance (don't replace) functionality
@@ -165,8 +165,8 @@ No code changes needed! xc-plugin is a drop-in replacement:
 
 ```bash
 # Clone repository
-git clone https://github.com/conorluddy/xc-plugin.git
-cd xc-plugin
+git clone https://github.com/conorluddy/xclaude-plugin.git
+cd xclaude-plugin
 
 # Install dependencies
 npm install
@@ -175,14 +175,14 @@ npm install
 npm run build
 
 # Test locally
-/plugin marketplace add /path/to/xc-plugin
-/plugin install xc-plugin
+/plugin marketplace add /path/to/xclaude-plugin
+/plugin install xclaude-plugin
 ```
 
 ### Project Structure
 
 ```
-xc-plugin/
+xclaude-plugin/
 ├── .claude-plugin/
 │   ├── plugin.json           # Plugin manifest
 │   └── marketplace.json      # Marketplace configuration
@@ -223,9 +223,9 @@ Built on the foundation of [xc-mcp](https://github.com/conorluddy/xc-mcp) with t
 
 ## Support
 
-- 🐛 [Report issues](https://github.com/conorluddy/xc-plugin/issues)
-- 💬 [Discussions](https://github.com/conorluddy/xc-plugin/discussions)
-- 📖 [Documentation](https://github.com/conorluddy/xc-plugin/wiki)
+- 🐛 [Report issues](https://github.com/conorluddy/xclaude-plugin/issues)
+- 💬 [Discussions](https://github.com/conorluddy/xclaude-plugin/discussions)
+- 📖 [Documentation](https://github.com/conorluddy/xclaude-plugin/wiki)
 
 ---
 

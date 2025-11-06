@@ -205,7 +205,7 @@ xc-plugin/
 ```json
 {
   "name": "xc-plugin",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "private": true,
   "workspaces": [
     "mcp-server",
@@ -240,7 +240,7 @@ xc-plugin/
 ```json
 {
   "name": "xc-mcp-server",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -336,7 +336,7 @@ dependencies:
 ```json
 {
   "name": "@xc-plugin/commands",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "build": "tsc",

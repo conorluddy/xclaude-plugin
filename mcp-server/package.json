@@ -1,6 +1,6 @@
 {
-  "name": "@xc-plugin/mcp-server",
-  "version": "2.0.0",
+  "name": "@xclaude-plugin/mcp-server",
+  "version": "0.0.1",
   "description": "MCP server with 3 consolidated dispatchers for iOS development",
   "type": "module",
   "main": "dist/index.js",

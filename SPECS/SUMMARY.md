@@ -161,7 +161,7 @@ Use this to track progress through the 6-week timeline:
 ### Phase 4: Release ✓ (Week 6)
 - [ ] Documentation complete (spec 10)
 - [ ] Marketplace submission (spec 10)
-- [ ] v2.0.0 published (spec 10)
+- [ ] v0.0.1 published (spec 10)
 - [ ] Community launch (spec 10)
 
 ## 🔍 Where to Find Specific Information
@@ -211,7 +211,7 @@ Use this to track progress through the 6-week timeline:
 
 **Week 5**: Plugin installs with one command, slash commands working
 
-**Week 6**: Complete documentation, marketplace listing, v2.0.0 released
+**Week 6**: Complete documentation, marketplace listing, v0.0.1 released
 
 **Month 1**: 100+ stars, 50+ installations, community engagement
 

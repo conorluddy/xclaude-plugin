@@ -1,7 +1,7 @@
 ---
 name: state-management
 description: Cache management, configuration best practices, and progressive disclosure patterns for efficient context window usage. Use when working with large responses, optimizing token costs, or managing plugin state across operations.
-version: 2.0.0
+version: 0.0.1
 token_cost: ~40
 ---
 

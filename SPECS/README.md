@@ -102,7 +102,7 @@ cat 02-mcp-server-architecture.md
 ### Phase 4: Release (Week 6)
 - [ ] Documentation complete
 - [ ] Marketplace submission
-- [ ] v2.0.0 released
+- [ ] v0.0.1 released
 - [ ] Community launch
 
 ## 🎓 For Human Developers
@@ -176,7 +176,7 @@ Large outputs (10k+ tokens) written to files with compact summaries (~300 tokens
 - [ ] Featured in Claude Code marketplace
 
 ### Quality
-- [ ] Zero critical bugs in v2.0.0
+- [ ] Zero critical bugs in v0.0.1
 - [ ] <24h issue response time
 - [ ] Clear, comprehensive documentation
 - [ ] Production use by 5+ teams

@@ -303,7 +303,7 @@ Phase 4: Release (Week 6)         → Documentation + Launch
 
 **Day 5: Launch**
 - [ ] Submit to Claude Code marketplace
-- [ ] Publish GitHub release (v2.0.0)
+- [ ] Publish GitHub release (v0.0.1)
 - [ ] Publish npm package
 - [ ] Announce on:
   - Twitter/X
@@ -316,7 +316,7 @@ Phase 4: Release (Week 6)         → Documentation + Launch
 **Deliverables**:
 - Complete documentation suite
 - Marketplace listing live
-- v2.0.0 released
+- v0.0.1 released
 - Community awareness
 - Feedback collection process
 
@@ -389,7 +389,7 @@ Phase 4: Release (Week 6)         → Documentation + Launch
 **Mitigation**: Ship Skills iteratively; start with ios-testing-workflow only if needed
 
 **Risk**: Plugin integration issues  
-**Mitigation**: Manual installation path always available; marketplace optional for v2.0.0
+**Mitigation**: Manual installation path always available; marketplace optional for v0.0.1
 
 ### Adoption Risks
 
@@ -420,7 +420,7 @@ Phase 4: Release (Week 6)         → Documentation + Launch
 
 **Quality**:
 - Test coverage: >80% ✓
-- Zero critical bugs in v2.0.0 ✓
+- Zero critical bugs in v0.0.1 ✓
 - <24h issue response time ✓
 
 ### Adoption Metrics

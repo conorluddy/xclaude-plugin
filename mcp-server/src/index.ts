@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * xc-plugin MCP Server
+ * xclaude-plugin MCP Server
  *
  * Token-efficient iOS development automation with 3 consolidated dispatchers.
  * At rest: ~2.2k tokens (88% reduction from xc-mcp's 18.7k)
@@ -26,8 +26,8 @@ import type { XcodeOperationArgs, SimulatorOperationArgs, IDBOperationArgs } fro
 // Initialize MCP server
 const server = new Server(
   {
-    name: 'xc-plugin-mcp',
-    version: '2.0.0',
+    name: 'xclaude-plugin-mcp',
+    version: '0.0.1',
   },
   {
     capabilities: {
@@ -150,7 +150,7 @@ async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
 
-    logger.info('xc-plugin MCP server started successfully');
+    logger.info('xclaude-plugin MCP server started successfully');
     logger.info('Token overhead: ~2.2k at rest');
     logger.info('Tools: 3 dispatchers registered');
     logger.info('Resources: Available on-demand');

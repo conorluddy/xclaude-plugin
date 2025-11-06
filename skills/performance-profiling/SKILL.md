@@ -1,7 +1,7 @@
 ---
 name: performance-profiling
 description: Instruments integration and performance analysis workflows for iOS apps. Use when profiling CPU usage, memory allocation, network activity, or energy consumption. Covers Time Profiler, Allocations, Leaks, Network instruments, and performance optimization strategies.
-version: 2.0.0
+version: 0.0.1
 token_cost: ~40
 ---
 

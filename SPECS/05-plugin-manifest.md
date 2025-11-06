@@ -8,7 +8,7 @@
 {
   "name": "xc-plugin",
   "displayName": "Xcode Automation",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Comprehensive iOS development automation with consolidated MCP tools and procedural Skills. Provides build, simulator, and advanced operations with 85-90% token efficiency improvement.",
   "author": "Conor Luddy",
   "homepage": "https://github.com/conorluddy/xc-plugin",
@@ -303,7 +303,7 @@ claude skills list
 
 Expected output:
 ```
-Plugin: xc-plugin v2.0.0
+Plugin: xc-plugin v0.0.1
 Status: ✓ Active
 MCP Tools: 3 (build, simulator, advanced)
 Skills: 5 (testing, patterns, screenshots, profiling, accessibility)

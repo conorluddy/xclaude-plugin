@@ -1,7 +1,7 @@
 ---
 name: crash-debugging
 description: Crash log analysis, symbolication, and debugging workflows for iOS apps. Use when investigating app crashes, analyzing crash reports, symbolicating stack traces, or identifying root causes. Covers crash log retrieval, symbolication with dSYM files, stack trace analysis, and common crash patterns.
-version: 2.0.0
+version: 0.0.1
 token_cost: ~40
 ---
 

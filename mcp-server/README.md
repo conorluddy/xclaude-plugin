@@ -1,4 +1,4 @@
-# xc-plugin MCP Server
+# xclaude-plugin MCP Server
 
 **Token-efficient iOS development automation via Model Context Protocol (MCP)**
 
@@ -48,7 +48,7 @@ A consolidated MCP server that provides iOS development automation through three
 
 ```bash
 # Clone the repository
-cd /Users/conor/Development/xc-plugin/mcp-server
+cd /Users/conor/Development/xclaude-plugin/mcp-server
 
 # Install dependencies
 npm install
@@ -69,9 +69,9 @@ Add to your Claude Desktop configuration (`~/Library/Application Support/Claude/
 ```json
 {
   "mcpServers": {
-    "xc-plugin": {
+    "xclaude-plugin": {
       "command": "node",
-      "args": ["/Users/conor/Development/xc-plugin/mcp-server/dist/index.js"]
+      "args": ["/Users/conor/Development/xclaude-plugin/mcp-server/dist/index.js"]
     }
   }
 }
@@ -264,7 +264,7 @@ The server requires:
 ### Three Consolidated Dispatchers
 
 ```
-xc-plugin MCP Server (2.0.0)
+xclaude-plugin MCP Server (0.0.1)
 ├── XcodeDispatcher       → execute_xcode_command
 │   ├── build             (5 operations)
 │   ├── clean
@@ -424,7 +424,7 @@ Private project - © 2024
 
 ## Version
 
-**2.0.0** - Feature-complete implementation with all operations functional
+**0.0.1** - Feature-complete implementation with all operations functional
 
 ---
 

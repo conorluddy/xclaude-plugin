@@ -1,5 +1,5 @@
 /**
- * Type definitions for xc-plugin
+ * Type definitions for xclaude-plugin
  *
  * Zero tolerance for `any` or `unknown` - all types explicitly defined
  */

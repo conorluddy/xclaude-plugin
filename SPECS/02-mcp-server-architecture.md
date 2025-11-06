@@ -42,7 +42,7 @@ const logger = new Logger('xc-mcp');
 const server = new Server(
   {
     name: 'xc-mcp-server',
-    version: '2.0.0',
+    version: '0.0.1',
   },
   {
     capabilities: {

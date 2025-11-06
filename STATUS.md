@@ -1,4 +1,4 @@
-# xc-plugin Development Status
+# xclaude-plugin Development Status
 
 **Created:** 2025-01-06
 **Status:** Phase 1 Complete ✅
@@ -75,7 +75,7 @@
 
 ### Comparison to xc-mcp
 
-| Metric | xc-mcp (28 tools) | xc-plugin (3 dispatchers) | Reduction |
+| Metric | xc-mcp (28 tools) | xclaude-plugin (3 dispatchers) | Reduction |
 |--------|-------------------|---------------------------|-----------|
 | At rest | 18,700 tokens | 2,020 tokens | **89%** 🎉 |
 | Active use | 18,700 tokens | ~10,020 tokens | **46%** |

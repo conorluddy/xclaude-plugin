@@ -1,7 +1,7 @@
 ---
 name: accessibility-testing
 description: WCAG compliance testing and accessibility quality assurance workflows for iOS apps. Use when validating accessibility labels, testing VoiceOver compatibility, checking contrast ratios, or ensuring WCAG 2.1 compliance. Covers accessibility tree analysis, semantic validation, and automated accessibility testing patterns.
-version: 2.0.0
+version: 0.0.1
 token_cost: ~40
 ---
 

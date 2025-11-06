@@ -1,7 +1,7 @@
 ---
 name: ios-testing-patterns
 description: XCTest and XCUITest execution workflows and flaky test detection patterns
-version: 2.0.0
+version: 0.0.1
 token_cost: ~40
 ---
 

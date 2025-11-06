@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**xc-plugin** is a ground-up redesign of iOS development automation for Claude Code. This repository contains comprehensive technical specifications for building the plugin, not the implementation itself.
+**xclaude-plugin** is a ground-up redesign of iOS development automation for Claude Code. This repository contains comprehensive technical specifications for building the plugin, not the implementation itself.
 
 **Core Innovation**: Consolidate 52 individual MCP tools into 3 semantic dispatchers + 5 procedural Skills, reducing token overhead from 30-50k to 3-5k tokens (85-90% reduction) while maintaining full functionality.
 
@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Repository Structure
 
 ```
-xc-plugin/
+xclaude-plugin/
 ├── SPECS/                    # Complete technical specifications (140KB)
 │   ├── 00-overview.md       # Architecture vision and key decisions
 │   ├── 01-repository-structure.md  # Directory layout for implementation
