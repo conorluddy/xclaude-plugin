@@ -1,9 +1,11 @@
 /**
  * Simple logger for MCP server
- * Respects XC_LOG_LEVEL environment variable
+ *
+ * Logs to stderr (required by MCP protocol - stdout is reserved for protocol messages).
+ * Respects XC_LOG_LEVEL environment variable: debug, info, warn, error
  */
 
-type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+import type { LogLevel, LogData } from '../types.js';
 
 const LOG_LEVELS: Record<LogLevel, number> = {
   debug: 0,
@@ -24,11 +26,11 @@ class Logger {
     return LOG_LEVELS[level] >= LOG_LEVELS[this.level];
   }
 
-  private formatMessage(level: LogLevel, message: string, data?: any): string {
+  private formatMessage(level: LogLevel, message: string, data?: LogData): string {
     const timestamp = new Date().toISOString();
     const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
 
-    if (data) {
+    if (data !== undefined) {
       const dataStr = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
       return `${prefix} ${message}\n${dataStr}`;
     }
@@ -36,29 +38,64 @@ class Logger {
     return `${prefix} ${message}`;
   }
 
-  debug(message: string, data?: any): void {
+  /**
+   * Log debug message (only if log level is debug)
+   *
+   * @param message - Log message
+   * @param data - Optional structured data
+   */
+  debug(message: string, data?: LogData): void {
     if (this.shouldLog('debug')) {
       console.error(this.formatMessage('debug', message, data));
     }
   }
 
-  info(message: string, data?: any): void {
+  /**
+   * Log info message
+   *
+   * @param message - Log message
+   * @param data - Optional structured data
+   */
+  info(message: string, data?: LogData): void {
     if (this.shouldLog('info')) {
       console.error(this.formatMessage('info', message, data));
     }
   }
 
-  warn(message: string, data?: any): void {
+  /**
+   * Log warning message
+   *
+   * @param message - Log message
+   * @param data - Optional structured data
+   */
+  warn(message: string, data?: LogData): void {
     if (this.shouldLog('warn')) {
       console.error(this.formatMessage('warn', message, data));
     }
   }
 
-  error(message: string, data?: any): void {
+  /**
+   * Log error message
+   *
+   * @param message - Log message
+   * @param data - Optional structured data or Error object
+   */
+  error(message: string, data?: LogData): void {
     if (this.shouldLog('error')) {
       console.error(this.formatMessage('error', message, data));
     }
   }
 }
 
+/**
+ * Global logger instance
+ *
+ * Configured via XC_LOG_LEVEL environment variable.
+ *
+ * @example
+ * ```typescript
+ * logger.info('Build completed', { scheme: 'MyApp', duration: '45.2s' });
+ * logger.error('Build failed', error);
+ * ```
+ */
 export const logger = new Logger();

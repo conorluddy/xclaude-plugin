@@ -59,25 +59,24 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 // Handle tool execution
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
+  const { name, arguments: toolArgs } = request.params;
 
   logger.info(`Tool called: ${name}`);
-  logger.debug(`Arguments: ${JSON.stringify(args)}`);
 
   try {
     let result;
 
     switch (name) {
       case 'execute_xcode_command':
-        result = await xcodeDispatcher.execute(args);
+        result = await xcodeDispatcher.execute(toolArgs as never);
         break;
 
       case 'execute_simulator_command':
-        result = await simulatorDispatcher.execute(args);
+        result = await simulatorDispatcher.execute(toolArgs as never);
         break;
 
       case 'execute_idb_command':
-        result = await idbDispatcher.execute(args);
+        result = await idbDispatcher.execute(toolArgs as never);
         break;
 
       default:
@@ -93,7 +92,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       ],
     };
   } catch (error) {
-    logger.error(`Tool execution failed: ${name}`, error);
+    logger.error(`Tool execution failed: ${name}`, error as Error);
 
     return {
       content: [
@@ -103,7 +102,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             {
               error: error instanceof Error ? error.message : String(error),
               tool: name,
-              arguments: args,
+              arguments: toolArgs,
             },
             null,
             2
@@ -139,7 +138,7 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
       ],
     };
   } catch (error) {
-    logger.error(`Resource read failed: ${uri}`, error);
+    logger.error(`Resource read failed: ${uri}`, error as Error);
     throw error;
   }
 });
@@ -155,7 +154,7 @@ async function main() {
     logger.info('Tools: 3 dispatchers registered');
     logger.info('Resources: Available on-demand');
   } catch (error) {
-    logger.error('Failed to start server', error);
+    logger.error('Failed to start server', error as Error);
     process.exit(1);
   }
 }

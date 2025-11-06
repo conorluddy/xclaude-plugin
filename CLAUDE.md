@@ -65,6 +65,24 @@ Large outputs (>1k tokens) are written to files with summaries (~300 tokens) ret
 
 ## Working with This Repository
 
+### Code Style Guidelines
+
+**IMPORTANT**: Always follow [CODESTYLE.md](./CODESTYLE.md) when writing or modifying code.
+
+Key principles:
+- **Token efficiency first** - Optimize for AI agent comprehension
+- **Self-documenting code** - Clear names, obvious structure
+- **Progressive disclosure** - Show essentials first, details on-demand
+- **Type safety** - Explicit types on public APIs, minimal `any` usage
+- **Function size** - 20-30 lines ideal, 60 lines maximum
+
+Run before committing:
+```bash
+npm run format      # Prettier formatting
+npm run lint:fix    # ESLint auto-fix
+npm run typecheck   # TypeScript validation
+```
+
 ### Reading Specifications
 Specs are numbered for logical progression. Start with:
 1. `SPECS/README.md` - Project context

@@ -7,10 +7,30 @@
  * Operations: device-lifecycle, app-lifecycle, io, push, openurl, list, health-check
  */
 
-import { BaseDispatcher, ToolDefinition } from './base.js';
+import { BaseDispatcher } from './base.js';
 import { logger } from '../utils/logger.js';
+import type {
+  ToolDefinition,
+  SimulatorOperationArgs,
+  SimulatorResultData,
+  OperationResult,
+  DeviceLifecycleParams,
+  AppLifecycleParams,
+  IOParams,
+  PushParams,
+  OpenURLParams,
+  GetAppContainerParams,
+  DeviceLifecycleResultData,
+  AppLifecycleResultData,
+  ListResultData,
+  HealthCheckResultData,
+  SimulatorParameters,
+} from '../types.js';
 
-export class SimulatorDispatcher extends BaseDispatcher {
+export class SimulatorDispatcher extends BaseDispatcher<
+  SimulatorOperationArgs,
+  SimulatorResultData
+> {
   getToolDefinition(): ToolDefinition {
     return {
       name: 'execute_simulator_command',
@@ -58,7 +78,7 @@ export class SimulatorDispatcher extends BaseDispatcher {
     };
   }
 
-  async execute(args: any): Promise<any> {
+  async execute(args: SimulatorOperationArgs): Promise<OperationResult<SimulatorResultData>> {
     const { operation, device_id, sub_operation, app_identifier, parameters } = args;
 
     logger.info(`Executing simulator operation: ${operation} / ${sub_operation || 'default'}`);
@@ -66,28 +86,43 @@ export class SimulatorDispatcher extends BaseDispatcher {
     try {
       switch (operation) {
         case 'device-lifecycle':
+          if (!sub_operation) {
+            return this.formatError('sub_operation required for device-lifecycle', operation);
+          }
           return await this.executeDeviceLifecycle({
             device_id,
-            sub_operation,
+            sub_operation: sub_operation as never,
             parameters,
           });
 
         case 'app-lifecycle':
+          if (!sub_operation || !app_identifier) {
+            return this.formatError(
+              'sub_operation and app_identifier required for app-lifecycle',
+              operation
+            );
+          }
           return await this.executeAppLifecycle({
             device_id,
             app_identifier,
-            sub_operation,
+            sub_operation: sub_operation as never,
             parameters,
           });
 
         case 'io':
+          if (!sub_operation) {
+            return this.formatError('sub_operation required for io', operation);
+          }
           return await this.executeIO({
             device_id,
-            sub_operation,
+            sub_operation: sub_operation as never,
             parameters,
           });
 
         case 'push':
+          if (!app_identifier) {
+            return this.formatError('app_identifier required for push', operation);
+          }
           return await this.executePush({
             device_id,
             app_identifier,
@@ -95,9 +130,12 @@ export class SimulatorDispatcher extends BaseDispatcher {
           });
 
         case 'openurl':
+          if (!parameters?.url) {
+            return this.formatError('url required in parameters for openurl', operation);
+          }
           return await this.executeOpenURL({
             device_id,
-            parameters,
+            parameters: { url: parameters.url },
           });
 
         case 'list':
@@ -107,6 +145,12 @@ export class SimulatorDispatcher extends BaseDispatcher {
           return await this.executeHealthCheck();
 
         case 'get-app-container':
+          if (!device_id || !app_identifier) {
+            return this.formatError(
+              'device_id and app_identifier required for get-app-container',
+              operation
+            );
+          }
           return await this.executeGetAppContainer({
             device_id,
             app_identifier,
@@ -117,77 +161,101 @@ export class SimulatorDispatcher extends BaseDispatcher {
           return this.formatError(`Unknown operation: ${operation}`, operation);
       }
     } catch (error) {
-      logger.error(`Simulator operation failed: ${operation}`, error);
-      return this.formatError(error, operation);
+      logger.error(`Simulator operation failed: ${operation}`, error as Error);
+      return this.formatError(error as Error, operation);
     }
   }
 
-  private async executeDeviceLifecycle(params: any): Promise<any> {
+  private async executeDeviceLifecycle(
+    params: Partial<DeviceLifecycleParams>
+  ): Promise<OperationResult<SimulatorResultData>> {
     // Placeholder - will implement with xc-mcp simctl logic
-    return this.formatSuccess({
+    const data: DeviceLifecycleResultData = {
       message: 'Device lifecycle operation not yet implemented',
-      sub_operation: params.sub_operation,
+      sub_operation: (params.sub_operation || '') as never,
       note: 'Will use xc-mcp simctl-device router logic',
-      params,
-    });
+      params: params as DeviceLifecycleParams,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeAppLifecycle(params: any): Promise<any> {
+  private async executeAppLifecycle(
+    params: Partial<AppLifecycleParams>
+  ): Promise<OperationResult<SimulatorResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: AppLifecycleResultData = {
       message: 'App lifecycle operation not yet implemented',
-      sub_operation: params.sub_operation,
-      params,
-    });
+      sub_operation: (params.sub_operation || '') as never,
+      params: params as AppLifecycleParams,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeIO(params: any): Promise<any> {
-    // Placeholder
-    return this.formatSuccess({
+  private async executeIO(
+    params: Partial<IOParams>
+  ): Promise<OperationResult<SimulatorResultData>> {
+    // Placeholder - IO returns device lifecycle style data
+    const data: DeviceLifecycleResultData = {
       message: 'IO operation not yet implemented',
-      sub_operation: params.sub_operation,
-      params,
-    });
+      sub_operation: (params.sub_operation || '') as never,
+      params: params as never,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executePush(params: any): Promise<any> {
+  private async executePush(
+    params: Partial<PushParams>
+  ): Promise<OperationResult<SimulatorResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: AppLifecycleResultData = {
       message: 'Push notification operation not yet implemented',
-      params,
-    });
+      sub_operation: 'install',
+      params: params as never,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeOpenURL(params: any): Promise<any> {
+  private async executeOpenURL(
+    params: Partial<OpenURLParams>
+  ): Promise<OperationResult<SimulatorResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: AppLifecycleResultData = {
       message: 'OpenURL operation not yet implemented',
-      params,
-    });
+      sub_operation: 'launch',
+      params: params as never,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeList(params: any): Promise<any> {
+  private async executeList(
+    _params?: SimulatorParameters
+  ): Promise<OperationResult<SimulatorResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: ListResultData = {
       message: 'List operation not yet implemented',
       note: 'Will use progressive disclosure with cache IDs',
-      params,
-    });
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeHealthCheck(): Promise<any> {
+  private async executeHealthCheck(): Promise<OperationResult<SimulatorResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: HealthCheckResultData = {
       message: 'Health check not yet implemented',
       note: 'Will validate Xcode installation and simctl availability',
-    });
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeGetAppContainer(params: any): Promise<any> {
+  private async executeGetAppContainer(
+    params: Partial<GetAppContainerParams>
+  ): Promise<OperationResult<SimulatorResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: AppLifecycleResultData = {
       message: 'Get app container operation not yet implemented',
-      params,
-    });
+      sub_operation: 'install',
+      params: params as never,
+    };
+    return this.formatSuccess(data);
   }
 }

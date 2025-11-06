@@ -110,14 +110,16 @@ export async function executeBuild(
 const deviceName: string = getDeviceName(); // Type obvious from function
 ```
 
-### `any` Usage
+### `any` and `unknown` Usage
 
-**Avoid `any`** - Use specific types or `unknown` instead.
+**NEVER use `any` or `unknown`** - Always define explicit types.
 
-**When `any` is acceptable:**
-- Placeholder code during development (mark with `// TODO: type this`)
-- Third-party integrations with no types
-- Truly dynamic data where structure is unknowable
+**Zero tolerance policy:**
+- ❌ No `any` types (even during development)
+- ❌ No `unknown` types (define the actual structure)
+- ✅ Define interfaces and types for all data structures
+- ✅ Use union types for multiple possibilities
+- ✅ Use generics for reusable patterns
 
 ```typescript
 // Bad
@@ -125,16 +127,32 @@ function process(data: any) {
   return data.value;
 }
 
-// Good
-function process(data: { value: string }) {
+// Bad
+function process(data: unknown) {
+  return (data as { value: string }).value;
+}
+
+// Good - Explicit interface
+interface ProcessData {
+  value: string;
+}
+
+function process(data: ProcessData) {
   return data.value;
 }
 
-// Acceptable during development
-function executeBuild(params: any): Promise<any> {
-  // TODO: type this - waiting for BuildParams interface
-  return buildProject(params);
+// Good - Union type for multiple possibilities
+type OperationResult = BuildResult | TestResult | ErrorResult;
+
+function executeOperation(op: string): OperationResult {
+  // Implementation
 }
+```
+
+**Exception:** Third-party SDK types that use `any` (cannot be changed). Document why:
+```typescript
+// MCP SDK uses any for schema properties - cannot be changed
+properties: Record<string, any>;
 ```
 
 ## Code Organization

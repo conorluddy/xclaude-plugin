@@ -7,10 +7,24 @@
  * Operations: build, clean, test, list, version
  */
 
-import { BaseDispatcher, ToolDefinition } from './base.js';
+import { BaseDispatcher } from './base.js';
 import { logger } from '../utils/logger.js';
+import type {
+  ToolDefinition,
+  XcodeOperationArgs,
+  XcodeResultData,
+  OperationResult,
+  BuildParams,
+  CleanParams,
+  TestParams,
+  ListParams,
+  BuildResultData,
+  TestResultData,
+  ListResultData,
+  VersionResultData,
+} from '../types.js';
 
-export class XcodeDispatcher extends BaseDispatcher {
+export class XcodeDispatcher extends BaseDispatcher<XcodeOperationArgs, XcodeResultData> {
   getToolDefinition(): ToolDefinition {
     return {
       name: 'execute_xcode_command',
@@ -53,7 +67,7 @@ export class XcodeDispatcher extends BaseDispatcher {
     };
   }
 
-  async execute(args: any): Promise<any> {
+  async execute(args: XcodeOperationArgs): Promise<OperationResult<XcodeResultData>> {
     const { operation, project_path, scheme, configuration, destination, options } = args;
 
     logger.info(`Executing xcode operation: ${operation}`);
@@ -61,6 +75,9 @@ export class XcodeDispatcher extends BaseDispatcher {
     try {
       switch (operation) {
         case 'build':
+          if (!scheme) {
+            return this.formatError('scheme required for build', operation);
+          }
           return await this.executeBuild({
             project_path,
             scheme,
@@ -73,11 +90,14 @@ export class XcodeDispatcher extends BaseDispatcher {
           return await this.executeClean({ project_path, scheme });
 
         case 'test':
+          if (!scheme) {
+            return this.formatError('scheme required for test', operation);
+          }
           return await this.executeTest({
             project_path,
             scheme,
             destination,
-            options,
+            options: options as never, // TestOptions differ from XcodeBuildOptions
           });
 
         case 'list':
@@ -90,48 +110,56 @@ export class XcodeDispatcher extends BaseDispatcher {
           return this.formatError(`Unknown operation: ${operation}`, operation);
       }
     } catch (error) {
-      logger.error(`Xcode operation failed: ${operation}`, error);
-      return this.formatError(error, operation);
+      logger.error(`Xcode operation failed: ${operation}`, error as Error);
+      return this.formatError(error as Error, operation);
     }
   }
 
-  private async executeBuild(params: any): Promise<any> {
+  private async executeBuild(
+    params: Partial<BuildParams>
+  ): Promise<OperationResult<XcodeResultData>> {
     // Placeholder - will implement with xc-mcp logic
-    return this.formatSuccess({
+    const data: BuildResultData = {
       message: 'Build operation not yet implemented',
       note: 'Will use xc-mcp xcodebuild wrapper logic',
-      params,
-    });
+      params: params as BuildParams,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeClean(params: any): Promise<any> {
+  private async executeClean(params: CleanParams): Promise<OperationResult<XcodeResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: BuildResultData = {
       message: 'Clean operation not yet implemented',
-      params,
-    });
+      params: params as BuildParams, // Clean uses same result format as build
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeTest(params: any): Promise<any> {
+  private async executeTest(
+    params: Partial<TestParams>
+  ): Promise<OperationResult<XcodeResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: TestResultData = {
       message: 'Test operation not yet implemented',
-      params,
-    });
+      params: params as TestParams,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeList(params: any): Promise<any> {
+  private async executeList(_params: ListParams): Promise<OperationResult<XcodeResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: ListResultData = {
       message: 'List operation not yet implemented',
-      params,
-    });
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeVersion(): Promise<any> {
+  private async executeVersion(): Promise<OperationResult<XcodeResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: VersionResultData = {
       message: 'Version operation not yet implemented',
-    });
+    };
+    return this.formatSuccess(data);
   }
 }

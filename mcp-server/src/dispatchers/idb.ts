@@ -12,10 +12,26 @@
  * 3. Only fallback to screenshots if accessibility insufficient
  */
 
-import { BaseDispatcher, ToolDefinition } from './base.js';
+import { BaseDispatcher } from './base.js';
 import { logger } from '../utils/logger.js';
+import type {
+  ToolDefinition,
+  IDBOperationArgs,
+  IDBResultData,
+  OperationResult,
+  TapParams,
+  InputParams,
+  GestureParams,
+  DescribeParams,
+  FindElementParams,
+  IDBAppParams,
+  ListAppsParams,
+  CheckAccessibilityParams,
+  TargetsParams,
+  IDBOperationResultData,
+} from '../types.js';
 
-export class IDBDispatcher extends BaseDispatcher {
+export class IDBDispatcher extends BaseDispatcher<IDBOperationArgs, IDBResultData> {
   getToolDefinition(): ToolDefinition {
     return {
       name: 'execute_idb_command',
@@ -55,7 +71,7 @@ export class IDBDispatcher extends BaseDispatcher {
     };
   }
 
-  async execute(args: any): Promise<any> {
+  async execute(args: IDBOperationArgs): Promise<OperationResult<IDBResultData>> {
     const { operation, target, parameters } = args;
 
     logger.info(`Executing IDB operation: ${operation}`);
@@ -63,25 +79,60 @@ export class IDBDispatcher extends BaseDispatcher {
     try {
       switch (operation) {
         case 'tap':
-          return await this.executeTap({ target, parameters });
+          if (!parameters?.x || !parameters?.y) {
+            return this.formatError('x and y coordinates required for tap', operation);
+          }
+          return await this.executeTap({
+            target,
+            parameters: { x: parameters.x, y: parameters.y, duration: parameters.duration },
+          });
 
         case 'input':
+          if (!parameters) {
+            return this.formatError('parameters required for input', operation);
+          }
           return await this.executeInput({ target, parameters });
 
         case 'gesture':
-          return await this.executeGesture({ target, parameters });
+          if (!parameters?.gesture_type) {
+            return this.formatError('gesture_type required in parameters', operation);
+          }
+          return await this.executeGesture({
+            target,
+            parameters: {
+              gesture_type: parameters.gesture_type,
+              direction: parameters.direction,
+              button: parameters.button,
+            },
+          });
 
         case 'describe':
           return await this.executeDescribe({ target, parameters });
 
         case 'find-element':
-          return await this.executeFindElement({ target, parameters });
+          if (!parameters?.query) {
+            return this.formatError('query required in parameters for find-element', operation);
+          }
+          return await this.executeFindElement({ target, parameters: { query: parameters.query } });
 
         case 'app':
-          return await this.executeApp({ target, parameters });
+          if (!parameters?.sub_operation) {
+            return this.formatError('sub_operation required in parameters for app', operation);
+          }
+          return await this.executeApp({
+            target,
+            parameters: {
+              sub_operation: parameters.sub_operation,
+              bundle_id: parameters.bundle_id,
+              app_path: parameters.app_path,
+            },
+          });
 
         case 'list-apps':
-          return await this.executeListApps({ target, parameters });
+          return await this.executeListApps({
+            target,
+            parameters: { filter_type: parameters?.filter_type },
+          });
 
         case 'check-accessibility':
           return await this.executeCheckAccessibility({ target });
@@ -93,91 +144,113 @@ export class IDBDispatcher extends BaseDispatcher {
           return this.formatError(`Unknown operation: ${operation}`, operation);
       }
     } catch (error) {
-      logger.error(`IDB operation failed: ${operation}`, error);
-      return this.formatError(error, operation);
+      logger.error(`IDB operation failed: ${operation}`, error as Error);
+      return this.formatError(error as Error, operation);
     }
   }
 
-  private async executeTap(params: any): Promise<any> {
+  private async executeTap(params: Partial<TapParams>): Promise<OperationResult<IDBResultData>> {
     // Placeholder - will implement with xc-mcp IDB logic
-    return this.formatSuccess({
+    const data: IDBOperationResultData = {
       message: 'Tap operation not yet implemented',
       note: 'Will use xc-mcp idb-ui-tap logic with coordinate transformation',
-      params,
-    });
+      params: params.parameters,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeInput(params: any): Promise<any> {
+  private async executeInput(
+    params: Partial<InputParams>
+  ): Promise<OperationResult<IDBResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: IDBOperationResultData = {
       message: 'Input operation not yet implemented',
       note: 'Will support text, key, and key-sequence operations',
-      params,
-    });
+      params: params.parameters,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeGesture(params: any): Promise<any> {
+  private async executeGesture(
+    params: Partial<GestureParams>
+  ): Promise<OperationResult<IDBResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: IDBOperationResultData = {
       message: 'Gesture operation not yet implemented',
       note: 'Will support swipe and button operations (HOME, LOCK, etc.)',
-      params,
-    });
+      params: params.parameters,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeDescribe(params: any): Promise<any> {
+  private async executeDescribe(
+    params: Partial<DescribeParams>
+  ): Promise<OperationResult<IDBResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: IDBOperationResultData = {
       message: 'Describe operation not yet implemented',
       note: 'Accessibility-first: returns UI tree (fast, ~50 tokens)',
       accessibility_priority: 'Use this BEFORE screenshots',
-      params,
-    });
+      params: params.parameters,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeFindElement(params: any): Promise<any> {
+  private async executeFindElement(
+    params: Partial<FindElementParams>
+  ): Promise<OperationResult<IDBResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: IDBOperationResultData = {
       message: 'Find element operation not yet implemented',
       note: 'Semantic search in accessibility tree by label/identifier',
-      params,
-    });
+      params: params.parameters,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeApp(params: any): Promise<any> {
+  private async executeApp(params: Partial<IDBAppParams>): Promise<OperationResult<IDBResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: IDBOperationResultData = {
       message: 'App operation not yet implemented',
       note: 'Will support install, uninstall, launch, terminate via IDB',
-      params,
-    });
+      params: params.parameters,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeListApps(params: any): Promise<any> {
+  private async executeListApps(
+    params: Partial<ListAppsParams>
+  ): Promise<OperationResult<IDBResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: IDBOperationResultData = {
       message: 'List apps operation not yet implemented',
       note: 'Will list installed apps with filtering (system/user/internal)',
-      params,
-    });
+      params: params.parameters,
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeCheckAccessibility(params: any): Promise<any> {
+  private async executeCheckAccessibility(
+    _params: Partial<CheckAccessibilityParams>
+  ): Promise<OperationResult<IDBResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: IDBOperationResultData = {
       message: 'Check accessibility operation not yet implemented',
       note: 'Quick assessment: is accessibility data sufficient or need screenshot?',
       guidance: 'Use to decide between accessibility-first vs screenshot approach',
-      params,
-    });
+    };
+    return this.formatSuccess(data);
   }
 
-  private async executeTargets(params: any): Promise<any> {
+  private async executeTargets(
+    params: Partial<TargetsParams>
+  ): Promise<OperationResult<IDBResultData>> {
     // Placeholder
-    return this.formatSuccess({
+    const data: IDBOperationResultData = {
       message: 'Targets operation not yet implemented',
       note: 'Will manage IDB target connections (list, describe, connect, disconnect)',
-      params,
-    });
+      params: params.parameters,
+    };
+    return this.formatSuccess(data);
   }
 }
