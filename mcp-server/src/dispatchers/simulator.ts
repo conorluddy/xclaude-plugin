@@ -169,26 +169,171 @@ export class SimulatorDispatcher extends BaseDispatcher<
   private async executeDeviceLifecycle(
     params: Partial<DeviceLifecycleParams>
   ): Promise<OperationResult<SimulatorResultData>> {
-    // Placeholder - will implement with xc-mcp simctl logic
-    const data: DeviceLifecycleResultData = {
-      message: 'Device lifecycle operation not yet implemented',
-      sub_operation: (params.sub_operation || '') as never,
-      note: 'Will use xc-mcp simctl-device router logic',
-      params: params as DeviceLifecycleParams,
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand } = await import('../utils/command.js');
+      const subOp = params.sub_operation as never;
+
+      switch (subOp) {
+        case 'boot': {
+          if (!params.device_id) {
+            return this.formatError('device_id required for boot', 'device-lifecycle');
+          }
+          await runCommand('xcrun', ['simctl', 'boot', params.device_id]);
+          const data: DeviceLifecycleResultData = {
+            message: `Device ${params.device_id} booted successfully`,
+            sub_operation: 'boot',
+            device_id: params.device_id,
+            status: 'Booted',
+          };
+          return this.formatSuccess(data);
+        }
+
+        case 'shutdown': {
+          const deviceId = params.device_id || 'booted';
+          await runCommand('xcrun', ['simctl', 'shutdown', deviceId]);
+          const data: DeviceLifecycleResultData = {
+            message: `Device ${deviceId} shut down successfully`,
+            sub_operation: 'shutdown',
+            device_id: deviceId,
+            status: 'Shutdown',
+          };
+          return this.formatSuccess(data);
+        }
+
+        case 'create': {
+          const name = params.parameters?.new_name || 'New Device';
+          const deviceType = params.parameters?.device_type || 'iPhone 15';
+          const runtime = params.parameters?.runtime || 'iOS 17.0';
+
+          const result = await runCommand('xcrun', ['simctl', 'create', name, deviceType, runtime]);
+
+          const udid = result.stdout.trim();
+          const data: DeviceLifecycleResultData = {
+            message: `Created device: ${name}`,
+            sub_operation: 'create',
+            device_id: udid,
+            note: `Device UDID: ${udid}`,
+          };
+          return this.formatSuccess(data);
+        }
+
+        case 'delete': {
+          if (!params.device_id) {
+            return this.formatError('device_id required for delete', 'device-lifecycle');
+          }
+          await runCommand('xcrun', ['simctl', 'delete', params.device_id]);
+          const data: DeviceLifecycleResultData = {
+            message: `Device ${params.device_id} deleted successfully`,
+            sub_operation: 'delete',
+            device_id: params.device_id,
+          };
+          return this.formatSuccess(data);
+        }
+
+        case 'erase': {
+          if (!params.device_id) {
+            return this.formatError('device_id required for erase', 'device-lifecycle');
+          }
+          await runCommand('xcrun', ['simctl', 'erase', params.device_id]);
+          const data: DeviceLifecycleResultData = {
+            message: `Device ${params.device_id} erased successfully`,
+            sub_operation: 'erase',
+            device_id: params.device_id,
+          };
+          return this.formatSuccess(data);
+        }
+
+        default:
+          return this.formatError(`Unknown sub_operation: ${subOp}`, 'device-lifecycle');
+      }
+    } catch (error) {
+      logger.error('Device lifecycle operation failed', error as Error);
+      return this.formatError(error as Error, 'device-lifecycle');
+    }
   }
 
   private async executeAppLifecycle(
     params: Partial<AppLifecycleParams>
   ): Promise<OperationResult<SimulatorResultData>> {
-    // Placeholder
-    const data: AppLifecycleResultData = {
-      message: 'App lifecycle operation not yet implemented',
-      sub_operation: (params.sub_operation || '') as never,
-      params: params as AppLifecycleParams,
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand } = await import('../utils/command.js');
+      const subOp = params.sub_operation as never;
+      const deviceId = params.device_id || 'booted';
+
+      switch (subOp) {
+        case 'install': {
+          if (!params.parameters?.app_path) {
+            return this.formatError('app_path required for install', 'app-lifecycle');
+          }
+          await runCommand('xcrun', ['simctl', 'install', deviceId, params.parameters.app_path]);
+          const data: AppLifecycleResultData = {
+            message: `App installed on device ${deviceId}`,
+            sub_operation: 'install',
+            app_identifier: params.app_identifier,
+            status: 'installed',
+          };
+          return this.formatSuccess(data);
+        }
+
+        case 'uninstall': {
+          if (!params.app_identifier) {
+            return this.formatError('app_identifier required for uninstall', 'app-lifecycle');
+          }
+          await runCommand('xcrun', ['simctl', 'uninstall', deviceId, params.app_identifier]);
+          const data: AppLifecycleResultData = {
+            message: `App ${params.app_identifier} uninstalled from device ${deviceId}`,
+            sub_operation: 'uninstall',
+            app_identifier: params.app_identifier,
+            status: 'uninstalled',
+          };
+          return this.formatSuccess(data);
+        }
+
+        case 'launch': {
+          if (!params.app_identifier) {
+            return this.formatError('app_identifier required for launch', 'app-lifecycle');
+          }
+          const args = ['simctl', 'launch', deviceId, params.app_identifier];
+
+          // Add launch arguments if provided
+          if (params.parameters?.arguments) {
+            args.push(...params.parameters.arguments);
+          }
+
+          const result = await runCommand('xcrun', args);
+          const pidMatch = result.stdout.match(/(\d+)/);
+
+          const data: AppLifecycleResultData = {
+            message: `App ${params.app_identifier} launched on device ${deviceId}`,
+            sub_operation: 'launch',
+            app_identifier: params.app_identifier,
+            status: 'running',
+            params: pidMatch ? ({ pid: pidMatch[1] } as never) : undefined,
+          };
+          return this.formatSuccess(data);
+        }
+
+        case 'terminate': {
+          if (!params.app_identifier) {
+            return this.formatError('app_identifier required for terminate', 'app-lifecycle');
+          }
+          await runCommand('xcrun', ['simctl', 'terminate', deviceId, params.app_identifier]);
+          const data: AppLifecycleResultData = {
+            message: `App ${params.app_identifier} terminated on device ${deviceId}`,
+            sub_operation: 'terminate',
+            app_identifier: params.app_identifier,
+            status: 'terminated',
+          };
+          return this.formatSuccess(data);
+        }
+
+        default:
+          return this.formatError(`Unknown sub_operation: ${subOp}`, 'app-lifecycle');
+      }
+    } catch (error) {
+      logger.error('App lifecycle operation failed', error as Error);
+      return this.formatError(error as Error, 'app-lifecycle');
+    }
   }
 
   private async executeIO(
@@ -230,21 +375,114 @@ export class SimulatorDispatcher extends BaseDispatcher<
   private async executeList(
     _params?: SimulatorParameters
   ): Promise<OperationResult<SimulatorResultData>> {
-    // Placeholder
-    const data: ListResultData = {
-      message: 'List operation not yet implemented',
-      note: 'Will use progressive disclosure with cache IDs',
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand } = await import('../utils/command.js');
+      const { ResponseCache } = await import('../state/response-cache.js');
+
+      // Execute simctl list devices --json
+      const result = await runCommand('xcrun', ['simctl', 'list', 'devices', '--json']);
+      const fullData = JSON.parse(result.stdout);
+
+      // Extract devices into flat array
+      const devices: Array<{ name: string; udid: string; state: string; runtime: string }> = [];
+
+      for (const [runtime, deviceList] of Object.entries(fullData.devices || {})) {
+        if (Array.isArray(deviceList)) {
+          deviceList.forEach((device: { name: string; udid: string; state: string }) => {
+            devices.push({
+              name: device.name,
+              udid: device.udid,
+              state: device.state,
+              runtime: runtime.replace('com.apple.CoreSimulator.SimRuntime.', ''),
+            });
+          });
+        }
+      }
+
+      // Cache full device list for progressive disclosure
+      const cache = new ResponseCache();
+      const cacheId = await cache.store({
+        fullData: devices,
+        deviceCount: devices.length,
+        bootedDevices: devices.filter((d: { state: string }) => d.state === 'Booted'),
+      } as never);
+
+      // Return summary with cache_id
+      const bootedCount = devices.filter((d) => d.state === 'Booted').length;
+      const data: ListResultData = {
+        message: `Found ${devices.length} devices (${bootedCount} booted)`,
+        note: `Use get-details with cache_id to see full device list`,
+        devices: devices.slice(0, 5), // Show first 5 devices
+      };
+
+      return this.formatSuccess(data, `Device list cached. cache_id: ${cacheId}`);
+    } catch (error) {
+      logger.error('List operation failed', error as Error);
+      return this.formatError(error as Error, 'list');
+    }
   }
 
   private async executeHealthCheck(): Promise<OperationResult<SimulatorResultData>> {
-    // Placeholder
-    const data: HealthCheckResultData = {
-      message: 'Health check not yet implemented',
-      note: 'Will validate Xcode installation and simctl availability',
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand } = await import('../utils/command.js');
+      const issues: string[] = [];
+
+      // Check Xcode installation
+      let xcodeVersion: string | undefined;
+      let _xcodePath: string | undefined;
+      try {
+        const versionResult = await runCommand('xcodebuild', ['-version']);
+        const versionMatch = versionResult.stdout.match(/Xcode\s+([\d.]+)/);
+        xcodeVersion = versionMatch ? versionMatch[1] : undefined;
+
+        const pathResult = await runCommand('xcode-select', ['-p']);
+        _xcodePath = pathResult.stdout.trim();
+      } catch {
+        issues.push('Xcode not found or not properly configured');
+      }
+
+      // Check simctl availability
+      let simctlAvailable = false;
+      try {
+        await runCommand('xcrun', ['simctl', 'help']);
+        simctlAvailable = true;
+      } catch {
+        issues.push('simctl not available (Xcode Command Line Tools may not be installed)');
+      }
+
+      // Check for booted devices
+      let bootedDevices = 0;
+      try {
+        const listResult = await runCommand('xcrun', ['simctl', 'list', 'devices', '--json']);
+        const data = JSON.parse(listResult.stdout);
+        for (const deviceList of Object.values(data.devices || {})) {
+          if (Array.isArray(deviceList)) {
+            bootedDevices += deviceList.filter(
+              (d: { state: string }) => d.state === 'Booted'
+            ).length;
+          }
+        }
+      } catch {
+        // Not critical, just informational
+      }
+
+      const data: HealthCheckResultData = {
+        message:
+          issues.length === 0
+            ? 'iOS development environment is healthy'
+            : `Found ${issues.length} issue(s)`,
+        xcode_installed: !!xcodeVersion,
+        xcode_version: xcodeVersion,
+        simctl_available: simctlAvailable,
+        issues: issues.length > 0 ? issues : undefined,
+        note: bootedDevices > 0 ? `${bootedDevices} simulator(s) currently booted` : undefined,
+      };
+
+      return this.formatSuccess(data);
+    } catch (error) {
+      logger.error('Health check failed', error as Error);
+      return this.formatError(error as Error, 'health-check');
+    }
   }
 
   private async executeGetAppContainer(

@@ -280,6 +280,15 @@ export interface IDBParameters {
   sub_operation?: string;
   operation?: string;
   filter_type?: 'system' | 'user' | 'internal';
+  // Result data fields (used in response params)
+  elements?: Array<Record<string, unknown>>;
+  matches?: Array<Record<string, unknown>>;
+  apps?: Array<Record<string, unknown>>;
+  score?: number;
+  total_elements?: number;
+  labeled_elements?: number;
+  interactive_elements?: number;
+  pid?: string;
 }
 
 export interface TapParams {
@@ -312,6 +321,8 @@ export interface DescribeParams {
   target?: string;
   parameters?: {
     operation?: string;
+    x?: number;
+    y?: number;
   };
 }
 

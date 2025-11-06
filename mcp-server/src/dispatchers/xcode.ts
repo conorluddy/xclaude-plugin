@@ -118,48 +118,268 @@ export class XcodeDispatcher extends BaseDispatcher<XcodeOperationArgs, XcodeRes
   private async executeBuild(
     params: Partial<BuildParams>
   ): Promise<OperationResult<XcodeResultData>> {
-    // Placeholder - will implement with xc-mcp logic
-    const data: BuildResultData = {
-      message: 'Build operation not yet implemented',
-      note: 'Will use xc-mcp xcodebuild wrapper logic',
-      params: params as BuildParams,
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand, findXcodeProject } = await import('../utils/command.js');
+      const { ResponseCache } = await import('../state/response-cache.js');
+
+      const projectPath = params.project_path || (await findXcodeProject());
+      if (!projectPath) {
+        return this.formatError('No Xcode project found', 'build');
+      }
+
+      // Build command args
+      const args = [
+        '-scheme',
+        params.scheme || '',
+        '-configuration',
+        params.configuration || 'Debug',
+      ];
+
+      if (projectPath.endsWith('.xcworkspace')) {
+        args.unshift('-workspace', projectPath);
+      } else {
+        args.unshift('-project', projectPath);
+      }
+
+      if (params.destination) {
+        args.push('-destination', params.destination);
+      }
+
+      args.push('build');
+
+      // Execute build
+      const startTime = Date.now();
+      const result = await runCommand('xcodebuild', args);
+      const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+
+      // Cache full output for progressive disclosure
+      const cache = new ResponseCache();
+      const cacheId = cache.store({
+        tool: 'xcode-build',
+        fullOutput: result.stdout,
+        stderr: result.stderr,
+        exitCode: result.code,
+        command: `xcodebuild ${args.join(' ')}`,
+        metadata: {
+          projectPath,
+          scheme: params.scheme || '',
+          configuration: params.configuration || 'Debug',
+          destination: params.destination || null,
+          duration,
+          success: result.code === 0,
+        },
+      });
+
+      // Return summary
+      const data: BuildResultData = {
+        message: `Build ${result.code === 0 ? 'succeeded' : 'failed'} in ${duration}s`,
+        note: `Use get-details with cache_id to see full output`,
+        params: params as BuildParams,
+      };
+
+      const summary = `Build completed. cache_id: ${cacheId}`;
+
+      return this.formatSuccess(data, summary);
+    } catch (error) {
+      logger.error('Build failed', error as Error);
+      return this.formatError(error as Error, 'build');
+    }
   }
 
   private async executeClean(params: CleanParams): Promise<OperationResult<XcodeResultData>> {
-    // Placeholder
-    const data: BuildResultData = {
-      message: 'Clean operation not yet implemented',
-      params: params as BuildParams, // Clean uses same result format as build
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand, findXcodeProject } = await import('../utils/command.js');
+
+      const projectPath = params.project_path || (await findXcodeProject());
+      if (!projectPath) {
+        return this.formatError('No Xcode project found', 'clean');
+      }
+
+      const args = [];
+      if (projectPath.endsWith('.xcworkspace')) {
+        args.push('-workspace', projectPath);
+      } else {
+        args.push('-project', projectPath);
+      }
+
+      if (params.scheme) {
+        args.push('-scheme', params.scheme);
+      }
+
+      args.push('clean');
+
+      const result = await runCommand('xcodebuild', args);
+
+      const data: BuildResultData = {
+        message: 'Clean completed successfully',
+        note: result.stdout.includes('CLEAN SUCCEEDED') ? 'Build artifacts removed' : undefined,
+        params: params as BuildParams,
+      };
+
+      return this.formatSuccess(data);
+    } catch (error) {
+      logger.error('Clean operation failed', error as Error);
+      return this.formatError(error as Error, 'clean');
+    }
   }
 
   private async executeTest(
     params: Partial<TestParams>
   ): Promise<OperationResult<XcodeResultData>> {
-    // Placeholder
-    const data: TestResultData = {
-      message: 'Test operation not yet implemented',
-      params: params as TestParams,
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand, findXcodeProject } = await import('../utils/command.js');
+      const { ResponseCache } = await import('../state/response-cache.js');
+
+      const projectPath = params.project_path || (await findXcodeProject());
+      if (!projectPath) {
+        return this.formatError('No Xcode project found', 'test');
+      }
+
+      const args = ['-scheme', params.scheme || ''];
+
+      if (projectPath.endsWith('.xcworkspace')) {
+        args.unshift('-workspace', projectPath);
+      } else {
+        args.unshift('-project', projectPath);
+      }
+
+      if (params.destination) {
+        args.push('-destination', params.destination);
+      }
+
+      // Add test options
+      const testOpts = params.options;
+      if (testOpts?.test_plan) {
+        args.push('-testPlan', testOpts.test_plan);
+      }
+      if (testOpts?.only_testing) {
+        testOpts.only_testing.forEach((test: string) => {
+          args.push('-only-testing', test);
+        });
+      }
+
+      args.push('test');
+
+      const startTime = Date.now();
+      const result = await runCommand('xcodebuild', args);
+      const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+
+      // Parse test results
+      const output = result.stdout;
+      const passedMatch = output.match(/Test Suite .* passed at .*/);
+      const failedMatch = output.match(/(\d+) tests?, (\d+) failures?/);
+
+      // Cache full output
+      const cache = new ResponseCache();
+      const cacheId = cache.store({
+        tool: 'xcode-test',
+        fullOutput: output,
+        stderr: result.stderr,
+        exitCode: result.code,
+        command: `xcodebuild ${args.join(' ')}`,
+        metadata: {
+          projectPath,
+          scheme: params.scheme || '',
+          destination: params.destination || null,
+          duration,
+          success: result.code === 0,
+        },
+      });
+
+      const data: TestResultData = {
+        message: passedMatch
+          ? `Tests passed in ${duration}s`
+          : failedMatch
+            ? `Tests completed: ${failedMatch[1]} tests, ${failedMatch[2]} failures`
+            : `Tests completed in ${duration}s`,
+        params: params as TestParams,
+      };
+
+      return this.formatSuccess(data, `Test results cached. cache_id: ${cacheId}`);
+    } catch (error) {
+      logger.error('Test execution failed', error as Error);
+      return this.formatError(error as Error, 'test');
+    }
   }
 
   private async executeList(_params: ListParams): Promise<OperationResult<XcodeResultData>> {
-    // Placeholder
-    const data: ListResultData = {
-      message: 'List operation not yet implemented',
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand, findXcodeProject } = await import('../utils/command.js');
+
+      // Auto-detect project if not specified
+      const projectPath = _params.project_path || (await findXcodeProject());
+
+      if (!projectPath) {
+        return this.formatError('No Xcode project found', 'list');
+      }
+
+      // Execute xcodebuild -list
+      const args = ['-list'];
+      if (projectPath.endsWith('.xcworkspace')) {
+        args.push('-workspace', projectPath);
+      } else {
+        args.push('-project', projectPath);
+      }
+
+      const result = await runCommand('xcodebuild', args);
+
+      // Parse schemes and targets
+      const output = result.stdout;
+      const schemesMatch = output.match(/Schemes:\s*([\s\S]*?)(?=\n\n|Build Configurations:|$)/);
+      const targetsMatch = output.match(
+        /Targets:\s*([\s\S]*?)(?=\n\n|Build Configurations:|Schemes:|$)/
+      );
+
+      const schemes = schemesMatch
+        ? schemesMatch[1]
+            .trim()
+            .split('\n')
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [];
+
+      const targets = targetsMatch
+        ? targetsMatch[1]
+            .trim()
+            .split('\n')
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : [];
+
+      const data: ListResultData = {
+        schemes,
+        targets,
+        message: `Found ${schemes.length} schemes and ${targets.length} targets`,
+      };
+
+      return this.formatSuccess(data);
+    } catch (error) {
+      logger.error('List operation failed', error as Error);
+      return this.formatError(error as Error, 'list');
+    }
   }
 
   private async executeVersion(): Promise<OperationResult<XcodeResultData>> {
-    // Placeholder
-    const data: VersionResultData = {
-      message: 'Version operation not yet implemented',
-    };
-    return this.formatSuccess(data);
+    try {
+      // Execute xcodebuild -version
+      const { executeCommand } = await import('../utils/command.js');
+      const result = await executeCommand('xcodebuild -version');
+
+      // Parse version output
+      const lines = result.stdout.trim().split('\n');
+      const versionMatch = lines[0]?.match(/Xcode\s+([\d.]+)/);
+      const buildMatch = lines[1]?.match(/Build\s+version\s+(.+)/);
+
+      const data: VersionResultData = {
+        xcode_version: versionMatch ? versionMatch[1] : undefined,
+        build_number: buildMatch ? buildMatch[1] : undefined,
+        message: result.stdout.trim(),
+      };
+
+      return this.formatSuccess(data);
+    } catch (error) {
+      logger.error('Version check failed', error as Error);
+      return this.formatError(error as Error, 'version');
+    }
   }
 }

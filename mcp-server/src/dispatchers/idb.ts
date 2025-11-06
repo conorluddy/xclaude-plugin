@@ -150,13 +150,40 @@ export class IDBDispatcher extends BaseDispatcher<IDBOperationArgs, IDBResultDat
   }
 
   private async executeTap(params: Partial<TapParams>): Promise<OperationResult<IDBResultData>> {
-    // Placeholder - will implement with xc-mcp IDB logic
-    const data: IDBOperationResultData = {
-      message: 'Tap operation not yet implemented',
-      note: 'Will use xc-mcp idb-ui-tap logic with coordinate transformation',
-      params: params.parameters,
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand } = await import('../utils/command.js');
+
+      if (!params.parameters?.x || !params.parameters?.y) {
+        return this.formatError('x and y coordinates required', 'tap');
+      }
+
+      const target = params.target || 'booted';
+      const x = params.parameters.x;
+      const y = params.parameters.y;
+      const duration = params.parameters.duration || 0.1;
+
+      // Execute idb ui tap
+      await runCommand('idb', [
+        '--udid',
+        target,
+        'ui',
+        'tap',
+        `${x}`,
+        `${y}`,
+        '--duration',
+        `${duration}`,
+      ]);
+
+      const data: IDBOperationResultData = {
+        message: `Tapped at coordinates (${x}, ${y})`,
+        params: { x, y, duration },
+      };
+
+      return this.formatSuccess(data);
+    } catch (error) {
+      logger.error('Tap operation failed', error as Error);
+      return this.formatError(error as Error, 'tap');
+    }
   }
 
   private async executeInput(
@@ -186,26 +213,80 @@ export class IDBDispatcher extends BaseDispatcher<IDBOperationArgs, IDBResultDat
   private async executeDescribe(
     params: Partial<DescribeParams>
   ): Promise<OperationResult<IDBResultData>> {
-    // Placeholder
-    const data: IDBOperationResultData = {
-      message: 'Describe operation not yet implemented',
-      note: 'Accessibility-first: returns UI tree (fast, ~50 tokens)',
-      accessibility_priority: 'Use this BEFORE screenshots',
-      params: params.parameters,
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand } = await import('../utils/command.js');
+      const target = params.target || 'booted';
+      const operation = params.parameters?.operation || 'all';
+
+      // Execute idb ui describe-all (or describe-point for specific coordinates)
+      const args = ['ui'];
+      if (operation === 'point' && params.parameters?.x && params.parameters?.y) {
+        args.push('describe-point', `${params.parameters.x}`, `${params.parameters.y}`);
+      } else {
+        args.push('describe-all');
+      }
+
+      args.unshift('--udid', target);
+
+      const result = await runCommand('idb', args);
+      const elements = JSON.parse(result.stdout);
+
+      const data: IDBOperationResultData = {
+        message: `Retrieved accessibility tree with ${Array.isArray(elements) ? elements.length : 'unknown'} elements`,
+        note: 'Accessibility-first: Use this data to find elements before taking screenshots',
+        accessibility_priority: 'HIGH - 3-4x faster than screenshots',
+        params: { elements },
+      };
+
+      return this.formatSuccess(data);
+    } catch (error) {
+      logger.error('Describe operation failed', error as Error);
+      return this.formatError(error as Error, 'describe');
+    }
   }
 
   private async executeFindElement(
     params: Partial<FindElementParams>
   ): Promise<OperationResult<IDBResultData>> {
-    // Placeholder
-    const data: IDBOperationResultData = {
-      message: 'Find element operation not yet implemented',
-      note: 'Semantic search in accessibility tree by label/identifier',
-      params: params.parameters,
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand } = await import('../utils/command.js');
+
+      if (!params.parameters?.query) {
+        return this.formatError('query required', 'find-element');
+      }
+
+      const target = params.target || 'booted';
+      const query = params.parameters.query;
+
+      // First, get the full accessibility tree
+      const describeResult = await runCommand('idb', ['--udid', target, 'ui', 'describe-all']);
+
+      const elements = JSON.parse(describeResult.stdout);
+
+      // Search for matching elements
+      const matches = Array.isArray(elements)
+        ? elements.filter((el: { label?: string; value?: string }) => {
+            const label = el.label?.toLowerCase() || '';
+            const value = el.value?.toLowerCase() || '';
+            const queryLower = query.toLowerCase();
+            return label.includes(queryLower) || value.includes(queryLower);
+          })
+        : [];
+
+      const data: IDBOperationResultData = {
+        message: `Found ${matches.length} element(s) matching "${query}"`,
+        note:
+          matches.length > 0
+            ? 'Use centerX/centerY from results for tap coordinates'
+            : 'No matches found - try a different query or use full describe',
+        params: { query, matches },
+      };
+
+      return this.formatSuccess(data);
+    } catch (error) {
+      logger.error('Find element operation failed', error as Error);
+      return this.formatError(error as Error, 'find-element');
+    }
   }
 
   private async executeApp(params: Partial<IDBAppParams>): Promise<OperationResult<IDBResultData>> {
@@ -221,25 +302,103 @@ export class IDBDispatcher extends BaseDispatcher<IDBOperationArgs, IDBResultDat
   private async executeListApps(
     params: Partial<ListAppsParams>
   ): Promise<OperationResult<IDBResultData>> {
-    // Placeholder
-    const data: IDBOperationResultData = {
-      message: 'List apps operation not yet implemented',
-      note: 'Will list installed apps with filtering (system/user/internal)',
-      params: params.parameters,
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand } = await import('../utils/command.js');
+      const target = params.target || 'booted';
+
+      // Execute idb list-apps
+      const args = ['--udid', target, 'list-apps'];
+
+      // Add filter if specified
+      if (params.parameters?.filter_type) {
+        args.push(`--${params.parameters.filter_type}`);
+      }
+
+      const result = await runCommand('idb', args);
+      const apps = JSON.parse(result.stdout);
+
+      const appCount = Array.isArray(apps) ? apps.length : 0;
+      const filterNote = params.parameters?.filter_type
+        ? ` (filtered: ${params.parameters.filter_type})`
+        : '';
+
+      const data: IDBOperationResultData = {
+        message: `Found ${appCount} installed app(s)${filterNote}`,
+        params: { apps, filter_type: params.parameters?.filter_type },
+      };
+
+      return this.formatSuccess(data);
+    } catch (error) {
+      logger.error('List apps operation failed', error as Error);
+      return this.formatError(error as Error, 'list-apps');
+    }
   }
 
   private async executeCheckAccessibility(
     _params: Partial<CheckAccessibilityParams>
   ): Promise<OperationResult<IDBResultData>> {
-    // Placeholder
-    const data: IDBOperationResultData = {
-      message: 'Check accessibility operation not yet implemented',
-      note: 'Quick assessment: is accessibility data sufficient or need screenshot?',
-      guidance: 'Use to decide between accessibility-first vs screenshot approach',
-    };
-    return this.formatSuccess(data);
+    try {
+      const { runCommand } = await import('../utils/command.js');
+      const target = _params.target || 'booted';
+
+      // Get accessibility tree
+      const result = await runCommand('idb', ['--udid', target, 'ui', 'describe-all']);
+
+      const elements = JSON.parse(result.stdout);
+
+      // Analyze accessibility quality
+      let score = 0;
+      let elementsWithLabels = 0;
+      let interactiveElements = 0;
+
+      if (Array.isArray(elements)) {
+        elementsWithLabels = elements.filter((el) => el.label && el.label.trim()).length;
+        interactiveElements = elements.filter(
+          (el) => el.type === 'Button' || el.type === 'TextField' || el.isEnabled
+        ).length;
+
+        // Calculate quality score (0-100)
+        const totalElements = elements.length;
+        if (totalElements > 0) {
+          const labelPercentage = (elementsWithLabels / totalElements) * 100;
+          const interactivePercentage = (interactiveElements / totalElements) * 50;
+          score = Math.min(100, labelPercentage * 0.7 + interactivePercentage * 0.3);
+        }
+      }
+
+      // Determine recommendation
+      let recommendation: string;
+      if (score >= 70) {
+        recommendation = 'HIGH - Use accessibility tree (3-4x faster, 80% cheaper)';
+      } else if (score >= 40) {
+        recommendation = 'MEDIUM - Try accessibility first, fallback to screenshot if needed';
+      } else {
+        recommendation = 'LOW - Consider screenshot for this screen (accessibility data minimal)';
+      }
+
+      const data: IDBOperationResultData = {
+        message: `Accessibility quality: ${Math.round(score)}/100`,
+        note: `${elementsWithLabels}/${Array.isArray(elements) ? elements.length : 0} elements have labels`,
+        accessibility_priority: recommendation,
+        guidance:
+          score >= 70
+            ? 'Proceed with accessibility-first workflow'
+            : score >= 40
+              ? 'Try find-element first, use screenshot as backup'
+              : 'Screenshot may be more reliable for this screen',
+        params: {
+          score: Math.round(score),
+          total_elements: Array.isArray(elements) ? elements.length : 0,
+          labeled_elements: elementsWithLabels,
+          interactive_elements: interactiveElements,
+        },
+      };
+
+      return this.formatSuccess(data);
+    } catch (error) {
+      logger.error('Accessibility check failed', error as Error);
+      return this.formatError(error as Error, 'check-accessibility');
+    }
   }
 
   private async executeTargets(
