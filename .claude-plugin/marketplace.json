@@ -13,7 +13,7 @@
     {
       "name": "xclaude-plugin",
       "source": ".",
-      "description": "Token-efficient iOS development automation with 88% reduction in context overhead. Includes xcodebuild, simctl, and IDB operations via 3 consolidated dispatchers, plus 8 procedural Skills for iOS workflows.",
+      "description": "Complete iOS development automation with 3 consolidated dispatchers (Xcode, Simulator, IDB) and 8 procedural Skills. Build, test, and automate iOS apps with minimal token overhead.",
       "version": "0.0.1",
       "author": {
         "name": "Conor Luddy",
