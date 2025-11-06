@@ -162,6 +162,48 @@ Tap the "Login" button on the simulator
 - **check-accessibility** - Assess accessibility data quality
 - **targets** - Manage IDB connections
 
+## Configuring Your Project's CLAUDE.md
+
+To help Claude agents prefer the MCP tools over native CLI tools, add this section to your project's `.claude/CLAUDE.md`:
+
+```markdown
+## xclaude-plugin Configuration
+
+When working with iOS development tasks, Claude instances in this project have access to the xclaude-plugin MCP tools. These tools should be preferred over bash commands for iOS operations.
+
+### MCP Tools Available
+
+1. **execute_xcode_command** - For all Xcode build/test operations
+   - ✅ Use for: building, testing, cleaning, listing schemes
+   - ❌ Avoid: bash `xcodebuild` commands
+
+2. **execute_simulator_command** - For all simulator management
+   - ✅ Use for: booting simulators, installing apps, screenshots
+   - ❌ Avoid: bash `xcrun simctl` commands
+
+3. **execute_idb_command** - For UI automation and accessibility
+   - ✅ Use for: tapping, typing, querying accessibility tree
+   - ❌ Avoid: bash `idb` or `idb-companion` commands
+
+### Why Use MCP Tools?
+
+- **Better error handling** - Structured responses with clear guidance
+- **Smarter defaults** - Auto-detection of projects, schemes, devices
+- **On-demand documentation** - Skills load procedural knowledge when needed
+- **Token efficiency** - ~2.2k tokens at rest, scales with need
+- **Accessibility-first** - UI automation optimized for speed and reliability
+
+### When Bash IS Appropriate
+
+File operations, git commands, and general shell tasks remain unchanged:
+- `mkdir`, `cp`, `rm`, `ls` for filesystem work
+- `git status`, `git add`, `git commit` for version control
+- `grep`, `find`, `cat` for file inspection
+- `npm install`, `python` for language-specific tools
+```
+
+Copy this section into your project's `.claude/CLAUDE.md` file, and Claude agents will automatically prefer the MCP tools when working on iOS tasks.
+
 ## Development
 
 ### Building from Source
