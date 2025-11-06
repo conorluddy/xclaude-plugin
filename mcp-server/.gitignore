@@ -1,0 +1,195 @@
+# ============================================================================
+# Node.js
+# ============================================================================
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Package manager locks (keep package-lock.json, ignore others)
+yarn.lock
+pnpm-lock.yaml
+
+# ============================================================================
+# TypeScript / Build Output
+# ============================================================================
+
+# Compiled output
+dist/
+build/
+*.js.map
+*.d.ts.map
+
+# TypeScript cache
+*.tsbuildinfo
+
+# ============================================================================
+# IDE / Editor
+# ============================================================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs (WebStorm, IntelliJ, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============================================================================
+# Operating System
+# ============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Thumbnails
+Thumbs.db
+
+# Windows
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# ============================================================================
+# Environment & Secrets
+# ============================================================================
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Secrets
+secrets/
+*.pem
+*.key
+*.cert
+
+# ============================================================================
+# Testing
+# ============================================================================
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Test results
+test-results/
+junit.xml
+
+# ============================================================================
+# Logs
+# ============================================================================
+
+# Application logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# MCP server logs
+mcp-server.log
+mcp-*.log
+
+# ============================================================================
+# Cache & Temporary Files
+# ============================================================================
+
+# Cache directories
+.cache/
+.tmp/
+tmp/
+temp/
+
+# npm cache
+.npm
+
+# ESLint cache
+.eslintcache
+
+# Prettier cache
+.prettiercache
+
+# TypeScript incremental compilation cache
+*.tsbuildinfo
+
+# ============================================================================
+# MCP Server Specific
+# ============================================================================
+
+# User state/cache (normally in ~/.xc-plugin/ but ignore if copied locally)
+.xc-plugin/
+state/
+cache/
+
+# Test/development artifacts
+test-output/
+screenshots/
+*.app/
+
+# ============================================================================
+# Project Specific
+# ============================================================================
+
+# Specification drafts
+SPECS/
+
+# Local development overrides
+*.local.ts
+*.local.js
+local/
+
+# Documentation drafts
+*.draft.md
+drafts/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# ============================================================================
+# Miscellaneous
+# ============================================================================
+
+# Lock files for tools
+.lock
+*.lock
+
+# Compiled binaries
+*.o
+*.so
+*.dylib
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
