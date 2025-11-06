@@ -163,7 +163,10 @@ export class IDBDispatcher extends BaseDispatcher<IDBOperationArgs, IDBResultDat
       const duration = params.parameters.duration || 0.1;
 
       // Execute idb ui tap - CORRECT ordering: idb ui tap --udid UDID x y --duration dur
-      const command = `idb ui tap --udid "${target}" ${x} ${y} --duration ${duration}`;
+      // CRITICAL: Convert to integers - idb CLI rejects float coordinates like "143.5"
+      const intX = Math.round(x);
+      const intY = Math.round(y);
+      const command = `idb ui tap --udid "${target}" ${intX} ${intY} --duration ${duration}`;
       logger.debug(`Executing tap: ${command}`);
 
       await executeCommand(command);
@@ -279,7 +282,12 @@ export class IDBDispatcher extends BaseDispatcher<IDBOperationArgs, IDBResultDat
           );
         }
 
-        const command = `idb ui swipe --udid "${target}" ${start_x} ${start_y} ${end_x} ${end_y} --duration ${duration}`;
+        // CRITICAL: Convert to integers - idb CLI rejects float coordinates
+        const intStartX = Math.round(start_x);
+        const intStartY = Math.round(start_y);
+        const intEndX = Math.round(end_x);
+        const intEndY = Math.round(end_y);
+        const command = `idb ui swipe --udid "${target}" ${intStartX} ${intStartY} ${intEndX} ${intEndY} --duration ${duration}`;
         await executeCommand(command);
 
         const data: IDBOperationResultData = {
@@ -328,7 +336,10 @@ export class IDBDispatcher extends BaseDispatcher<IDBOperationArgs, IDBResultDat
       if (operation === 'point' && params.parameters?.x && params.parameters?.y) {
         const x = params.parameters.x;
         const y = params.parameters.y;
-        command = `idb ui describe-point --udid "${target}" ${x} ${y}`;
+        // CRITICAL: Convert to integers - idb CLI rejects float coordinates
+        const intX = Math.round(x);
+        const intY = Math.round(y);
+        command = `idb ui describe-point --udid "${target}" ${intX} ${intY}`;
       } else {
         command = `idb ui describe-all --udid "${target}"`;
       }

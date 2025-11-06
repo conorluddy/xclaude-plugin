@@ -6847,7 +6847,9 @@ var IDBDispatcher = class extends BaseDispatcher {
       const x = params.parameters.x;
       const y = params.parameters.y;
       const duration = params.parameters.duration || 0.1;
-      const command = `idb ui tap --udid "${target}" ${x} ${y} --duration ${duration}`;
+      const intX = Math.round(x);
+      const intY = Math.round(y);
+      const command = `idb ui tap --udid "${target}" ${intX} ${intY} --duration ${duration}`;
       logger.debug(`Executing tap: ${command}`);
       await executeCommand2(command);
       const data = {
@@ -6925,7 +6927,11 @@ var IDBDispatcher = class extends BaseDispatcher {
         if (start_x === void 0 || start_y === void 0 || end_x === void 0 || end_y === void 0) {
           return this.formatError("start_x, start_y, end_x, end_y required for swipe gesture", "gesture");
         }
-        const command = `idb ui swipe --udid "${target}" ${start_x} ${start_y} ${end_x} ${end_y} --duration ${duration}`;
+        const intStartX = Math.round(start_x);
+        const intStartY = Math.round(start_y);
+        const intEndX = Math.round(end_x);
+        const intEndY = Math.round(end_y);
+        const command = `idb ui swipe --udid "${target}" ${intStartX} ${intStartY} ${intEndX} ${intEndY} --duration ${duration}`;
         await executeCommand2(command);
         const data = {
           message: `Swiped from (${start_x},${start_y}) to (${end_x},${end_y})`,
@@ -6960,7 +6966,9 @@ var IDBDispatcher = class extends BaseDispatcher {
       if (operation === "point" && params.parameters?.x && params.parameters?.y) {
         const x = params.parameters.x;
         const y = params.parameters.y;
-        command = `idb ui describe-point --udid "${target}" ${x} ${y}`;
+        const intX = Math.round(x);
+        const intY = Math.round(y);
+        command = `idb ui describe-point --udid "${target}" ${intX} ${intY}`;
       } else {
         command = `idb ui describe-all --udid "${target}"`;
       }
