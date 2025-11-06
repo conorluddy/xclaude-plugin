@@ -9,3 +9,10 @@ npm run typecheck --workspace=mcp-server
 
 # Run linting in mcp-server workspace
 npm run lint --workspace=mcp-server
+
+# Rebuild if TypeScript files changed (ensures dist/ stays in sync)
+if git diff --cached --name-only | grep -q "mcp-server/src"; then
+  echo "📦 Rebuilding MCP server (TypeScript changes detected)..."
+  npm run build --workspace=mcp-server
+  git add mcp-server/dist/
+fi
