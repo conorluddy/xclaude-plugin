@@ -83,11 +83,19 @@ export async function idbInput(params: InputParams): Promise<ToolResult<InputRes
       note: params.text ? `Typed: ${params.text}` : `Key: ${params.key || params.key_sequence?.join(', ')}`,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'Input complete',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Input complete',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: 'Input failed',
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Input failed', error as Error);
     return {

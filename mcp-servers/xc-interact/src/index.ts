@@ -41,35 +41,6 @@ class XCInteractServer {
         capabilities: {
           tools: {},
         },
-        instructions: `# XC-Interact MCP
-
-Pure UI interaction toolkit for testing flows without build overhead.
-
-**Enable when:**
-- Testing UI flows (app already built and running)
-- Automating UI interactions
-- Exploring UI without rebuilding
-- Need UI tools without build/device management
-
-**Accessibility-First Workflow:**
-
-1. **Check quality**: \`idb_check_quality\` - Is accessibility data sufficient?
-2. **Query UI**: \`idb_describe\` - Get full accessibility tree (~50 tokens, 120ms)
-3. **Find elements**: \`idb_find_element\` - Search by label (semantic)
-4. **Interact**:
-   - \`idb_tap\` - Tap at coordinates
-   - \`idb_input\` - Type text or press keys
-   - \`idb_gesture\` - Swipes and hardware buttons
-
-**Why accessibility-first?**
-- 3-4x faster than screenshots (120ms vs 2000ms)
-- 80% cheaper (~50 tokens vs ~170 tokens)
-- More reliable (survives theme changes)
-- Works offline (no visual processing)
-
-**Token cost**: ~900 tokens
-
-**Note**: For build + UI automation, use xc-ai-assist instead.`,
       }
     );
 
@@ -93,22 +64,22 @@ Pure UI interaction toolkit for testing flows without build overhead.
 
       switch (name) {
         case 'idb_describe':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbDescribe(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbDescribe(args as unknown as Parameters<typeof idbDescribe>[0])) }] };
 
         case 'idb_tap':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbTap(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbTap(args as unknown as Parameters<typeof idbTap>[0])) }] };
 
         case 'idb_input':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbInput(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbInput(args as unknown as Parameters<typeof idbInput>[0])) }] };
 
         case 'idb_gesture':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbGesture(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbGesture(args as unknown as Parameters<typeof idbGesture>[0])) }] };
 
         case 'idb_find_element':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbFindElement(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbFindElement(args as unknown as Parameters<typeof idbFindElement>[0])) }] };
 
         case 'idb_check_quality':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbCheckQuality(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbCheckQuality(args as unknown as Parameters<typeof idbCheckQuality>[0])) }] };
 
         default:
           throw new Error(`Unknown tool: ${name}`);

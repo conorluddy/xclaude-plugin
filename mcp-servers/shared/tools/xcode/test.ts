@@ -109,11 +109,19 @@ export async function xcodeTest(params: TestParams): Promise<ToolResult<TestResu
       duration,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: `Tests ${result.code === 0 ? 'passed' : 'failed'}`,
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Tests passed',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: 'Tests failed',
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Test execution failed', error as Error);
     return {

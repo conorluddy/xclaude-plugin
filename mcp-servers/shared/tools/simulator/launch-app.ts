@@ -58,11 +58,19 @@ export async function simulatorLaunchApp(
       note: pid ? `Process ID: ${pid}` : undefined,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'App launched',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'App launched',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: "Operation failed",
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Launch app failed', error as Error);
     return {

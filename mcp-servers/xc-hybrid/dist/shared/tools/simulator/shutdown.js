@@ -1,0 +1,61 @@
+/**
+ * Simulator Shutdown Tool
+ *
+ * Shutdown a running simulator
+ */
+import { runCommand } from '../../utils/command.js';
+import { logger } from '../../utils/logger.js';
+export const simulatorShutdownDefinition = {
+    name: 'simulator_shutdown',
+    description: 'Shutdown a running simulator',
+    inputSchema: {
+        type: 'object',
+        properties: {
+            device_id: {
+                type: 'string',
+                description: 'Device UDID or "booted" for active simulator',
+            },
+        },
+        required: ['device_id'],
+    },
+};
+export async function simulatorShutdown(params) {
+    try {
+        if (!params.device_id) {
+            return {
+                success: false,
+                error: 'device_id required',
+                operation: 'shutdown',
+            };
+        }
+        logger.info(`Shutting down simulator: ${params.device_id}`);
+        const result = await runCommand('xcrun', ['simctl', 'shutdown', params.device_id]);
+        const data = {
+            message: 'Device shut down successfully',
+            device_id: params.device_id,
+        };
+        if (result.code === 0) {
+            return {
+                success: true,
+                data,
+                summary: 'Device shut down',
+            };
+        }
+        else {
+            return {
+                success: false,
+                error: 'Shutdown failed',
+                details: result.stderr,
+            };
+        }
+    }
+    catch (error) {
+        logger.error('Shutdown failed', error);
+        return {
+            success: false,
+            error: String(error),
+            operation: 'shutdown',
+        };
+    }
+}
+//# sourceMappingURL=shutdown.js.map

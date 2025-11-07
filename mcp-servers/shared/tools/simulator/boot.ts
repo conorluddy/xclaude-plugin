@@ -47,11 +47,19 @@ export async function simulatorBoot(
       note: 'Device is starting up',
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'Device booted',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Device booted',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: 'Boot failed',
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Boot failed', error as Error);
     return {

@@ -33,19 +33,6 @@ class XCBuildServer {
         capabilities: {
           tools: {},
         },
-        instructions: `# XC-Build MCP
-
-Minimal Xcode build validation tools. Enable this MCP when you need:
-- Build validation (CI/CD)
-- Quick compilation checks
-- Scheme discovery
-
-**Available tools:**
-- \`xcode_build\` - Build Xcode project
-- \`xcode_clean\` - Clean build artifacts
-- \`xcode_list\` - List available schemes
-
-**Token cost**: ~600 tokens (vs ~3500 for full toolset)`,
       }
     );
 
@@ -64,13 +51,13 @@ Minimal Xcode build validation tools. Enable this MCP when you need:
 
       switch (name) {
         case 'xcode_build':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeBuild(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeBuild(args as unknown as Parameters<typeof xcodeBuild>[0])) }] };
 
         case 'xcode_clean':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeClean(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeClean(args as unknown as Parameters<typeof xcodeClean>[0])) }] };
 
         case 'xcode_list':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeList(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeList(args as unknown as Parameters<typeof xcodeList>[0])) }] };
 
         default:
           throw new Error(`Unknown tool: ${name}`);

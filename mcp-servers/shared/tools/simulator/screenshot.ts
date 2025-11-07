@@ -42,11 +42,19 @@ export async function simulatorScreenshot(params: IOParams): Promise<ToolResult<
       note: `Saved to ${outputPath}`,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'Screenshot captured',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Screenshot captured',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: 'Screenshot capture failed',
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Screenshot failed', error as Error);
     return {

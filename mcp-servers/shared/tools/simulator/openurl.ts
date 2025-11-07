@@ -51,11 +51,19 @@ export async function simulatorOpenURL(
       note: `Opened: ${params.url}`,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'URL opened',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'URL opened',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: "Operation failed",
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Open URL failed', error as Error);
     return {

@@ -50,11 +50,19 @@ export async function simulatorTerminateApp(
       app_identifier: params.app_identifier,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'App terminated',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'App terminated',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: "Operation failed",
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Terminate app failed', error as Error);
     return {

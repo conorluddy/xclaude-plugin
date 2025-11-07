@@ -96,11 +96,19 @@ export async function idbGesture(params: GestureParams): Promise<ToolResult<Gest
         note: `From (${params.start_x}, ${params.start_y}) to (${params.end_x}, ${params.end_y})`,
       };
 
-      return {
-        success: result.code === 0,
-        data,
-        summary: 'Swipe complete',
-      };
+      if (result.code === 0) {
+        return {
+          success: true as const,
+          data,
+          summary: 'Swipe complete',
+        };
+      } else {
+        return {
+          success: false as const,
+          error: 'Swipe gesture failed',
+          details: result.stderr,
+        };
+      }
     } else if (params.gesture_type === 'button') {
       // Validate button type
       if (!params.button_type) {
@@ -125,11 +133,19 @@ export async function idbGesture(params: GestureParams): Promise<ToolResult<Gest
         note: `Pressed: ${params.button_type}`,
       };
 
-      return {
-        success: result.code === 0,
-        data,
-        summary: 'Button pressed',
-      };
+      if (result.code === 0) {
+        return {
+          success: true as const,
+          data,
+          summary: 'Button pressed',
+        };
+      } else {
+        return {
+          success: false as const,
+          error: 'Button press failed',
+          details: result.stderr,
+        };
+      }
     } else {
       return {
         success: false,

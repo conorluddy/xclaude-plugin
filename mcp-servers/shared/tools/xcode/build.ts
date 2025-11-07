@@ -9,6 +9,9 @@ import type { BuildParams, BuildResultData } from '../../types/xcode.js';
 import { runCommand, findXcodeProject, extractBuildErrors } from '../../utils/command.js';
 import { logger } from '../../utils/logger.js';
 
+// Re-export types for consumers
+export type { BuildParams, BuildResultData };
+
 export const xcodeBuildDefinition: ToolDefinition = {
   name: 'xcode_build',
   description: 'Build Xcode project',
@@ -89,11 +92,19 @@ export async function xcodeBuild(params: BuildParams): Promise<ToolResult<BuildR
       errors,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: `Build ${result.code === 0 ? 'succeeded' : 'failed'}`,
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Build succeeded',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: `Build failed in ${duration}s`,
+        details: errors?.join('\n'),
+      };
+    }
   } catch (error) {
     logger.error('Build failed', error as Error);
     return {

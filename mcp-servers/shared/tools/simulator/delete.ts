@@ -44,11 +44,19 @@ export async function simulatorDelete(
       device_id: params.device_id,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'Device deleted',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Device deleted',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: 'Delete failed',
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Delete failed', error as Error);
     return {

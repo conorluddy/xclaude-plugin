@@ -72,7 +72,7 @@ export async function idbCheckQuality(
     };
 
     return {
-      success: true,
+      success: true as const,
       data,
       summary: `Score: ${score}%`,
     };

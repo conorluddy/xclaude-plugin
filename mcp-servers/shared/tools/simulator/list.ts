@@ -70,7 +70,7 @@ export async function simulatorList(
     };
 
     return {
-      success: true,
+      success: true as const,
       data,
       summary: `${devices.length} simulators`,
     };

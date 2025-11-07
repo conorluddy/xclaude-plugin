@@ -44,11 +44,19 @@ export async function simulatorShutdown(
       device_id: params.device_id,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'Device shut down',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Device shut down',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: 'Shutdown failed',
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Shutdown failed', error as Error);
     return {

@@ -37,21 +37,7 @@ class XCTestingServer {
       {
         capabilities: {
           tools: {},
-        },
-        instructions: `# XC-Testing MCP
-
-E2E testing and validation workflows. Enable when:
-- Running XCTest suites
-- Automating UI test flows
-- Validating app behavior
-- Capturing test evidence
-
-**Workflow:**
-1. Run tests with \`xcode_test\`
-2. Automate UI flows with \`idb_describe\`, \`idb_tap\`, \`idb_input\`, \`idb_gesture\`
-3. Capture evidence with \`simulator_screenshot\`
-
-**Token cost**: ~1200 tokens`,
+        }
       }
     );
 
@@ -75,23 +61,23 @@ E2E testing and validation workflows. Enable when:
 
       switch (name) {
         case 'xcode_test':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeTest(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeTest(args as unknown as Parameters<typeof xcodeTest>[0])) }] };
 
         case 'idb_describe':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbDescribe(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbDescribe(args as unknown as Parameters<typeof idbDescribe>[0])) }] };
 
         case 'idb_tap':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbTap(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbTap(args as unknown as Parameters<typeof idbTap>[0])) }] };
 
         case 'idb_input':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbInput(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbInput(args as unknown as Parameters<typeof idbInput>[0])) }] };
 
         case 'idb_gesture':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbGesture(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbGesture(args as unknown as Parameters<typeof idbGesture>[0])) }] };
 
         case 'simulator_screenshot':
           return {
-            content: [{ type: 'text', text: JSON.stringify(await simulatorScreenshot(args)) }],
+            content: [{ type: 'text', text: JSON.stringify(await simulatorScreenshot(args as unknown as Parameters<typeof simulatorScreenshot>[0])) }],
           };
 
         default:

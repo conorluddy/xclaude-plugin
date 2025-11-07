@@ -76,7 +76,7 @@ export async function xcodeList(params: ListParams): Promise<ToolResult<ListResu
     };
 
     return {
-      success: true,
+      success: true as const,
       data,
       summary: `${schemes.length} schemes, ${targets.length} targets`,
     };

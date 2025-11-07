@@ -4,15 +4,11 @@
 # Run lint-staged for auto-fixing and formatting
 npx lint-staged
 
-# Run type checking in mcp-server workspace
-npm run typecheck --workspace=mcp-server
-
-# Run linting in mcp-server workspace
-npm run lint --workspace=mcp-server
-
-# Rebuild and bundle if TypeScript files changed (ensures dist/ stays in sync with bundled dependencies)
-if git diff --cached --name-only | grep -q "mcp-server/src"; then
-  echo "📦 Building and bundling MCP server (TypeScript changes detected)..."
-  npm run build --workspace=mcp-server
-  git add mcp-server/dist/
+# Rebuild MCP servers if TypeScript files changed (ensures dist/ stays in sync)
+if git diff --cached --name-only | grep -q "mcp-servers/"; then
+  echo "📦 Building all MCP servers (changes detected)..."
+  cd mcp-servers
+  npm run build:all
+  cd ..
+  git add mcp-servers/xc-*/dist/
 fi

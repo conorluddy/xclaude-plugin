@@ -1,0 +1,1 @@
+{"version":3,"file":"get-app-container.d.ts","sourceRoot":"","sources":["get-app-container.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AAEH,OAAO,KAAK,EAAE,cAAc,EAAE,UAAU,EAAE,MAAM,qBAAqB,CAAC;AACtE,OAAO,KAAK,EAAE,qBAAqB,EAAE,YAAY,EAAE,MAAM,0BAA0B,CAAC;AAIpF,eAAO,MAAM,kCAAkC,EAAE,cAsBhD,CAAC;AAEF,wBAAsB,wBAAwB,CAC5C,MAAM,EAAE,qBAAqB,GAC5B,OAAO,CAAC,UAAU,CAAC,YAAY,CAAC,CAAC,CA2CnC"}

@@ -91,7 +91,7 @@ export async function idbDescribe(params: DescribeParams): Promise<ToolResult<De
     };
 
     return {
-      success: true,
+      success: true as const,
       data,
       summary: `${elements.length} elements`,
     };

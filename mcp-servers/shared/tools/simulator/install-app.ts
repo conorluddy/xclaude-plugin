@@ -53,11 +53,19 @@ export async function simulatorInstallApp(
       note: `Installed on ${deviceId}`,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'App installed',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'App installed',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: "Operation failed",
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Install app failed', error as Error);
     return {

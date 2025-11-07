@@ -43,21 +43,7 @@ class XCMetaServer {
       {
         capabilities: {
           tools: {},
-        },
-        instructions: `# XC-Meta MCP
-
-Project configuration and maintenance tasks. Enable when:
-- Checking Xcode environment
-- Managing project schemes
-- Cleaning build artifacts
-- Managing simulators (shutdown, delete)
-
-**Use cases:**
-- Environment validation
-- Project discovery
-- Maintenance and cleanup
-
-**Token cost**: ~700 tokens`,
+        }
       }
     );
 
@@ -81,22 +67,22 @@ Project configuration and maintenance tasks. Enable when:
 
       switch (name) {
         case 'xcode_version':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeVersion(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeVersion(args as unknown as Parameters<typeof xcodeVersion>[0])) }] };
 
         case 'xcode_list':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeList(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeList(args as unknown as Parameters<typeof xcodeList>[0])) }] };
 
         case 'xcode_clean':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeClean(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeClean(args as unknown as Parameters<typeof xcodeClean>[0])) }] };
 
         case 'simulator_health_check':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorHealthCheck(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorHealthCheck(args as unknown as Parameters<typeof simulatorHealthCheck>[0])) }] };
 
         case 'simulator_delete':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorDelete(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorDelete(args as unknown as Parameters<typeof simulatorDelete>[0])) }] };
 
         case 'simulator_shutdown':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorShutdown(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorShutdown(args as unknown as Parameters<typeof simulatorShutdown>[0])) }] };
 
         default:
           throw new Error(`Unknown tool: ${name}`);

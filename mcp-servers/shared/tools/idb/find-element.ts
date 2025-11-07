@@ -83,7 +83,7 @@ export async function idbFindElement(
     };
 
     return {
-      success: true,
+      success: true as const,
       data,
       summary: `${matches.length} matches`,
     };

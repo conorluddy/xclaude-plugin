@@ -1,0 +1,1 @@
+{"version":3,"file":"terminate-app.d.ts","sourceRoot":"","sources":["terminate-app.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AAEH,OAAO,KAAK,EAAE,cAAc,EAAE,UAAU,EAAE,MAAM,qBAAqB,CAAC;AACtE,OAAO,KAAK,EAAE,kBAAkB,EAAE,sBAAsB,EAAE,MAAM,0BAA0B,CAAC;AAI3F,eAAO,MAAM,+BAA+B,EAAE,cAiB7C,CAAC;AAEF,wBAAsB,qBAAqB,CACzC,MAAM,EAAE,kBAAkB,GACzB,OAAO,CAAC,UAAU,CAAC,sBAAsB,CAAC,CAAC,CAiC7C"}

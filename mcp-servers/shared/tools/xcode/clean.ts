@@ -63,11 +63,19 @@ export async function xcodeClean(params: CleanParams): Promise<ToolResult<BuildR
       note: result.stdout.includes('CLEAN SUCCEEDED') ? 'Build artifacts removed' : undefined,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'Clean completed',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Clean completed',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: 'Clean failed',
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Clean failed', error as Error);
     return {

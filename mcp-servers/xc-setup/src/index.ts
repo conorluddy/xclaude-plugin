@@ -36,22 +36,7 @@ class XCSetupServer {
       {
         capabilities: {
           tools: {},
-        },
-        instructions: `# XC-Setup MCP
-
-Initial environment setup and device configuration. Enable when:
-- Setting up a new development session
-- Creating simulator devices
-- Validating environment health
-- Discovering available simulators
-
-**Workflow:**
-1. Check environment with \`simulator_health_check\` and \`xcode_version\`
-2. List available devices with \`simulator_list\`
-3. Create new devices with \`simulator_create\`
-4. Boot devices with \`simulator_boot\`
-
-**Token cost**: ~800 tokens`,
+        }
       }
     );
 
@@ -74,19 +59,19 @@ Initial environment setup and device configuration. Enable when:
 
       switch (name) {
         case 'simulator_list':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorList(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorList(args as unknown as Parameters<typeof simulatorList>[0])) }] };
 
         case 'simulator_create':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorCreate(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorCreate(args as unknown as Parameters<typeof simulatorCreate>[0])) }] };
 
         case 'simulator_boot':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorBoot(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorBoot(args as unknown as Parameters<typeof simulatorBoot>[0])) }] };
 
         case 'simulator_health_check':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorHealthCheck(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorHealthCheck(args as unknown as Parameters<typeof simulatorHealthCheck>[0])) }] };
 
         case 'xcode_version':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeVersion(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeVersion(args as unknown as Parameters<typeof xcodeVersion>[0])) }] };
 
         default:
           throw new Error(`Unknown tool: ${name}`);

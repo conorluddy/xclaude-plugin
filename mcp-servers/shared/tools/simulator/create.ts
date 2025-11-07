@@ -63,11 +63,19 @@ export async function simulatorCreate(
       note: `UDID: ${deviceId}`,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'Device created',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Device created',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: 'Create failed',
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Create failed', error as Error);
     return {

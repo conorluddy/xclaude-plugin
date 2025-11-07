@@ -50,11 +50,19 @@ export async function simulatorHealthCheck(
       message: issues.length === 0 ? 'Environment healthy' : `${issues.length} issues detected`,
     };
 
-    return {
-      success: issues.length === 0,
-      data,
-      summary: issues.length === 0 ? 'Healthy' : `${issues.length} issues`,
-    };
+    if (issues.length === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Healthy',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: `${issues.length} issues detected`,
+        details: issues.join(', '),
+      };
+    }
   } catch (error) {
     logger.error('Health check failed', error as Error);
     return {

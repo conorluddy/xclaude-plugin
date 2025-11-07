@@ -69,11 +69,19 @@ export async function idbTap(params: TapParams): Promise<ToolResult<TapResultDat
       note: 'UI interaction complete',
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: `Tapped (${params.x}, ${params.y})`,
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: `Tapped (${params.x}, ${params.y})`,
+      };
+    } else {
+      return {
+        success: false as const,
+        error: 'Tap failed',
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Tap failed', error as Error);
     return {

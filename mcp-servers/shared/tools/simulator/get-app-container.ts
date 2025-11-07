@@ -65,11 +65,19 @@ export async function simulatorGetAppContainer(
       note: `${containerType} container: ${containerPath}`,
     };
 
-    return {
-      success: result.code === 0,
-      data,
-      summary: 'Path retrieved',
-    };
+    if (result.code === 0) {
+      return {
+        success: true as const,
+        data,
+        summary: 'Path retrieved',
+      };
+    } else {
+      return {
+        success: false as const,
+        error: 'Failed to retrieve container path',
+        details: result.stderr,
+      };
+    }
   } catch (error) {
     logger.error('Get app container failed', error as Error);
     return {

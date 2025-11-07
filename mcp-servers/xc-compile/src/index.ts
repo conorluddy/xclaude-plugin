@@ -14,7 +14,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 
 // Import only build tool
-import { xcodeBuild, xcodeBuildDefinition } from '../../shared/tools/xcode/build.js';
+import { xcodeBuild, xcodeBuildDefinition, BuildParams } from '../../shared/tools/xcode/build.js';
 
 class XCCompileServer {
   private server: Server;
@@ -30,28 +30,6 @@ class XCCompileServer {
         capabilities: {
           tools: {},
         },
-        instructions: `# XC-Compile MCP
-
-Ultra-minimal build execution for tight feedback loops.
-
-**Enable when:**
-- You're in a code→build→fix cycle
-- You need minimal token overhead
-- You only care about "did it build?" and "what broke?"
-
-**Single tool:**
-- \`xcode_build\` - Build with automatic error extraction (up to 10 errors)
-
-**Workflow:**
-1. Edit code
-2. Run xcode_build
-3. See errors (if any)
-4. Fix
-5. Repeat
-
-**Token cost**: ~300 tokens (vs ~1400 for xc-ai-assist)
-
-**Note**: For scheme discovery or cleaning, use xc-build instead.`,
       }
     );
 
@@ -68,7 +46,7 @@ Ultra-minimal build execution for tight feedback loops.
 
       switch (name) {
         case 'xcode_build':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeBuild(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeBuild(args as unknown as BuildParams)) }] };
 
         default:
           throw new Error(`Unknown tool: ${name}`);

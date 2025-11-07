@@ -1,0 +1,1 @@
+{"version":3,"file":"input.d.ts","sourceRoot":"","sources":["../../../../../shared/tools/idb/input.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AAEH,OAAO,KAAK,EAAE,cAAc,EAAE,UAAU,EAAE,MAAM,qBAAqB,CAAC;AACtE,OAAO,KAAK,EAAE,WAAW,EAAE,eAAe,EAAE,MAAM,oBAAoB,CAAC;AAIvE,eAAO,MAAM,kBAAkB,EAAE,cAyBhC,CAAC;AAEF,wBAAsB,QAAQ,CAAC,MAAM,EAAE,WAAW,GAAG,OAAO,CAAC,UAAU,CAAC,eAAe,CAAC,CAAC,CAoExF"}

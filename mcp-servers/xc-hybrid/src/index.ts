@@ -86,20 +86,7 @@ class XCHybridServer {
       {
         capabilities: {
           tools: {},
-        },
-        instructions: `# XC-Hybrid MCP
-
-Complete iOS development toolkit. Enable when:
-- Human and AI working together
-- Need full access to all capabilities
-- Complex workflows requiring multiple tool categories
-
-**All 22 tools available:**
-- Xcode: build, clean, test, list, version
-- Simulator: list, boot, shutdown, create, delete, install, launch, terminate, screenshot, openurl, get-app-container, health-check
-- IDB: describe, tap, input, gesture, find-element, check-quality
-
-**Token cost**: ~3500 tokens (full access)`,
+        }
       }
     );
 
@@ -144,59 +131,59 @@ Complete iOS development toolkit. Enable when:
       switch (name) {
         // Xcode
         case 'xcode_build':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeBuild(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeBuild(args as unknown as Parameters<typeof xcodeBuild>[0])) }] };
         case 'xcode_clean':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeClean(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeClean(args as unknown as Parameters<typeof xcodeClean>[0])) }] };
         case 'xcode_test':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeTest(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeTest(args as unknown as Parameters<typeof xcodeTest>[0])) }] };
         case 'xcode_list':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeList(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeList(args as unknown as Parameters<typeof xcodeList>[0])) }] };
         case 'xcode_version':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeVersion(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeVersion(args as unknown as Parameters<typeof xcodeVersion>[0])) }] };
 
         // Simulator
         case 'simulator_list':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorList(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorList(args as unknown as Parameters<typeof simulatorList>[0])) }] };
         case 'simulator_boot':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorBoot(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorBoot(args as unknown as Parameters<typeof simulatorBoot>[0])) }] };
         case 'simulator_shutdown':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorShutdown(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorShutdown(args as unknown as Parameters<typeof simulatorShutdown>[0])) }] };
         case 'simulator_create':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorCreate(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorCreate(args as unknown as Parameters<typeof simulatorCreate>[0])) }] };
         case 'simulator_delete':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorDelete(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorDelete(args as unknown as Parameters<typeof simulatorDelete>[0])) }] };
         case 'simulator_install_app':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorInstallApp(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorInstallApp(args as unknown as Parameters<typeof simulatorInstallApp>[0])) }] };
         case 'simulator_launch_app':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorLaunchApp(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorLaunchApp(args as unknown as Parameters<typeof simulatorLaunchApp>[0])) }] };
         case 'simulator_terminate_app':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorTerminateApp(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorTerminateApp(args as unknown as Parameters<typeof simulatorTerminateApp>[0])) }] };
         case 'simulator_screenshot':
           return {
-            content: [{ type: 'text', text: JSON.stringify(await simulatorScreenshot(args)) }],
+            content: [{ type: 'text', text: JSON.stringify(await simulatorScreenshot(args as unknown as Parameters<typeof simulatorScreenshot>[0])) }],
           };
         case 'simulator_openurl':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorOpenURL(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorOpenURL(args as unknown as Parameters<typeof simulatorOpenURL>[0])) }] };
         case 'simulator_get_app_container':
           return {
-            content: [{ type: 'text', text: JSON.stringify(await simulatorGetAppContainer(args)) }],
+            content: [{ type: 'text', text: JSON.stringify(await simulatorGetAppContainer(args as unknown as Parameters<typeof simulatorGetAppContainer>[0])) }],
           };
         case 'simulator_health_check':
-          return { content: [{ type: 'text', text: JSON.stringify(await simulatorHealthCheck(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await simulatorHealthCheck(args as unknown as Parameters<typeof simulatorHealthCheck>[0])) }] };
 
         // IDB
         case 'idb_describe':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbDescribe(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbDescribe(args as unknown as Parameters<typeof idbDescribe>[0])) }] };
         case 'idb_tap':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbTap(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbTap(args as unknown as Parameters<typeof idbTap>[0])) }] };
         case 'idb_input':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbInput(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbInput(args as unknown as Parameters<typeof idbInput>[0])) }] };
         case 'idb_gesture':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbGesture(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbGesture(args as unknown as Parameters<typeof idbGesture>[0])) }] };
         case 'idb_find_element':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbFindElement(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbFindElement(args as unknown as Parameters<typeof idbFindElement>[0])) }] };
         case 'idb_check_quality':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbCheckQuality(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbCheckQuality(args as unknown as Parameters<typeof idbCheckQuality>[0])) }] };
 
         default:
           throw new Error(`Unknown tool: ${name}`);

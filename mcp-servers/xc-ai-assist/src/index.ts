@@ -50,21 +50,6 @@ class XCAIAssistServer {
         capabilities: {
           tools: {},
         },
-        instructions: `# XC-AI-Assist MCP
-
-AI-driven UI automation and feedback loop. Enable when:
-- AI is making UI changes and needs feedback
-- Iterating on UI/UX improvements
-- Testing UI flows automatically
-
-**Workflow:**
-1. Build with \`xcode_build\`
-2. Check accessibility with \`idb_check_quality\`
-3. Query UI with \`idb_describe\` (faster) or \`simulator_screenshot\` (fallback)
-4. Find elements with \`idb_find_element\`
-5. Interact with \`idb_tap\` and \`idb_input\`
-
-**Token cost**: ~1400 tokens`,
       }
     );
 
@@ -96,29 +81,29 @@ AI-driven UI automation and feedback loop. Enable when:
       switch (name) {
         // Build
         case 'xcode_build':
-          return { content: [{ type: 'text', text: JSON.stringify(await xcodeBuild(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await xcodeBuild(args as unknown as Parameters<typeof xcodeBuild>[0])) }] };
 
         // UI inspection
         case 'idb_describe':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbDescribe(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbDescribe(args as unknown as Parameters<typeof idbDescribe>[0])) }] };
 
         case 'idb_find_element':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbFindElement(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbFindElement(args as unknown as Parameters<typeof idbFindElement>[0])) }] };
 
         case 'idb_check_quality':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbCheckQuality(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbCheckQuality(args as unknown as Parameters<typeof idbCheckQuality>[0])) }] };
 
         // UI interaction
         case 'idb_tap':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbTap(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbTap(args as unknown as Parameters<typeof idbTap>[0])) }] };
 
         case 'idb_input':
-          return { content: [{ type: 'text', text: JSON.stringify(await idbInput(args)) }] };
+          return { content: [{ type: 'text', text: JSON.stringify(await idbInput(args as unknown as Parameters<typeof idbInput>[0])) }] };
 
         // Screenshot
         case 'simulator_screenshot':
           return {
-            content: [{ type: 'text', text: JSON.stringify(await simulatorScreenshot(args)) }],
+            content: [{ type: 'text', text: JSON.stringify(await simulatorScreenshot(args as unknown as Parameters<typeof simulatorScreenshot>[0])) }],
           };
 
         default:

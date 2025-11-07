@@ -51,7 +51,7 @@ export async function xcodeVersion(params: VersionParams): Promise<ToolResult<Ve
     }
 
     return {
-      success: true,
+      success: true as const,
       data,
       summary: `Xcode ${data.xcode_version || 'unknown'}`,
     };
