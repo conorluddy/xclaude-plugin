@@ -1,6 +1,6 @@
 {
   "name": "@xclaude/xc-ai-assist",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "AI-driven UI automation MCP with accessibility-first approach",
   "type": "module",
   "main": "dist/index.js",

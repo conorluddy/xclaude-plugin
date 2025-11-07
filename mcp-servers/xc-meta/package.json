@@ -1,6 +1,6 @@
 {
   "name": "@xclaude/xc-meta",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Project configuration and maintenance MCP",
   "type": "module",
   "main": "dist/index.js",
