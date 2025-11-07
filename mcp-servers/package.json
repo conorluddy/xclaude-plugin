@@ -1,0 +1,31 @@
+{
+  "name": "@xclaude/mcp-servers",
+  "version": "0.1.0",
+  "description": "Root package for all xc-plugin MCP servers",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "build:xc-build": "npm run build --workspace=xc-build",
+    "build:xc-ai-assist": "npm run build --workspace=xc-ai-assist",
+    "build:xc-setup": "npm run build --workspace=xc-setup",
+    "build:xc-testing": "npm run build --workspace=xc-testing",
+    "build:xc-meta": "npm run build --workspace=xc-meta",
+    "build:xc-hybrid": "npm run build --workspace=xc-hybrid",
+    "watch": "npm run watch --workspaces --if-present",
+    "clean": "rm -rf */dist",
+    "install-all": "npm install --workspaces"
+  },
+  "workspaces": [
+    "xc-build",
+    "xc-ai-assist",
+    "xc-setup",
+    "xc-testing",
+    "xc-meta",
+    "xc-hybrid"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}

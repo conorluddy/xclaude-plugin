@@ -1,7 +1,7 @@
 {
   "name": "xclaude-plugin",
-  "version": "0.0.1",
-  "description": "Token-efficient iOS development automation with xcodebuild, simctl, and IDB. Features 3 MCP dispatchers (~2k tokens) plus 8 procedural Skills for comprehensive iOS workflows.",
+  "version": "0.1.0",
+  "description": "Modular iOS development automation suite. 6 workflow-specific MCP servers (600-3500 tokens) with 22 tools across Xcode, Simulator, and IDB. Enable only what you need!",
   "author": {
     "name": "Conor Luddy",
     "email": "conor@conorluddy.com",
@@ -19,15 +19,50 @@
     "accessibility",
     "automation",
     "xcodebuild",
-    "simctl"
+    "simctl",
+    "modular"
   ],
   "mcpServers": {
-    "xcode": {
+    "xc-build": {
       "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-server/dist/index.js"],
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-build/dist/index.js"],
       "env": {
-        "XC_LOG_LEVEL": "info",
-        "XC_CACHE_ENABLED": "true"
+        "XC_LOG_LEVEL": "info"
+      }
+    },
+    "xc-ai-assist": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-ai-assist/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info"
+      }
+    },
+    "xc-setup": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-setup/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info"
+      }
+    },
+    "xc-testing": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-testing/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info"
+      }
+    },
+    "xc-meta": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-meta/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info"
+      }
+    },
+    "xc-hybrid": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-hybrid/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info"
       }
     }
   }

@@ -1,0 +1,25 @@
+{
+  "name": "@xclaude/xc-build",
+  "version": "0.0.1",
+  "description": "Minimal build validation MCP for Xcode projects",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "xc-build": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

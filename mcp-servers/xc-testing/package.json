@@ -1,0 +1,25 @@
+{
+  "name": "@xclaude/xc-testing",
+  "version": "0.0.1",
+  "description": "E2E testing and validation MCP for iOS apps",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "xc-testing": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
