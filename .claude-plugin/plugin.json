@@ -22,6 +22,11 @@
     "simctl",
     "modular"
   ],
+  "postInstall": {
+    "command": "npm",
+    "args": ["install", "--omit=dev"],
+    "cwd": "${CLAUDE_PLUGIN_ROOT}/mcp-servers"
+  },
   "mcpServers": {
     "xc-compile": {
       "command": "node",
