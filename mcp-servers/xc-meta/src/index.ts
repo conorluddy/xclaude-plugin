@@ -38,6 +38,7 @@ class XCMetaServer {
       {
         name: 'xc-meta',
         version: '0.0.1',
+        title: 'Project Maintenance',
         description: 'Project configuration, maintenance, and tooling health',
       },
       {

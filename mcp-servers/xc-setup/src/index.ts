@@ -31,6 +31,7 @@ class XCSetupServer {
       {
         name: 'xc-setup',
         version: '0.0.1',
+        title: 'Environment Setup',
         description: 'Initial environment setup and configuration for iOS development',
       },
       {

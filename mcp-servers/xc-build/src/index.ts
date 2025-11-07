@@ -26,6 +26,7 @@ class XCBuildServer {
       {
         name: 'xc-build',
         version: '0.0.1',
+        title: 'Build Validation',
         description:
           'Minimal build validation MCP - build, clean, list. For CI/CD and quick validation.',
       },

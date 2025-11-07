@@ -21,6 +21,7 @@ class XCInteractServer {
         this.server = new Server({
             name: 'xc-interact',
             version: '0.1.0',
+            title: 'UI Interaction',
             description: 'Pure UI interaction toolkit - accessibility-first automation',
         }, {
             capabilities: {

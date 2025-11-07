@@ -4115,10 +4115,10 @@ var init_zod = __esm({
   }
 });
 
-// ../node_modules/@modelcontextprotocol/sdk/dist/types.js
+// node_modules/@modelcontextprotocol/sdk/dist/types.js
 var LATEST_PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS, JSONRPC_VERSION, ProgressTokenSchema, CursorSchema, BaseRequestParamsSchema, RequestSchema, BaseNotificationParamsSchema, NotificationSchema, ResultSchema, RequestIdSchema, JSONRPCRequestSchema, JSONRPCNotificationSchema, JSONRPCResponseSchema, ErrorCode, JSONRPCErrorSchema, JSONRPCMessageSchema, EmptyResultSchema, CancelledNotificationSchema, ImplementationSchema, ClientCapabilitiesSchema, InitializeRequestSchema, ServerCapabilitiesSchema, InitializeResultSchema, InitializedNotificationSchema, PingRequestSchema, ProgressSchema, ProgressNotificationSchema, PaginatedRequestSchema, PaginatedResultSchema, ResourceContentsSchema, TextResourceContentsSchema, BlobResourceContentsSchema, ResourceSchema, ResourceTemplateSchema, ListResourcesRequestSchema, ListResourcesResultSchema, ListResourceTemplatesRequestSchema, ListResourceTemplatesResultSchema, ReadResourceRequestSchema, ReadResourceResultSchema, ResourceListChangedNotificationSchema, SubscribeRequestSchema, UnsubscribeRequestSchema, ResourceUpdatedNotificationSchema, PromptArgumentSchema, PromptSchema, ListPromptsRequestSchema, ListPromptsResultSchema, GetPromptRequestSchema, TextContentSchema, ImageContentSchema, EmbeddedResourceSchema, PromptMessageSchema, GetPromptResultSchema, PromptListChangedNotificationSchema, ToolSchema, ListToolsRequestSchema, ListToolsResultSchema, CallToolResultSchema, CompatibilityCallToolResultSchema, CallToolRequestSchema, ToolListChangedNotificationSchema, LoggingLevelSchema, SetLevelRequestSchema, LoggingMessageNotificationSchema, ModelHintSchema, ModelPreferencesSchema, SamplingMessageSchema, CreateMessageRequestSchema, CreateMessageResultSchema, ResourceReferenceSchema, PromptReferenceSchema, CompleteRequestSchema, CompleteResultSchema, RootSchema, ListRootsRequestSchema, ListRootsResultSchema, RootsListChangedNotificationSchema, ClientRequestSchema, ClientNotificationSchema, ClientResultSchema, ServerRequestSchema, ServerNotificationSchema, ServerResultSchema, McpError;
 var init_types2 = __esm({
-  "../node_modules/@modelcontextprotocol/sdk/dist/types.js"() {
+  "node_modules/@modelcontextprotocol/sdk/dist/types.js"() {
     init_zod();
     LATEST_PROTOCOL_VERSION = "2024-11-05";
     SUPPORTED_PROTOCOL_VERSIONS = [
@@ -5344,7 +5344,7 @@ var init_response_cache = __esm({
   }
 });
 
-// ../node_modules/@modelcontextprotocol/sdk/dist/shared/protocol.js
+// node_modules/@modelcontextprotocol/sdk/dist/shared/protocol.js
 init_types2();
 var Protocol = class {
   constructor(_options) {
@@ -5602,7 +5602,7 @@ var Protocol = class {
   }
 };
 
-// ../node_modules/@modelcontextprotocol/sdk/dist/server/index.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/index.js
 init_types2();
 var Server = class extends Protocol {
   /**
@@ -5756,10 +5756,10 @@ var Server = class extends Protocol {
   }
 };
 
-// ../node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
 import process2 from "node:process";
 
-// ../node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js
 init_types2();
 var ReadBuffer = class {
   append(chunk) {
@@ -5788,7 +5788,7 @@ function serializeMessage(message) {
   return JSON.stringify(message) + "\n";
 }
 
-// ../node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
 var StdioServerTransport = class {
   constructor(_stdin = process2.stdin, _stdout = process2.stdout) {
     this._stdin = _stdin;

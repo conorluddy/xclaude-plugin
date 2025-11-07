@@ -31,10 +31,10 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "24.10.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
-    "typescript": "^5.3.0"
+    "typescript": "5.9.3"
   },
   "lint-staged": {
     "mcp-server/**/*.ts": [
@@ -43,5 +43,8 @@
     "mcp-server/**/*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.21.0"
   }
 }

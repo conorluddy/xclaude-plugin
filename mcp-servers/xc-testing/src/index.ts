@@ -32,6 +32,7 @@ class XCTestingServer {
       {
         name: 'xc-testing',
         version: '0.0.1',
+        title: 'Testing & Validation',
         description: 'E2E testing and validation workflows for iOS apps',
       },
       {

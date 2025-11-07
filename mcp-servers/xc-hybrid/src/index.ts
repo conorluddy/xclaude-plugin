@@ -81,6 +81,7 @@ class XCHybridServer {
       {
         name: 'xc-hybrid',
         version: '0.0.1',
+        title: 'Complete Toolkit',
         description: 'Full iOS development toolkit for human+AI collaboration',
       },
       {

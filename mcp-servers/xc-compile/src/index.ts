@@ -24,6 +24,7 @@ class XCCompileServer {
       {
         name: 'xc-compile',
         version: '0.1.0',
+        title: 'Build Execution',
         description: 'Ultra-minimal build execution - just build with error extraction',
       },
       {

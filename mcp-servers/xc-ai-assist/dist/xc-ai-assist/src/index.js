@@ -24,6 +24,7 @@ class XCAIAssistServer {
         this.server = new Server({
             name: 'xc-ai-assist',
             version: '0.0.1',
+            title: 'AI UI Automation',
             description: 'AI-driven UI automation - accessibility-first approach with build validation',
         }, {
             capabilities: {
