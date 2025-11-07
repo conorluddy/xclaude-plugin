@@ -1,7 +1,7 @@
 {
   "name": "xclaude-plugin",
   "version": "0.1.0",
-  "description": "Modular iOS development automation suite. 6 workflow-specific MCP servers (600-3500 tokens) with 22 tools across Xcode, Simulator, and IDB. Enable only what you need!",
+  "description": "Modular iOS development automation suite. 8 workflow-specific MCP servers (300-3500 tokens) with 22 tools across Xcode, Simulator, and IDB. Enable only what you need!",
   "author": {
     "name": "Conor Luddy",
     "email": "conor@conorluddy.com",
@@ -23,6 +23,20 @@
     "modular"
   ],
   "mcpServers": {
+    "xc-compile": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-compile/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info"
+      }
+    },
+    "xc-interact": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-interact/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info"
+      }
+    },
     "xc-build": {
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-build/dist/index.js"],

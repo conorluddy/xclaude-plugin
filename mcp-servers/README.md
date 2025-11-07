@@ -10,12 +10,14 @@ mcp-servers/
 │   ├── tools/                # 22 individual tools
 │   ├── types/                # Shared type definitions
 │   └── utils/                # Shared utilities
-├── xc-build/                 # MCP 1: Build validation (~600 tokens)
-├── xc-ai-assist/             # MCP 2: AI UI automation (~1400 tokens)
-├── xc-setup/                 # MCP 3: Environment setup (~800 tokens)
-├── xc-testing/               # MCP 4: E2E testing (~1200 tokens)
-├── xc-meta/                  # MCP 5: Project maintenance (~700 tokens)
-└── xc-hybrid/                # MCP 6: Full toolkit (~3500 tokens)
+├── xc-compile/               # MCP 1: Ultra-minimal build (~300 tokens)
+├── xc-interact/              # MCP 2: Pure UI interaction (~900 tokens)
+├── xc-build/                 # MCP 3: Build validation (~600 tokens)
+├── xc-ai-assist/             # MCP 4: AI UI automation (~1400 tokens)
+├── xc-setup/                 # MCP 5: Environment setup (~800 tokens)
+├── xc-testing/               # MCP 6: E2E testing (~1200 tokens)
+├── xc-meta/                  # MCP 7: Project maintenance (~700 tokens)
+└── xc-hybrid/                # MCP 8: Full toolkit (~3500 tokens)
 ```
 
 ## Key Features
@@ -26,10 +28,43 @@ mcp-servers/
 - **Token Efficient**: Enable only the MCPs you need (600-3500 tokens)
 - **Type-Safe**: Zero `any` usage, full TypeScript type safety
 
-## The 6 MCP Servers
+## The 8 MCP Servers
 
-### 1. **xc-build** - Build Validation
-**Use when**: CI/CD, quick compilation checks, scheme discovery
+### 🔥 Surgical MCPs (Ultra-Focused)
+
+#### 1. **xc-compile** - Ultra-Minimal Build
+**Use when**: Tight code→build→fix loops, minimal token overhead, only care about "did it compile?"
+
+**Tools** (1):
+- `xcode_build` - Build with automatic error extraction (up to 10 errors)
+
+**Token cost**: ~300
+
+**Why enable**: You're in rapid iteration mode fixing compilation errors. No scheme discovery, no cleaning, just build and show errors. Perfect for LLM-driven TDD where you need instant feedback with minimal context.
+
+---
+
+#### 2. **xc-interact** - Pure UI Interaction
+**Use when**: Testing UI flows with app already built and running, no build overhead needed
+
+**Tools** (6):
+- `idb_describe` - Query accessibility tree (3-4x faster than screenshots)
+- `idb_tap` - Tap UI elements
+- `idb_input` - Type text or press keys
+- `idb_gesture` - Swipes and hardware buttons
+- `idb_find_element` - Search by label (semantic)
+- `idb_check_quality` - Assess accessibility data richness
+
+**Token cost**: ~900
+
+**Why enable**: You have a built app and want to explore/test UI flows without rebuilding. Accessibility-first automation (120ms queries vs 2000ms screenshots). Perfect for manual testing sessions or UI exploration.
+
+---
+
+### 📦 Core Workflow MCPs
+
+#### 3. **xc-build** - Build Validation
+**Use when**: CI/CD, quick compilation checks, scheme discovery, need clean operations
 
 **Tools** (3):
 - `xcode_build` - Build Xcode project
@@ -38,8 +73,12 @@ mcp-servers/
 
 **Token cost**: ~600
 
-### 2. **xc-ai-assist** - AI UI Automation
-**Use when**: AI making UI changes, iterating on UX, testing UI flows
+**Why enable**: More comprehensive than xc-compile - includes scheme discovery and clean operations. Use for CI/CD pipelines or when you need to explore project structure.
+
+---
+
+#### 4. **xc-ai-assist** - AI UI Automation
+**Use when**: AI making UI changes, iterating on UX, testing UI flows with visual feedback
 
 **Tools** (7):
 - `xcode_build` - Rebuild after changes
@@ -52,7 +91,11 @@ mcp-servers/
 
 **Token cost**: ~1400
 
-### 3. **xc-setup** - Environment Configuration
+**Why enable**: Complete build + interact + visual feedback workflow. Includes screenshot capability (xc-interact doesn't). Perfect for AI-driven UI iteration where you need to rebuild, interact, and validate visually.
+
+---
+
+#### 5. **xc-setup** - Environment Configuration
 **Use when**: Initial session setup, creating simulators, validating environment
 
 **Tools** (5):
@@ -64,7 +107,11 @@ mcp-servers/
 
 **Token cost**: ~800
 
-### 4. **xc-testing** - E2E Testing
+**Why enable**: First session or onboarding new developer. Validates Xcode installation, discovers/creates simulators, boots devices. Disable after environment is stable.
+
+---
+
+#### 6. **xc-testing** - E2E Testing
 **Use when**: Running test suites, automating test flows, capturing evidence
 
 **Tools** (6):
@@ -77,7 +124,11 @@ mcp-servers/
 
 **Token cost**: ~1200
 
-### 5. **xc-meta** - Project Maintenance
+**Why enable**: Full test execution + UI automation. Run XCTest suites, automate UI test flows, capture screenshots for evidence. Includes gesture support for complex interactions.
+
+---
+
+#### 7. **xc-meta** - Project Maintenance
 **Use when**: Checking environment, managing schemes, cleanup tasks
 
 **Tools** (6):
@@ -90,12 +141,20 @@ mcp-servers/
 
 **Token cost**: ~700
 
-### 6. **xc-hybrid** - Full Toolkit
+**Why enable**: Housekeeping tasks - check versions, clean artifacts, manage simulators. No build or test execution, just maintenance. Perfect for troubleshooting environment issues.
+
+---
+
+### 🚀 Full Access
+
+#### 8. **xc-hybrid** - Full Toolkit
 **Use when**: Human+AI collaboration, complex workflows, need full access
 
 **Tools** (23): All tools from all categories
 
 **Token cost**: ~3500
+
+**Why enable**: Maximum flexibility - all 22 tools available. Use when workflow is unpredictable or you need access to everything. Equivalent to old monolithic dispatcher but with better organization.
 
 ## Quick Start
 
@@ -116,16 +175,22 @@ npm run build
 
 ### Enable in Claude
 
-In Claude's MCP settings, toggle the servers you want:
+**IMPORTANT**: Enable **ONE MCP at a time** for optimal token efficiency. If you enable multiple MCPs, shared tools will appear multiple times and increase token usage.
+
+In Claude's MCP settings, toggle the server you need:
 
 ```
-☑️ xc-build          # For quick build validation
-☐ xc-ai-assist      # Disable when not doing UI work
-☐ xc-setup          # Only needed for initial setup
-☐ xc-testing        # Enable during testing phase
-☐ xc-meta           # For maintenance tasks
-☑️ xc-hybrid         # Full access when needed
+☐ xc-compile        # Ultra-minimal: just build (~300 tokens)
+☐ xc-interact       # Pure UI automation (~900 tokens)
+☐ xc-build          # Build + clean + schemes (~600 tokens)
+☐ xc-ai-assist      # Build + UI + screenshots (~1400 tokens)
+☐ xc-setup          # Environment setup (~800 tokens)
+☐ xc-testing        # Tests + UI flows (~1200 tokens)
+☐ xc-meta           # Maintenance tasks (~700 tokens)
+☐ xc-hybrid         # Everything (~3500 tokens)
 ```
+
+**Pro tip**: Use xc-hybrid if your workflow spans multiple categories, rather than enabling multiple focused MCPs.
 
 ## Tool Library (22 Total)
 
@@ -205,41 +270,52 @@ In Claude's MCP settings, toggle the servers you want:
 
 ## Comparison: Old vs New
 
-| Aspect | Old (3 Dispatchers) | New (6 MCP Servers) |
+| Aspect | Old (3 Dispatchers) | New (8 MCP Servers) |
 |--------|---------------------|---------------------|
-| **MCP Servers** | 1 monolithic | 6 workflow-specific |
-| **Tools Exposed** | 22 (always) | 3-23 (configurable) |
-| **Token Cost** | ~2200 (fixed) | 600-3500 (flexible) |
+| **MCP Servers** | 1 monolithic | 8 workflow-specific |
+| **Tools Exposed** | 22 (always) | 1-23 (configurable) |
+| **Token Cost** | ~2200 (fixed) | 300-3500 (flexible) |
 | **Modularity** | Via Skills | Via MCP toggle |
 | **Discoverability** | Need inspection | Named by workflow |
 | **Code Organization** | Monolithic files | Modular functions |
 
 ## Token Cost Examples
 
-**Scenario 1: Just validating builds**
+**Scenario 1: Fixing compilation errors**
 ```
-✅ xc-build (600 tokens)
-Total: 600 tokens
+✅ xc-compile (300 tokens)
+Total: 300 tokens - 87% less than old architecture!
 ```
 
-**Scenario 2: AI UI iteration**
+**Scenario 2: Testing UI flows (app already built)**
+```
+✅ xc-interact (900 tokens)
+Total: 900 tokens - 59% less than old architecture!
+```
+
+**Scenario 3: AI UI iteration with visual feedback**
 ```
 ✅ xc-ai-assist (1400 tokens)
-Total: 1400 tokens
+Total: 1400 tokens - 36% less than old architecture!
 ```
 
-**Scenario 3: Full development session**
+**Scenario 4: Full development session**
 ```
+⚠️ Don't do this (tool duplication):
 ✅ xc-build (600 tokens)
-✅ xc-ai-assist (1400 tokens)
-✅ xc-testing (1200 tokens)
-Total: 3200 tokens
+✅ xc-ai-assist (1400 tokens)  ← xcode_build appears twice!
+✅ xc-testing (1200 tokens)    ← xcode_build appears again!
+Total: 3200 tokens + duplication overhead
+
+✅ Do this instead:
+✅ xc-hybrid (3500 tokens)
+Total: 3500 tokens - all tools, no duplication
 ```
 
-**Scenario 4: Everything**
+**Scenario 5: Everything**
 ```
 ✅ xc-hybrid (3500 tokens)
-Total: 3500 tokens
+Total: 3500 tokens - 59% more than old, but full modular architecture
 ```
 
 ## Requirements

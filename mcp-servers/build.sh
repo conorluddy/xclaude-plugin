@@ -9,6 +9,12 @@ cd "$(dirname "$0")"
 echo "📦 Installing dependencies..."
 npm install
 
+echo "🏗️  Building xc-compile..."
+cd xc-compile && npm run build && cd ..
+
+echo "🏗️  Building xc-interact..."
+cd xc-interact && npm run build && cd ..
+
 echo "🏗️  Building xc-build..."
 cd xc-build && npm run build && cd ..
 
@@ -30,6 +36,8 @@ cd xc-hybrid && npm run build && cd ..
 echo "✅ All MCP servers built successfully!"
 echo ""
 echo "📋 Available MCP servers:"
+echo "  - xc-compile    (Ultra-minimal build - just xcode_build)"
+echo "  - xc-interact   (Pure UI interaction)"
 echo "  - xc-build      (Build validation)"
 echo "  - xc-ai-assist  (AI UI automation)"
 echo "  - xc-setup      (Environment setup)"

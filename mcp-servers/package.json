@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "npm run build --workspaces",
+    "build:xc-compile": "npm run build --workspace=xc-compile",
+    "build:xc-interact": "npm run build --workspace=xc-interact",
     "build:xc-build": "npm run build --workspace=xc-build",
     "build:xc-ai-assist": "npm run build --workspace=xc-ai-assist",
     "build:xc-setup": "npm run build --workspace=xc-setup",
@@ -17,6 +19,8 @@
     "install-all": "npm install --workspaces"
   },
   "workspaces": [
+    "xc-compile",
+    "xc-interact",
     "xc-build",
     "xc-ai-assist",
     "xc-setup",
