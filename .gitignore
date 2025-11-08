@@ -5,13 +5,11 @@ __pycache__/
 .venv/
 venv/
 
-# Build outputs (but intentionally commit mcp-server/dist and mcp-servers/*/dist for marketplace)
+# Build outputs (intentionally commit mcp-servers/*/dist for marketplace distribution)
 build/
 *.js
 *.js.map
 *.d.ts
-!mcp-server/dist/
-!mcp-server/dist/**
 !mcp-servers/*/dist/
 !mcp-servers/*/dist/**
 

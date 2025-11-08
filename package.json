@@ -4,13 +4,13 @@
   "description": "Token-efficient iOS development automation plugin for Claude Code",
   "private": true,
   "workspaces": [
-    "mcp-server"
+    "mcp-servers/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace=mcp-server",
-    "dev": "npm run dev --workspace=mcp-server",
-    "test": "npm run test --workspace=mcp-server",
-    "clean": "rm -rf mcp-server/dist",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "coverage": "npm run coverage --workspaces",
+    "clean": "rm -rf mcp-servers/*/dist",
     "prepare": "husky"
   },
   "keywords": [
@@ -32,15 +32,23 @@
   },
   "devDependencies": {
     "@types/node": "24.10.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "esbuild": "^0.21.5",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
-    "typescript": "5.9.3"
+    "patch-package": "^8.0.0",
+    "prettier": "^3.6.2",
+    "typescript": "5.9.3",
+    "vitest": "^1.6.0"
   },
   "lint-staged": {
-    "mcp-server/**/*.ts": [
+    "mcp-servers/**/*.ts": [
       "prettier --write"
     ],
-    "mcp-server/**/*.{json,md}": [
+    "mcp-servers/**/*.{json,md}": [
+      "prettier --write"
+    ],
+    "*.{json,md}": [
       "prettier --write"
     ]
   },

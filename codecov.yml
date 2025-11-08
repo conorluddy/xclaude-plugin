@@ -1,0 +1,43 @@
+codecov:
+  require_ci_to_pass: true
+  precision: 2
+  round: down
+  layout: "reach,diff,flags,tree"
+  show_carryforward_flags: true
+
+coverage:
+  precision: 2
+  round: down
+  range: "70..100"
+
+ignore:
+  - "node_modules"
+  - "dist"
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+
+flags:
+  xc-setup:
+    paths:
+      - mcp-servers/xc-setup
+  xc-compile:
+    paths:
+      - mcp-servers/xc-compile
+  xc-testing:
+    paths:
+      - mcp-servers/xc-testing
+  xc-interact:
+    paths:
+      - mcp-servers/xc-interact
+  xc-hybrid:
+    paths:
+      - mcp-servers/xc-hybrid
+  xc-build:
+    paths:
+      - mcp-servers/xc-build
+  xc-ai-assist:
+    paths:
+      - mcp-servers/xc-ai-assist
+  xc-meta:
+    paths:
+      - mcp-servers/xc-meta
