@@ -8,8 +8,9 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "coverage": "npm run coverage --workspaces",
+    "test": "cd mcp-servers && npm run test",
+    "coverage": "cd mcp-servers && npm run coverage",
+    "lint": "cd mcp-servers && npm run lint",
     "clean": "rm -rf mcp-servers/*/dist",
     "prepare": "husky"
   },

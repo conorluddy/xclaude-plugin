@@ -16,6 +16,10 @@
     "build:xc-meta": "npm run build --workspace=xc-meta",
     "build:xc-hybrid": "npm run build --workspace=xc-hybrid",
     "watch": "npm run watch --workspaces --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "lint": "npm run lint --workspaces --if-present",
     "clean": "rm -rf */dist",
     "install-all": "npm install --workspaces"
   },
