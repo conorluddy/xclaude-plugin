@@ -1,4 +1,4 @@
-# xclaude-plugin
+# xClaude Plugin
 
 ```
 /plugin marketplace add conorluddy/xclaude-plugin
