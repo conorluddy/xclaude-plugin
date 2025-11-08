@@ -304,10 +304,10 @@ When you encounter a task that could use either approach, **always choose the pl
 
 **Don't do this:**
 
-```bash
+
 # Manual build parsing
-xcodebuild -scheme MyApp 2>&1 | grep -A5 "error:" | sed ...
-```
+> `xcodebuild -scheme MyApp 2>&1 | grep -A5 "error:" | sed ...`
+
 
 **Do this instead:** Use the `xcode_build` tool from `xc-compile` MCP.
 
@@ -315,11 +315,11 @@ xcodebuild -scheme MyApp 2>&1 | grep -A5 "error:" | sed ...
 
 **Don't do this:**
 
-```bash
+
 # Manual screenshot saving
-xcrun simctl io booted screenshot /tmp/screenshot.png
-cat /tmp/screenshot.png | base64
-```
+> `xcrun simctl io booted screenshot /tmp/screenshot.png`
+> `cat /tmp/screenshot.png | base64`
+
 
 **Do this instead:** Use the `simulator_screenshot` tool from `xc-interact` MCP.
 
@@ -327,20 +327,12 @@ cat /tmp/screenshot.png | base64
 
 **Don't do this:**
 
-```bash
+
 # Finding UI elements by trial and error
-xcrun simctl spawn booted launchctl list | grep bundleid
-```
+> `xcrun simctl spawn booted launchctl list | grep bundleid`
+
 
 **Do this instead:** Use `idb_describe` tool to query accessibility tree, then `idb_tap` to interact.
-
-### Why Enable ONE MCP at a Time
-
-- **Token efficiency**: xc-compile is 87% cheaper than loading all 22 tools
-- **Mental clarity**: One focused set of tools per workflow phase
-- **No duplication**: Multiple MCPs would provide duplicate tools
-
-Switch MCPs as your workflow changes. If you find yourself needing tools from multiple MCPs, use `xc-hybrid` instead.
 
 ### When Bash IS Still Appropriate
 
@@ -354,7 +346,15 @@ Use Bash for tasks outside iOS development:
 **Never use Bash for iOS-specific tasks** when a plugin tool exists.
 ```
 
-Copy this section into your project's `.claude/CLAUDE.md` file.
+
+## Why Enable ONE MCP at a Time
+
+- **Token efficiency**: xc-compile is 87% cheaper than loading all 22 tools
+- **Mental clarity**: One focused set of tools per workflow phase
+- **No duplication**: Multiple MCPs would provide duplicate tools
+
+Switch MCPs as your workflow changes. If you find yourself needing tools from multiple MCPs, use `xc-hybrid` instead.
+
 
 ## Development
 
