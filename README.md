@@ -233,7 +233,7 @@ Enable: xc-ai-assist (~1400 tokens)
 
 Add this section to your project's `.claude/CLAUDE.md` file. This guides Claude on when and why to use the xclaude-plugin tools instead of directly calling Xcode or shell commands:
 
-````markdown
+```markdown
 ## xclaude-plugin: Why and When to Use These Tools
 
 The xclaude-plugin provides 8 modular MCPs with 22 specialized iOS tools. **Always prefer these over raw `xcodebuild` or shell commands** for iOS development tasks. Here's why:
@@ -352,8 +352,7 @@ Use Bash for tasks outside iOS development:
 - Environment setup: `npm install`, `brew install`
 
 **Never use Bash for iOS-specific tasks** when a plugin tool exists.
-
-````
+```
 
 Copy this section into your project's `.claude/CLAUDE.md` file.
 
@@ -375,8 +374,7 @@ npm run build
 # Test locally
 /plugin marketplace add /path/to/xclaude-plugin
 /plugin install xclaude-plugin
-````
-````
+```
 
 ### Project Structure
 
