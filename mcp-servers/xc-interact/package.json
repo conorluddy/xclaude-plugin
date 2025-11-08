@@ -1,6 +1,6 @@
 {
   "name": "@xclaude/xc-interact",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Pure UI interaction toolkit - accessibility-first automation",
   "type": "module",
   "main": "dist/index.js",

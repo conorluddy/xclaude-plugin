@@ -1,6 +1,6 @@
 {
   "name": "xclaude-plugin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Modular iOS development automation suite. 8 workflow-specific MCP servers (300-3500 tokens) with 22 tools across Xcode, Simulator, and IDB. Enable only what you need!",
   "author": {
     "name": "Conor Luddy",

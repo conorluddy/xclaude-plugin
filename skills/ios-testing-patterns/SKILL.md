@@ -14,6 +14,7 @@ token_cost: ~40
 This skill provides patterns and workflows for executing iOS tests using XCTest and XCUITest frameworks. It covers test execution strategies, result analysis, flaky test detection, and troubleshooting common test failures.
 
 **Use this skill when:**
+
 - Running unit tests or UI tests
 - Analyzing test failures
 - Detecting and debugging flaky tests
@@ -22,17 +23,18 @@ This skill provides patterns and workflows for executing iOS tests using XCTest 
 
 ## Quick Reference
 
-| Task | Operation | Key Parameters |
-|------|-----------|----------------|
-| Run all tests | `test` | scheme, destination |
-| Run specific test | `test` | scheme, only_testing |
-| Skip tests | `test` | scheme, skip_testing |
-| Use test plan | `test` | scheme, test_plan |
-| Parallel execution | `test` | destination (multiple) |
+| Task               | Operation | Key Parameters         |
+| ------------------ | --------- | ---------------------- |
+| Run all tests      | `test`    | scheme, destination    |
+| Run specific test  | `test`    | scheme, only_testing   |
+| Skip tests         | `test`    | scheme, skip_testing   |
+| Use test plan      | `test`    | scheme, test_plan      |
+| Parallel execution | `test`    | destination (multiple) |
 
 ## When to Use This Skill
 
 **Use ios-testing-patterns when:**
+
 - Executing XCTest unit tests
 - Running XCUITest UI automation tests
 - Investigating test failures
@@ -43,6 +45,7 @@ This skill provides patterns and workflows for executing iOS tests using XCTest 
 - Debugging test-specific simulator issues
 
 **Related Skills:**
+
 - **xcode-workflows**: For general build and test operations
 - **simulator-workflows**: For managing test simulators
 - **ui-automation-workflows**: For UI test interaction patterns
@@ -52,6 +55,7 @@ This skill provides patterns and workflows for executing iOS tests using XCTest 
 ### XCTest vs XCUITest
 
 **XCTest (Unit/Integration Tests):**
+
 - Fast execution (milliseconds to seconds)
 - Tests individual components in isolation
 - Direct access to app internals
@@ -59,6 +63,7 @@ This skill provides patterns and workflows for executing iOS tests using XCTest 
 - Runs in same process as app code
 
 **XCUITest (UI Tests):**
+
 - Slower execution (seconds to minutes)
 - Tests user-facing workflows
 - Black-box testing (no app internals)
@@ -68,18 +73,21 @@ This skill provides patterns and workflows for executing iOS tests using XCTest 
 ### Test Execution Strategies
 
 **Sequential Execution:**
+
 - Tests run one after another
 - Predictable, repeatable results
 - Slower overall execution
 - Better for debugging
 
 **Parallel Execution:**
+
 - Tests run simultaneously on multiple simulators
 - Faster overall execution
 - Requires more system resources
 - May expose race conditions
 
 **Test Sharding:**
+
 - Split test suite across multiple destinations
 - Optimal for CI/CD pipelines
 - Reduces total execution time
@@ -95,9 +103,11 @@ This skill provides patterns and workflows for executing iOS tests using XCTest 
 {
   "operation": "test",
   "scheme": "MyApp",
-  "destination": "platform=iOS Simulator,name=iPhone 15"
+  "destination": "platform=iOS Simulator,name=iPhone 15,OS=18.0"
 }
 ```
+
+**Note:** The destination parameter now supports auto-resolution! You can omit the OS version (e.g., `"platform=iOS Simulator,name=iPhone 15"`) and the tool will automatically select the latest available OS version for that device.
 
 **Run Specific Test Class:**
 
@@ -105,11 +115,9 @@ This skill provides patterns and workflows for executing iOS tests using XCTest 
 {
   "operation": "test",
   "scheme": "MyApp",
-  "destination": "platform=iOS Simulator,name=iPhone 15",
+  "destination": "platform=iOS Simulator,name=iPhone 15,OS=18.0",
   "options": {
-    "only_testing": [
-      "MyAppTests/NetworkTests"
-    ]
+    "only_testing": ["MyAppTests/NetworkTests"]
   }
 }
 ```
@@ -120,11 +128,9 @@ This skill provides patterns and workflows for executing iOS tests using XCTest 
 {
   "operation": "test",
   "scheme": "MyApp",
-  "destination": "platform=iOS Simulator,name=iPhone 15",
+  "destination": "platform=iOS Simulator,name=iPhone 15,OS=18.0",
   "options": {
-    "only_testing": [
-      "MyAppTests/NetworkTests/testAPIRequest"
-    ]
+    "only_testing": ["MyAppTests/NetworkTests/testAPIRequest"]
   }
 }
 ```
@@ -185,12 +191,14 @@ Run tests on multiple simulators simultaneously:
 ```
 
 **Parallel Test Benefits:**
+
 - Reduces total execution time
 - Tests across multiple device types
 - Exposes device-specific issues
 - Better CI/CD performance
 
 **Parallel Test Considerations:**
+
 - Requires multiple simulators
 - Higher CPU/memory usage
 - May expose race conditions
@@ -222,12 +230,8 @@ Run tests on multiple simulators simultaneously:
   "scheme": "MyApp",
   "destination": "platform=iOS Simulator,name=iPhone 15",
   "options": {
-    "only_testing": [
-      "MyAppTests/UnitTests"
-    ],
-    "skip_testing": [
-      "MyAppTests/UnitTests/testSlowOperation"
-    ]
+    "only_testing": ["MyAppTests/UnitTests"],
+    "skip_testing": ["MyAppTests/UnitTests/testSlowOperation"]
   }
 }
 ```
@@ -286,6 +290,7 @@ Run tests on multiple simulators simultaneously:
 **What are Flaky Tests?**
 
 Tests that intermittently pass or fail without code changes:
+
 - Timing-dependent assertions
 - Race conditions
 - Async operation issues
@@ -496,12 +501,14 @@ func testPerformance() {
 #### 1. "Test crashed with signal SIGABRT"
 
 **Causes:**
+
 - Force unwrapping nil values
 - Array index out of bounds
 - Precondition/assertion failures
 - Fatal errors in app code
 
 **Solutions:**
+
 1. Check crash logs for stack trace
 2. Run test in debugger (Xcode)
 3. Add breakpoints at crash location
@@ -510,12 +517,14 @@ func testPerformance() {
 #### 2. "Failed to find element/button"
 
 **Causes:**
+
 - Element not yet rendered
 - Animation not complete
 - Incorrect accessibility identifier
 - Element off-screen
 
 **Solutions:**
+
 1. Increase timeout for element queries
 2. Wait for animations to complete
 3. Verify accessibility identifiers
@@ -537,12 +546,14 @@ submitButton.tap()
 #### 3. "Exceeded timeout of X seconds"
 
 **Causes:**
+
 - Network requests too slow
 - Async operations not completing
 - Deadlocks or infinite loops
 - Expectations never fulfilled
 
 **Solutions:**
+
 1. Increase expectation timeout
 2. Mock network requests
 3. Check for deadlocks
@@ -562,12 +573,14 @@ wait(for: [expectation], timeout: 10.0)
 #### 4. "Test failed due to app termination"
 
 **Causes:**
+
 - Memory pressure
 - Watchdog timeout (app hung)
 - Background task limits
 - System resource constraints
 
 **Solutions:**
+
 1. Profile memory usage
 2. Optimize test efficiency
 3. Break up long-running tests
@@ -608,6 +621,7 @@ wait(for: [expectation], timeout: 10.0)
 **Symptom:** Tests fail due to simulator state
 
 **Common Issues:**
+
 1. Previous app installation interfering
 2. Simulator storage full
 3. Corrupt simulator data
@@ -635,6 +649,7 @@ execute_xcode_command({
 **Symptom:** Tests pass individually but fail in suite
 
 **Causes:**
+
 - Test execution order dependencies
 - Shared mutable state
 - Singleton pollution
@@ -643,6 +658,7 @@ execute_xcode_command({
 **Solutions:**
 
 1. **Ensure Test Isolation:**
+
 ```swift
 override func setUp() {
     super.setUp()
@@ -653,6 +669,7 @@ override func setUp() {
 ```
 
 2. **Avoid Singletons:**
+
 ```swift
 // Bad: Shared state
 class APIManager {
@@ -666,6 +683,7 @@ class APIManager {
 ```
 
 3. **Randomize Test Order:**
+
 ```json
 {
   "operation": "test",
@@ -681,6 +699,7 @@ class APIManager {
 ### 1. Test Isolation
 
 **Always isolate tests:**
+
 - Each test should run independently
 - No shared state between tests
 - Clean up in `tearDown()`
@@ -711,6 +730,7 @@ class UserTests: XCTestCase {
 ### 2. Fast Test Execution
 
 **Optimize test speed:**
+
 - Mock network requests
 - Use in-memory databases
 - Disable animations in UI tests
@@ -814,6 +834,7 @@ struct TestFixtures {
 ```
 
 **Recommended ratio:**
+
 - 70% Unit tests
 - 20% Integration tests
 - 10% UI tests
@@ -834,6 +855,7 @@ struct TestFixtures {
 ```
 
 **Coverage goals:**
+
 - Critical paths: 90%+ coverage
 - Business logic: 80%+ coverage
 - UI code: 60%+ coverage
@@ -842,6 +864,7 @@ struct TestFixtures {
 ### 9. Continuous Test Monitoring
 
 **Track test metrics:**
+
 - Test execution time trends
 - Flaky test frequency
 - Test failure rate
@@ -849,6 +872,7 @@ struct TestFixtures {
 - Test suite growth
 
 **When to investigate:**
+
 - Test execution time increases >20%
 - Flaky tests appear
 - Coverage drops

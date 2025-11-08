@@ -1,6 +1,6 @@
 {
   "name": "@xclaude/xc-compile",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Ultra-minimal build execution MCP - just xcode_build",
   "type": "module",
   "main": "dist/index.js",

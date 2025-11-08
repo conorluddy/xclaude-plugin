@@ -15,6 +15,17 @@ vi.mock("../../../shared/utils/command", async () => {
   };
 });
 
+// Mock the destination resolver
+vi.mock("../../../shared/utils/destination", () => ({
+  resolveDestination: vi.fn((dest: string) =>
+    Promise.resolve({
+      destination: dest,
+      wasResolved: false,
+      details: "Using explicit destination format",
+    }),
+  ),
+}));
+
 describe("xcodeTest", () => {
   beforeEach(() => {
     vi.clearAllMocks();

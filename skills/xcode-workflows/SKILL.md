@@ -21,6 +21,7 @@ The xclaude-plugin provides the `execute_xcode_command` MCP tool which consolida
 - ❌ **NEVER**: Run `xcrun xcodebuild` in a terminal
 
 **Why?** The MCP tool provides:
+
 - Structured error handling
 - Token efficiency (consolidated into 1 tool vs. verbose bash output)
 - Proper integration with the xclaude-plugin architecture
@@ -32,13 +33,13 @@ If `execute_xcode_command` fails, the issue is with parameters or the project - 
 
 ### ❌ NEVER Use Bash For These (Use MCP Tools Instead)
 
-| Task | ❌ WRONG (Bash) | ✅ RIGHT (MCP Tool) |
-|------|---------------|-------------------|
-| List schemes | `xcodebuild -list` | `execute_xcode_command` op: "list" |
-| Build app | `xcodebuild -scheme...` | `execute_xcode_command` op: "build" |
-| Run tests | `xcodebuild -scheme... test` | `execute_xcode_command` op: "test" |
-| Clean build | `xcodebuild clean` | `execute_xcode_command` op: "clean" |
-| Get Xcode info | `xcodebuild -version` | `execute_xcode_command` op: "version" |
+| Task           | ❌ WRONG (Bash)              | ✅ RIGHT (MCP Tool)                   |
+| -------------- | ---------------------------- | ------------------------------------- |
+| List schemes   | `xcodebuild -list`           | `execute_xcode_command` op: "list"    |
+| Build app      | `xcodebuild -scheme...`      | `execute_xcode_command` op: "build"   |
+| Run tests      | `xcodebuild -scheme... test` | `execute_xcode_command` op: "test"    |
+| Clean build    | `xcodebuild clean`           | `execute_xcode_command` op: "clean"   |
+| Get Xcode info | `xcodebuild -version`        | `execute_xcode_command` op: "version" |
 
 ### ✅ Bash is Acceptable For (Non-Build Tasks)
 
@@ -52,14 +53,14 @@ If `execute_xcode_command` fails, the issue is with parameters or the project - 
 
 ## Quick Reference
 
-| Task | MCP Tool | Operation | Key Parameters |
-|------|----------|-----------|----------------|
-| Build for simulator | `execute_xcode_command` | `build` | scheme, configuration:Debug |
-| Build for device | `execute_xcode_command` | `build` | scheme, configuration:Release, destination |
-| Run tests | `execute_xcode_command` | `test` | scheme, destination |
-| Clean build | `execute_xcode_command` | `clean` | scheme |
-| List schemes | `execute_xcode_command` | `list` | - |
-| Get Xcode info | `execute_xcode_command` | `version` | - |
+| Task                | MCP Tool                | Operation | Key Parameters                             |
+| ------------------- | ----------------------- | --------- | ------------------------------------------ |
+| Build for simulator | `execute_xcode_command` | `build`   | scheme, configuration:Debug                |
+| Build for device    | `execute_xcode_command` | `build`   | scheme, configuration:Release, destination |
+| Run tests           | `execute_xcode_command` | `test`    | scheme, destination                        |
+| Clean build         | `execute_xcode_command` | `clean`   | scheme                                     |
+| List schemes        | `execute_xcode_command` | `list`    | -                                          |
+| Get Xcode info      | `execute_xcode_command` | `version` | -                                          |
 
 ## Standard Workflows
 
@@ -79,6 +80,7 @@ Invoke the `execute_xcode_command` MCP tool:
 **Note:** `project_path` is optional - auto-detected from current directory.
 
 **Returns:**
+
 ```json
 {
   "schemes": ["MyApp", "MyAppTests", "MyAppUITests"],
@@ -100,10 +102,14 @@ Invoke the `execute_xcode_command` MCP tool with build parameters:
 ```
 
 **Common Destinations:**
-- iOS Simulator: `"platform=iOS Simulator,name=iPhone 15"`
+
+- iOS Simulator (explicit - recommended): `"platform=iOS Simulator,name=iPhone 15,OS=18.0"`
+- iOS Simulator (auto-resolve): `"platform=iOS Simulator,name=iPhone 15"` (will auto-detect latest OS)
 - iOS Device: `"platform=iOS,id=<device-udid>"`
 - Any Simulator: `"platform=iOS Simulator,name=Any iOS Simulator Device"`
 - macOS: `"platform=macOS"`
+
+**Note:** The destination parameter now supports auto-resolution! If you omit the OS version, the tool will automatically query available simulators and select the latest OS version for the specified device name. For explicit control, include the OS version in your destination string.
 
 ### 2. Running Tests
 
@@ -154,9 +160,7 @@ Invoke the `execute_xcode_command` MCP tool with build parameters:
   "scheme": "MyApp",
   "destination": "platform=iOS Simulator,name=iPhone 15",
   "options": {
-    "skip_testing": [
-      "MyAppUITests"
-    ]
+    "skip_testing": ["MyAppUITests"]
   }
 }
 ```
@@ -164,6 +168,7 @@ Invoke the `execute_xcode_command` MCP tool with build parameters:
 ### 3. Clean Build
 
 **When to Clean:**
+
 - Build artifacts corrupted
 - Switching branches significantly
 - Mysterious build failures
@@ -194,6 +199,7 @@ Invoke the `execute_xcode_command` MCP tool with build parameters:
 ### Debug vs Release
 
 **Debug (Default):**
+
 - Optimizations disabled
 - Debug symbols included
 - Faster compile time
@@ -201,6 +207,7 @@ Invoke the `execute_xcode_command` MCP tool with build parameters:
 - Use for: Development, testing
 
 **Release:**
+
 - Optimizations enabled
 - Debug symbols optional
 - Slower compile time
@@ -295,6 +302,7 @@ Large build logs use progressive disclosure:
 **Cause:** Scheme doesn't exist or isn't shared
 
 **Solution:**
+
 1. Run `list` operation to see available schemes
 2. Check if scheme is shared (Xcode → Product → Scheme → Manage Schemes)
 
@@ -303,6 +311,7 @@ Large build logs use progressive disclosure:
 **Cause:** Missing or invalid signing certificate
 
 **Solution:**
+
 1. Check Team ID in project settings
 2. Verify certificates in Keychain
 3. Use automatic signing if possible
@@ -323,6 +332,7 @@ Large build logs use progressive disclosure:
 **Cause:** Requesting unavailable SDK version
 
 **Solution:**
+
 1. Run `version` operation to see available SDKs
 2. Update `sdk` option or remove to use latest
 
@@ -331,6 +341,7 @@ Large build logs use progressive disclosure:
 **Cause:** Invalid destination specifier
 
 **Solution:**
+
 1. Use `execute_simulator_command` with operation "list" to see available devices
 2. Check device name spelling
 3. Ensure device/simulator is available
@@ -366,6 +377,7 @@ Run tests multiple times:
 ### Test Result Analysis
 
 Tests return:
+
 ```json
 {
   "success": false,
@@ -447,6 +459,7 @@ Default behavior - xcodebuild uses DerivedData for caching.
 ### Build Artifacts
 
 Build produces:
+
 - `.app` bundle in DerivedData
 - `.xcresult` test results bundle
 - Build logs (via progressive disclosure)
@@ -471,11 +484,13 @@ Query build settings:
 ### Shared vs User Schemes
 
 **Shared Schemes:**
+
 - Checked into source control
 - Available to all users
 - Recommended for team projects
 
 **User Schemes:**
+
 - Local to your machine
 - Not visible to xcodebuild by default
 

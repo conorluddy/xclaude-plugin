@@ -1,6 +1,6 @@
 {
   "name": "@xclaude/xc-testing",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "E2E testing and validation MCP for iOS apps",
   "type": "module",
   "main": "dist/index.js",
