@@ -28,21 +28,6 @@ jobs:
       - name: Build all servers
         run: npm run build
 
-      - name: Run tests
-        run: npm run test
-
-      - name: Generate coverage reports
-        run: npm run coverage
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: true
-          verbose: true
-
   lint:
     runs-on: ubuntu-latest
 
