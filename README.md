@@ -6,7 +6,12 @@
 
 **Modular iOS development automation for Claude Code**
 
-Build, test, and automate iOS apps through natural conversation with Claude. 8 workflow-specific MCP servers with 22 tools across Xcode, Simulator, and IDB. Enable only what you need!
+Build, test, and automate iOS apps through natural conversation with Claude. 8 workflow-specific MCP servers with 22 tools across Xcode, Simulator, and IDB. 
+
+Tools are grouped into MCPs - you enable the ones you're currently need and disable others to optimise context. I still need to revise and optimise the groupings.
+
+<img width="639" height="135" alt="Screenshot 2025-11-08 at 10 36 37" src="https://github.com/user-attachments/assets/0fd89449-7c2c-4f37-bfae-e346be82e579" />
+
 
 ## Features
 
