@@ -25,14 +25,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install optional dependencies
-        run: npm install --optional --legacy-peer-deps --no-save || true
+      - name: Run tests
+        run: npm run test
 
       - name: Build all servers
         run: npm run build
-
-      - name: Run tests
-        run: npm run test
 
   lint:
     runs-on: ubuntu-latest
@@ -48,9 +45,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install optional dependencies
-        run: npm install --optional --legacy-peer-deps --no-save || true
 
       - name: Check types
         run: npm run build
