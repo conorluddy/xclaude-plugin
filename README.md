@@ -300,9 +300,9 @@ The xclaude-plugin provides 8 modular MCPs with 22 specialized iOS tools. **Alwa
 
 ### Critical: Prefer Plugin Tools Over Bash
 
-When you encounter a task that could use either approach, **always choose the plugin tool**:
+When you encounter a task that could use either approach, **always choose the plugin tool**.
 
-❌ **Don't do this:**
+**Don't do this:**
 
 ```bash
 # Manual build parsing
@@ -310,13 +310,11 @@ xcodebuild -scheme MyApp 2>&1 | grep -A5 "error:" | sed ...
 ```
 ````
 
-✅ **Do this instead:**
+**Do this instead:** Use the `xcode_build` tool from `xc-compile` MCP.
 
-```
-Use the xcode_build tool from xc-compile MCP
-```
+---
 
-❌ **Don't do this:**
+**Don't do this:**
 
 ```bash
 # Manual screenshot saving
@@ -324,24 +322,18 @@ xcrun simctl io booted screenshot /tmp/screenshot.png
 cat /tmp/screenshot.png | base64
 ```
 
-✅ **Do this instead:**
+**Do this instead:** Use the `simulator_screenshot` tool from `xc-interact` MCP.
 
-```
-Use the simulator_screenshot tool from xc-interact MCP
-```
+---
 
-❌ **Don't do this:**
+**Don't do this:**
 
 ```bash
 # Finding UI elements by trial and error
 xcrun simctl spawn booted launchctl list | grep bundleid
 ```
 
-✅ **Do this instead:**
-
-```
-Use idb_describe tool to query accessibility tree, then idb_tap to interact
-```
+**Do this instead:** Use `idb_describe` tool to query accessibility tree, then `idb_tap` to interact.
 
 ### Why Enable ONE MCP at a Time
 
