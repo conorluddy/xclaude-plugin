@@ -6,27 +6,28 @@
 
 **Modular iOS development automation for Claude Code**
 
-Build, test, and automate iOS apps through natural conversation with Claude. 8 workflow-specific MCP servers with 22 tools across Xcode, Simulator, and IDB. 
+Build, test, and automate iOS apps through natural conversation with Claude. 8 workflow-specific MCP servers with 22 tools across Xcode, Simulator, and IDB.
 
 Tools are grouped into MCPs - you enable the ones you're currently need and disable others to optimise context. I still need to revise and optimise the groupings.
 
 <img width="1278" height="407" alt="Screenshot 2025-11-08 at 10 44 28" src="https://github.com/user-attachments/assets/ff1c0a09-f29d-4a86-a280-97b3bbc8c635" />
 
-
-
 ## Features
 
 ### 🎯 Modular Architecture
+
 - **8 workflow-specific MCP servers** (300-3500 tokens each)
 - **Enable only what you need** - Ultra-minimal to full-featured
 - **22 shared tools** across Xcode, Simulator, and IDB
 - **Single source of truth** - tools defined once, imported by MCPs
 
 ### 🔥 Surgical MCPs (Ultra-Focused)
+
 - **xc-compile** (~300 tokens) - Just build with error extraction
 - **xc-interact** (~900 tokens) - Pure UI interaction, no build
 
 ### 📦 Core Workflow MCPs
+
 - **xc-build** (~600 tokens) - Build validation with clean/scheme discovery
 - **xc-ai-assist** (~1400 tokens) - Build + UI automation + screenshots
 - **xc-setup** (~800 tokens) - Environment configuration and validation
@@ -34,9 +35,11 @@ Tools are grouped into MCPs - you enable the ones you're currently need and disa
 - **xc-meta** (~700 tokens) - Project maintenance and housekeeping
 
 ### 🚀 Full Access
+
 - **xc-hybrid** (~3500 tokens) - All 22 tools for complex workflows
 
 ### 📚 8 Procedural Skills (Loaded On-Demand)
+
 - **xcode-workflows** - Build system guidance and result analysis
 - **simulator-workflows** - Device and app lifecycle patterns
 - **ui-automation-workflows** - Accessibility-first automation
@@ -89,6 +92,7 @@ Tools are grouped into MCPs - you enable the ones you're currently need and disa
 ### Example Workflows
 
 **Scenario 1: Rapid compilation fixes**
+
 ```
 Enable: xc-compile (~300 tokens)
 
@@ -100,6 +104,7 @@ Enable: xc-compile (~300 tokens)
 ```
 
 **Scenario 2: Testing UI flows (app already built)**
+
 ```
 Enable: xc-interact (~900 tokens)
 
@@ -111,6 +116,7 @@ Enable: xc-interact (~900 tokens)
 ```
 
 **Scenario 3: AI-driven UI iteration**
+
 ```
 Enable: xc-ai-assist (~1400 tokens)
 
@@ -149,12 +155,14 @@ Enable: xc-ai-assist (~1400 tokens)
 ### Key Benefits
 
 **For Users:**
+
 - Enable only what you need (300-3500 tokens)
 - Clear mental model (workflow-based naming)
 - No tool duplication confusion
 - Easy to toggle on/off in Claude settings
 
 **For Developers:**
+
 - Single source of truth (shared tools)
 - Easy testing (isolated functions)
 - Simple maintenance (update once)
@@ -164,32 +172,33 @@ Enable: xc-ai-assist (~1400 tokens)
 
 ### 🔥 Surgical MCPs
 
-| MCP | Tools | Token Cost | Use When |
-|-----|-------|------------|----------|
-| **xc-compile** | 1 | ~300 | Tight code→build→fix loops, just need error extraction |
-| **xc-interact** | 6 | ~900 | Testing UI flows with app already built |
+| MCP             | Tools | Token Cost | Use When                                               |
+| --------------- | ----- | ---------- | ------------------------------------------------------ |
+| **xc-compile**  | 1     | ~300       | Tight code→build→fix loops, just need error extraction |
+| **xc-interact** | 6     | ~900       | Testing UI flows with app already built                |
 
 ### 📦 Core Workflow MCPs
 
-| MCP | Tools | Token Cost | Use When |
-|-----|-------|------------|----------|
-| **xc-build** | 3 | ~600 | Build validation + clean + scheme discovery |
-| **xc-ai-assist** | 7 | ~1400 | AI UI iteration with visual feedback |
-| **xc-setup** | 5 | ~800 | Initial setup, environment validation |
-| **xc-testing** | 6 | ~1200 | Running test suites + UI automation |
-| **xc-meta** | 6 | ~700 | Maintenance, housekeeping, environment checks |
+| MCP              | Tools | Token Cost | Use When                                      |
+| ---------------- | ----- | ---------- | --------------------------------------------- |
+| **xc-build**     | 3     | ~600       | Build validation + clean + scheme discovery   |
+| **xc-ai-assist** | 7     | ~1400      | AI UI iteration with visual feedback          |
+| **xc-setup**     | 5     | ~800       | Initial setup, environment validation         |
+| **xc-testing**   | 6     | ~1200      | Running test suites + UI automation           |
+| **xc-meta**      | 6     | ~700       | Maintenance, housekeeping, environment checks |
 
 ### 🚀 Full Access
 
-| MCP | Tools | Token Cost | Use When |
-|-----|-------|------------|----------|
-| **xc-hybrid** | 23 | ~3500 | Complex workflows needing everything |
+| MCP           | Tools | Token Cost | Use When                             |
+| ------------- | ----- | ---------- | ------------------------------------ |
+| **xc-hybrid** | 23    | ~3500      | Complex workflows needing everything |
 
 **Pro tip**: Don't enable multiple MCPs simultaneously - tool duplication will increase token usage! Use xc-hybrid instead for multi-workflow sessions.
 
 ## Tool Library (22 Total)
 
 ### Xcode Tools (5)
+
 - `xcode_build` - Build with automatic error extraction
 - `xcode_clean` - Clean build artifacts
 - `xcode_test` - Run XCTest suites
@@ -197,6 +206,7 @@ Enable: xc-ai-assist (~1400 tokens)
 - `xcode_version` - Check Xcode installation
 
 ### Simulator Tools (12)
+
 - `simulator_list` - Enumerate simulators
 - `simulator_boot` - Boot device
 - `simulator_shutdown` - Shutdown device
@@ -211,6 +221,7 @@ Enable: xc-ai-assist (~1400 tokens)
 - `simulator_health_check` - Validate environment
 
 ### IDB Tools (6)
+
 - `idb_describe` - Query accessibility tree (accessibility-first!)
 - `idb_tap` - Tap coordinates
 - `idb_input` - Type text or press keys
@@ -220,49 +231,138 @@ Enable: xc-ai-assist (~1400 tokens)
 
 ## Configuring Your Project
 
-To help Claude select the right MCP for your workflow, add this section to your project's `.claude/CLAUDE.md`:
+Add this section to your project's `.claude/CLAUDE.md` file. This guides Claude on when and why to use the xclaude-plugin tools instead of directly calling Xcode or shell commands:
 
-```markdown
-## xclaude-plugin Configuration
+````markdown
+## xclaude-plugin: Why and When to Use These Tools
 
-**Enable ONE MCP at a time** based on your current workflow. Don't enable multiple MCPs simultaneously (causes tool duplication).
+The xclaude-plugin provides 8 modular MCPs with 22 specialized iOS tools. **Always prefer these over raw `xcodebuild` or shell commands** for iOS development tasks. Here's why:
 
-### Quick MCP Selection
+### Why These Tools Trump Raw Commands
 
-**I'm fixing compilation errors:**
-- Enable: `xc-compile` (~300 tokens)
-- Tools: Just xcode_build with error extraction
+| Task                 | Direct Bash                                                    | xclaude-plugin                   | Why Plugin Wins                                                           |
+| -------------------- | -------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------- |
+| Build + get errors   | `xcodebuild -scheme Foo 2>&1` (50+ lines of parsing)           | `xcode_build` tool               | Auto-extracts up to 10 errors, structured JSON, 87% fewer tokens          |
+| Test suite execution | `xcodebuild test` + manual parsing                             | `xcode_test` tool                | Parses results, reports failures, timing, code coverage                   |
+| Simulator screenshot | `xcrun simctl io booted screenshot /tmp/x.png` + file handling | `simulator_screenshot` tool      | Auto-saves, encoded output, accessible in response                        |
+| UI automation        | Manual coordinate finding + shell taps                         | `idb_describe` + `idb_tap` tools | Queries accessibility tree (120ms), semantic element finding, 3-4x faster |
+| App installation     | `xcrun simctl install booted App.app`                          | `simulator_install_app` tool     | Builds, finds app, installs, validates—one command                        |
 
-**I'm testing UI flows (app already built):**
-- Enable: `xc-interact` (~900 tokens)
-- Tools: 6 IDB tools for accessibility-first automation
+### When to Use Each MCP
 
-**I need build + UI + screenshots:**
-- Enable: `xc-ai-assist` (~1400 tokens)
-- Tools: Build + all IDB + screenshot capability
+**Use `xc-compile`** (~300 tokens) when:
 
-**I'm running test suites:**
-- Enable: `xc-testing` (~1200 tokens)
-- Tools: xcode_test + UI automation
+- Fixing build failures in tight code→compile→fix loops
+- Just need error extraction without full project context
+- Token budget is critical
 
-**I need everything:**
-- Enable: `xc-hybrid` (~3500 tokens)
-- Tools: All 22 tools
+**Use `xc-interact`** (~900 tokens) when:
 
-### Why Modular MCPs?
+- Testing UI flows with app already built
+- Automating screen validation without code changes
+- Need accessibility-first element querying
 
-- **87% less tokens** for focused tasks (xc-compile vs old architecture)
-- **Clear workflow boundaries** - enable what you need
-- **No tool duplication** - one MCP = no overlap
-- **Easy to toggle** - change MCPs as workflow changes
+**Use `xc-build`** (~600 tokens) when:
 
-### When Bash IS Appropriate
+- Need build + scheme discovery + clean operations
+- Validating build configuration
+- One step beyond xc-compile
 
-File operations, git, and general shell tasks:
-- `mkdir`, `cp`, `rm`, `ls` for filesystem
-- `git status`, `git commit` for version control
-- `grep`, `find` for file inspection
+**Use `xc-ai-assist`** (~1400 tokens) when:
+
+- Iterating on UI with live feedback (code change → screenshot)
+- Need visual validation of changes
+- Combining code modification with testing
+
+**Use `xc-testing`** (~1200 tokens) when:
+
+- Running test suites and analyzing results
+- Need both unit tests and UI automation
+- Debugging test failures
+
+**Use `xc-setup`** (~800 tokens) when:
+
+- First-time environment validation
+- Checking Xcode/simulator health
+- Discovering project structure (schemes, targets)
+
+**Use `xc-meta`** (~700 tokens) when:
+
+- Maintenance tasks (clearing derived data, managing simulators)
+- Non-coding iOS project operations
+- Environment housekeeping
+
+**Use `xc-hybrid`** (~3500 tokens) when:
+
+- Complex workflows requiring multiple tool categories
+- Don't know which single MCP fits the task
+- Need flexibility to pivot between workflows
+
+### Critical: Prefer Plugin Tools Over Bash
+
+When you encounter a task that could use either approach, **always choose the plugin tool**:
+
+❌ **Don't do this:**
+
+```bash
+# Manual build parsing
+xcodebuild -scheme MyApp 2>&1 | grep -A5 "error:" | sed ...
 ```
+````
+
+✅ **Do this instead:**
+
+```
+Use the xcode_build tool from xc-compile MCP
+```
+
+❌ **Don't do this:**
+
+```bash
+# Manual screenshot saving
+xcrun simctl io booted screenshot /tmp/screenshot.png
+cat /tmp/screenshot.png | base64
+```
+
+✅ **Do this instead:**
+
+```
+Use the simulator_screenshot tool from xc-interact MCP
+```
+
+❌ **Don't do this:**
+
+```bash
+# Finding UI elements by trial and error
+xcrun simctl spawn booted launchctl list | grep bundleid
+```
+
+✅ **Do this instead:**
+
+```
+Use idb_describe tool to query accessibility tree, then idb_tap to interact
+```
+
+### Why Enable ONE MCP at a Time
+
+- **Token efficiency**: xc-compile is 87% cheaper than loading all 22 tools
+- **Mental clarity**: One focused set of tools per workflow phase
+- **No duplication**: Multiple MCPs would provide duplicate tools
+
+Switch MCPs as your workflow changes. If you find yourself needing tools from multiple MCPs, use `xc-hybrid` instead.
+
+### When Bash IS Still Appropriate
+
+Use Bash for tasks outside iOS development:
+
+- File operations: `mkdir`, `cp`, `rm`, `ls`
+- Version control: `git status`, `git diff`, `git commit`
+- General scripting: `jq`, `sed`, `awk`
+- Environment setup: `npm install`, `brew install`
+
+**Never use Bash for iOS-specific tasks** when a plugin tool exists.
+
+````
 
 Copy this section into your project's `.claude/CLAUDE.md` file.
 
@@ -284,7 +384,7 @@ npm run build
 # Test locally
 /plugin marketplace add /path/to/xclaude-plugin
 /plugin install xclaude-plugin
-```
+````
 
 ### Project Structure
 
@@ -321,20 +421,25 @@ xclaude-plugin/
 ## Design Philosophy
 
 ### Modular Token Efficiency
+
 Enable only what you need. Ultra-minimal MCPs (300 tokens) for focused tasks, comprehensive MCPs (3500 tokens) for complex workflows. 87% token reduction for surgical operations.
 
 ### Accessibility-First UI Automation
+
 Query accessibility tree (120ms, ~50 tokens) before screenshots (2000ms, ~170 tokens). 3-4x faster, 80% cheaper, more reliable across theme changes.
 
 ### Single Source of Truth
+
 22 tools defined once in shared library, imported by 8 MCPs. Update once, benefit everywhere. Type-safe with zero `any` usage.
 
 ### Workflow-Based Organization
+
 MCPs named by developer workflow phase, not technology domain. xc-compile for rapid iteration, xc-setup for environment, xc-hybrid for complex sessions.
 
 ## Contributing
 
 Contributions welcome! Please:
+
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
