@@ -4,6 +4,16 @@
 # Run lint-staged for auto-fixing and formatting
 npx lint-staged
 
+# Run tests (from mcp-servers where vitest config is located)
+echo "🧪 Running tests..."
+cd mcp-servers && npm run test
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed. Commit aborted."
+  cd ..
+  exit 1
+fi
+cd ..
+
 # Rebuild MCP servers if TypeScript files changed (ensures dist/ stays in sync)
 if git diff --cached --name-only | grep -q "mcp-servers/"; then
   echo "📦 Building all MCP servers (changes detected)..."
