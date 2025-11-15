@@ -125,41 +125,50 @@ async function extractUdidFromDestination(destination) {
     }
     const deviceName = nameMatch[1].trim();
     const osVersion = osMatch ? osMatch[1].trim() : undefined;
-    // Query simulators to find matching UDID
+    // Query simulators to find matching UDID using JSON output for robustness
     const listResult = await runCommand("xcrun", [
         "simctl",
         "list",
         "devices",
         "available",
+        "--json",
     ]);
     if (listResult.code !== 0) {
         throw new Error(`Failed to query simulators: ${listResult.stderr}`);
     }
-    // Parse simulator list to find matching device
-    const lines = listResult.stdout.split("\n");
-    let currentOSVersion = "";
+    // Parse JSON output
+    let devices;
+    try {
+        const parsed = JSON.parse(listResult.stdout);
+        devices = parsed.devices || {};
+    }
+    catch (error) {
+        throw new Error(`Failed to parse simulator list: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    // Find matching device
     let foundUdid = null;
-    for (const line of lines) {
-        // Match OS version headers like "-- iOS 18.0 --"
-        const osHeaderMatch = line.match(/^--\s+.+?\s+(\d+\.\d+)\s+--$/);
-        if (osHeaderMatch) {
-            currentOSVersion = osHeaderMatch[1];
+    for (const [runtime, deviceList] of Object.entries(devices)) {
+        // Extract OS version from runtime string (e.g., "iOS-18-0" -> "18.0" or "iOS-18-0-1" -> "18.0.1")
+        const runtimeMatch = runtime.match(/iOS-(\d+(?:-\d+)*)/);
+        if (!runtimeMatch)
             continue;
-        }
-        // Match device lines like "    iPhone 15 (UUID) (Shutdown)"
-        const deviceMatch = line.match(/^\s+(.+?)\s+\(([A-Za-z0-9-]+)\)\s+\((Shutdown|Booted)\)/i);
-        if (deviceMatch) {
-            const name = deviceMatch[1].trim();
-            const udid = deviceMatch[2];
+        const currentOSVersion = runtimeMatch[1].replace(/-/g, ".");
+        for (const device of deviceList) {
+            // Only consider available devices (Shutdown or Booted)
+            if (device.state !== "Shutdown" && device.state !== "Booted") {
+                continue;
+            }
             // Check if name matches
-            if (name === deviceName) {
+            if (device.name === deviceName) {
                 // If OS version specified, must match; otherwise take first available
                 if (!osVersion || currentOSVersion === osVersion) {
-                    foundUdid = udid;
+                    foundUdid = device.udid;
                     break;
                 }
             }
         }
+        if (foundUdid)
+            break;
     }
     if (!foundUdid) {
         const suggestions = await formatSimulatorSuggestions();

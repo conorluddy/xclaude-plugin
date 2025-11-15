@@ -59,6 +59,18 @@ describe("Build and Launch Tool", () => {
       destination: mockDestination,
       wasResolved: false,
     });
+
+    // Default mockReaddir implementation for finding app bundles
+    mockReaddir.mockImplementation(async (dirPath) => {
+      const path = dirPath as string;
+      if (path.includes("DerivedData") && !path.includes("Build/Products")) {
+        return [mockScheme] as any;
+      }
+      if (path.includes("Build/Products")) {
+        return ["MyApp.app"] as any;
+      }
+      return [] as any;
+    });
   });
 
   describe("buildAndLaunch", () => {
@@ -349,6 +361,343 @@ Build failed`;
       expect(result.details).toContain("Available simulators");
       expect(result.details).toContain("iPhone 15");
       expect(result.details).toContain("id=UDID-15");
+    });
+
+    describe("destination format handling", () => {
+      it("should handle id=UDID destination format", async () => {
+        const udidDestination = `id=${mockUDID}`;
+
+        mockResolveDestination.mockResolvedValue({
+          destination: udidDestination,
+          wasResolved: false,
+        });
+
+        // Mock successful build
+        mockRunCommand
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "Build succeeded",
+            stderr: "",
+          })
+          // Mock simctl list for ensureSimulatorRunning (not --json)
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: `${mockUDID}) (Shutdown)`,
+            stderr: "",
+          })
+          // Mock simctl boot
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          })
+          // Mock defaults read for bundle ID
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: mockBundleId,
+            stderr: "",
+          })
+          // Mock simctl install
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          })
+          // Mock simctl launch
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          });
+
+        const result = await buildAndLaunch({
+          project_path: mockProjectPath,
+          scheme: mockScheme,
+          destination: udidDestination,
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.data?.simulator_udid).toBe(mockUDID);
+      });
+
+      it("should handle platform=...,name=...,OS=... destination format", async () => {
+        const platformDestination =
+          "platform=iOS Simulator,name=iPhone 15 Pro,OS=18.0";
+
+        mockResolveDestination.mockResolvedValue({
+          destination: platformDestination,
+          wasResolved: false,
+        });
+
+        // Mock successful build
+        mockRunCommand
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "Build succeeded",
+            stderr: "",
+          })
+          // Mock defaults read for bundle ID (happens BEFORE simulator operations)
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: mockBundleId,
+            stderr: "",
+          })
+          // Mock simctl list --json for extractUdidFromDestination
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: JSON.stringify({
+              devices: {
+                "com.apple.CoreSimulator.SimRuntime.iOS-18-0": [
+                  {
+                    name: "iPhone 15 Pro",
+                    udid: mockUDID,
+                    state: "Shutdown",
+                  },
+                ],
+              },
+            }),
+            stderr: "",
+          })
+          // Mock simctl list for ensureSimulatorRunning (not --json)
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: `${mockUDID}) (Shutdown)`,
+            stderr: "",
+          })
+          // Mock simctl boot
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          })
+          // Mock simctl install
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          })
+          // Mock simctl launch
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          });
+
+        const result = await buildAndLaunch({
+          project_path: mockProjectPath,
+          scheme: mockScheme,
+          destination: platformDestination,
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.data?.simulator_udid).toBe(mockUDID);
+      });
+
+      it("should handle platform format with 3-part OS version (18.0.1)", async () => {
+        const platformDestination =
+          "platform=iOS Simulator,name=iPhone 15,OS=18.0.1";
+
+        mockResolveDestination.mockResolvedValue({
+          destination: platformDestination,
+          wasResolved: false,
+        });
+
+        // Mock successful build
+        mockRunCommand
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "Build succeeded",
+            stderr: "",
+          })
+          // Mock defaults read for bundle ID (happens BEFORE simulator operations)
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: mockBundleId,
+            stderr: "",
+          })
+          // Mock simctl list --json with 3-part version
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: JSON.stringify({
+              devices: {
+                "com.apple.CoreSimulator.SimRuntime.iOS-18-0-1": [
+                  {
+                    name: "iPhone 15",
+                    udid: mockUDID,
+                    state: "Booted",
+                  },
+                ],
+              },
+            }),
+            stderr: "",
+          })
+          // Mock simctl list for ensureSimulatorRunning (not --json)
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: `${mockUDID}) (Booted)`,
+            stderr: "",
+          })
+          // Mock simctl install (no boot needed since already Booted)
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          })
+          // Mock simctl launch
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          });
+
+        const result = await buildAndLaunch({
+          project_path: mockProjectPath,
+          scheme: mockScheme,
+          destination: platformDestination,
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.data?.simulator_udid).toBe(mockUDID);
+      });
+
+      it("should return error when device not found in platform format", async () => {
+        const platformDestination =
+          "platform=iOS Simulator,name=iPhone 99,OS=18.0";
+
+        mockResolveDestination.mockResolvedValue({
+          destination: platformDestination,
+          wasResolved: false,
+        });
+
+        // Mock successful build
+        mockRunCommand
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "Build succeeded",
+            stderr: "",
+          })
+          // Mock defaults read for bundle ID (happens BEFORE simulator operations)
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: mockBundleId,
+            stderr: "",
+          })
+          // Mock simctl list --json with no matching device
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: JSON.stringify({
+              devices: {
+                "com.apple.CoreSimulator.SimRuntime.iOS-18-0": [
+                  {
+                    name: "iPhone 15",
+                    udid: "OTHER-UDID",
+                    state: "Shutdown",
+                  },
+                ],
+              },
+            }),
+            stderr: "",
+          });
+
+        mockListAvailableSimulators.mockResolvedValue([
+          {
+            name: "iPhone 15",
+            udid: "OTHER-UDID",
+            runtime: "iOS",
+            osVersion: "18.0",
+            available: true,
+          },
+        ]);
+
+        const result = await buildAndLaunch({
+          project_path: mockProjectPath,
+          scheme: mockScheme,
+          destination: platformDestination,
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error).toContain('Could not find simulator "iPhone 99"');
+      });
+
+      it("should handle platform format without OS version", async () => {
+        const platformDestination = "platform=iOS Simulator,name=iPhone 15";
+
+        mockResolveDestination.mockResolvedValue({
+          destination: platformDestination,
+          wasResolved: false,
+        });
+
+        // Mock successful build
+        mockRunCommand
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "Build succeeded",
+            stderr: "",
+          })
+          // Mock defaults read for bundle ID (happens BEFORE simulator operations)
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: mockBundleId,
+            stderr: "",
+          })
+          // Mock simctl list --json - takes first available match
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: JSON.stringify({
+              devices: {
+                "com.apple.CoreSimulator.SimRuntime.iOS-17-5": [
+                  {
+                    name: "iPhone 15",
+                    udid: "OLD-UDID",
+                    state: "Shutdown",
+                  },
+                ],
+                "com.apple.CoreSimulator.SimRuntime.iOS-18-0": [
+                  {
+                    name: "iPhone 15",
+                    udid: mockUDID,
+                    state: "Shutdown",
+                  },
+                ],
+              },
+            }),
+            stderr: "",
+          })
+          // Mock simctl list for ensureSimulatorRunning (not --json)
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: `OLD-UDID) (Shutdown)`,
+            stderr: "",
+          })
+          // Mock simctl boot
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          })
+          // Mock simctl install
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          })
+          // Mock simctl launch
+          .mockResolvedValueOnce({
+            code: 0,
+            stdout: "",
+            stderr: "",
+          });
+
+        const result = await buildAndLaunch({
+          project_path: mockProjectPath,
+          scheme: mockScheme,
+          destination: platformDestination,
+        });
+
+        expect(result.success).toBe(true);
+        // Should use first available match (OLD-UDID from iOS 17.5)
+        expect(result.data?.simulator_udid).toBe("OLD-UDID");
+      });
     });
   });
 });
