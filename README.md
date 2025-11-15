@@ -8,7 +8,7 @@
 
 Build, test, and automate iOS apps through natural conversation with Claude. 8 workflow-specific MCP servers with 23 tools across Xcode, Simulator, and IDB.
 
-Tools are grouped into MCPs - you enable the ones you're currently need and disable others to optimise context.
+**Enable only what you need.** Each MCP is purpose-built for specific workflows, keeping your context window lean. Plus, our tools intelligently encapsulate Xcode output (errors, test results, build logs) so Claude processes structured JSON instead of raw 50+ line logs—saving significant tokens and enabling faster feedback loops.
 
 <img width="1278" height="407" alt="Screenshot 2025-11-08 at 10 44 28" src="https://github.com/user-attachments/assets/ff1c0a09-f29d-4a86-a280-97b3bbc8c635" />
 
