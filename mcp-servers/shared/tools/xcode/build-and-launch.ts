@@ -296,10 +296,14 @@ export async function buildAndLaunch(
             ? errors.join("\n")
             : `Build failed with no detailed error output. Check xcodebuild log for more information.`;
 
+        // Always append simulator suggestions on failure for quick recovery
+        const simulatorSuggestions = await formatSimulatorSuggestions();
+        const fullDetails = `${errorDetails}\n\n---\n\n${simulatorSuggestions}`;
+
         return {
           success: false,
           error: `Build failed in ${result.build_duration}s`,
-          details: errorDetails,
+          details: fullDetails,
         };
       }
     }
@@ -335,10 +339,17 @@ export async function buildAndLaunch(
     );
 
     if (installResult.code !== 0) {
+      // Include stderr and simulator suggestions for install failures
+      const simulatorSuggestions = await formatSimulatorSuggestions();
+      const installErrorDetails =
+        installResult.stderr ||
+        "Installation failed without detailed error output";
+      const fullDetails = `${installErrorDetails}\n\n---\n\n${simulatorSuggestions}`;
+
       return {
         success: false,
         error: `Installation failed in ${result.install_duration}s`,
-        details: installResult.stderr,
+        details: fullDetails,
       };
     }
 
@@ -356,10 +367,16 @@ export async function buildAndLaunch(
     result.launch_duration = ((Date.now() - launchStartTime) / 1000).toFixed(1);
 
     if (launchResult.code !== 0) {
+      // Include stderr and simulator suggestions for launch failures
+      const simulatorSuggestions = await formatSimulatorSuggestions();
+      const launchErrorDetails =
+        launchResult.stderr || "Launch failed without detailed error output";
+      const fullDetails = `${launchErrorDetails}\n\n---\n\n${simulatorSuggestions}`;
+
       return {
         success: false,
         error: `Launch failed in ${result.launch_duration}s`,
-        details: launchResult.stderr,
+        details: fullDetails,
       };
     }
 
