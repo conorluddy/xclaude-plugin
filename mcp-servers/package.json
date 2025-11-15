@@ -6,15 +6,15 @@
   "type": "module",
   "scripts": {
     "build": "npm run build:all",
-    "build:all": "npm run build:xc-compile && npm run build:xc-interact && npm run build:xc-build && npm run build:xc-ai-assist && npm run build:xc-setup && npm run build:xc-testing && npm run build:xc-meta && npm run build:xc-hybrid",
-    "build:xc-compile": "npm run build --workspace=xc-compile",
-    "build:xc-interact": "npm run build --workspace=xc-interact",
+    "build:all": "npm run build:xc-build && npm run build:xc-run && npm run build:xc-interact && npm run build:xc-ai-assist && npm run build:xc-setup && npm run build:xc-testing && npm run build:xc-meta && npm run build:xc-all",
     "build:xc-build": "npm run build --workspace=xc-build",
+    "build:xc-run": "npm run build --workspace=xc-run",
+    "build:xc-interact": "npm run build --workspace=xc-interact",
     "build:xc-ai-assist": "npm run build --workspace=xc-ai-assist",
     "build:xc-setup": "npm run build --workspace=xc-setup",
     "build:xc-testing": "npm run build --workspace=xc-testing",
     "build:xc-meta": "npm run build --workspace=xc-meta",
-    "build:xc-hybrid": "npm run build --workspace=xc-hybrid",
+    "build:xc-all": "npm run build --workspace=xc-all",
     "watch": "npm run watch --workspaces --if-present",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -24,14 +24,14 @@
     "install-all": "npm install --workspaces"
   },
   "workspaces": [
-    "xc-compile",
-    "xc-interact",
     "xc-build",
+    "xc-run",
+    "xc-interact",
     "xc-ai-assist",
     "xc-setup",
     "xc-testing",
     "xc-meta",
-    "xc-hybrid"
+    "xc-all"
   ],
   "devDependencies": {
     "@types/node": "^20.0.0",

@@ -27,8 +27,8 @@ export const xcodeTestDefinition = {
                     '- Auto-resolve (best): "platform=iOS Simulator,name=iPhone 15" (finds latest OS automatically)\n' +
                     '- Explicit: "platform=iOS Simulator,name=iPhone 15,OS=18.0"\n' +
                     '- UDID: "id=ABC-123-DEF" (if you know the simulator UDID)\n\n' +
-                    'COMMON ERROR: Omitting destination causes Xcode to target Mac/physical device, resulting in provisioning/signing failures.\n' +
-                    'Use simulator_list tool first to find available simulators if needed.',
+                    "COMMON ERROR: Omitting destination causes Xcode to target Mac/physical device, resulting in provisioning/signing failures.\n" +
+                    "Use simulator_list tool first to find available simulators if needed.",
             },
             test_plan: {
                 type: "string",

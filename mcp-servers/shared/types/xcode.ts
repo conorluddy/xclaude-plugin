@@ -8,7 +8,7 @@
 export interface BuildParams {
   project_path?: string;
   scheme: string;
-  configuration?: 'Debug' | 'Release';
+  configuration?: "Debug" | "Release";
   destination?: string;
   sdk?: string;
   arch?: string;
@@ -32,7 +32,7 @@ export interface TestParams {
   project_path?: string;
   scheme: string;
   destination?: string;
-  configuration?: 'Debug' | 'Release';
+  configuration?: "Debug" | "Release";
   test_plan?: string;
   only_testing?: string[];
   skip_testing?: string[];
@@ -92,4 +92,28 @@ export interface VersionResultData {
   build_number?: string;
   message: string;
   sdks?: string[];
+}
+
+/**
+ * Build and run operation parameters
+ */
+export interface BuildAndRunParams {
+  project_path?: string;
+  scheme: string;
+  configuration?: "Debug" | "Release";
+  destination?: string;
+  skip_build?: boolean;
+}
+
+/**
+ * Build and run result data
+ */
+export interface BuildAndRunResultData {
+  message: string;
+  build_duration?: string;
+  install_duration?: string;
+  launch_duration?: string;
+  bundle_id?: string;
+  app_path?: string;
+  simulator_udid?: string;
 }

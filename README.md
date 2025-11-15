@@ -6,9 +6,9 @@
 
 **Modular iOS development automation for Claude Code**
 
-Build, test, and automate iOS apps through natural conversation with Claude. 7 workflow-specific MCP servers with 22 tools across Xcode, Simulator, and IDB.
+Build, test, and automate iOS apps through natural conversation with Claude. 8 workflow-specific MCP servers with 23 tools across Xcode, Simulator, and IDB.
 
-Tools are grouped into MCPs - you enable the ones you're currently need and disable others to optimise context. I still need to revise and optimise the groupings.
+Tools are grouped into MCPs - you enable the ones you're currently need and disable others to optimise context.
 
 <img width="1278" height="407" alt="Screenshot 2025-11-08 at 10 44 28" src="https://github.com/user-attachments/assets/ff1c0a09-f29d-4a86-a280-97b3bbc8c635" />
 
@@ -16,14 +16,15 @@ Tools are grouped into MCPs - you enable the ones you're currently need and disa
 
 ### 🎯 Modular Architecture
 
-- **7 workflow-specific MCP servers** (600-3500 tokens each)
+- **8 workflow-specific MCP servers** (600-3500 tokens each)
 - **Enable only what you need** - Ultra-minimal to full-featured
-- **22 shared tools** across Xcode, Simulator, and IDB
+- **23 shared tools** across Xcode, Simulator, and IDB
 - **Single source of truth** - tools defined once, imported by MCPs
 
 ### 🔥 Surgical MCPs (Ultra-Focused)
 
 - **xc-build** (~600 tokens) - Build, clean, list schemes
+- **xc-run** (~800 tokens) - Build, build+run, clean (rapid development)
 - **xc-interact** (~900 tokens) - Pure UI interaction, no build
 
 ### 📦 Core Workflow MCPs
@@ -35,7 +36,7 @@ Tools are grouped into MCPs - you enable the ones you're currently need and disa
 
 ### 🚀 Full Access
 
-- **xc-hybrid** (~3500 tokens) - All 22 tools for complex workflows
+- **xc-all** (~3500 tokens) - All 23 tools for complex workflows
 
 ### 📚 8 Procedural Skills (Loaded On-Demand)
 
@@ -79,12 +80,13 @@ Tools are grouped into MCPs - you enable the ones you're currently need and disa
 
 ```
 ☐ xc-build          # Building, cleaning, listing schemes? (~600 tokens)
+☐ xc-run            # Rapid dev: build & install & launch? (~800 tokens)
 ☐ xc-interact       # Testing UI with app already built? (~900 tokens)
 ☐ xc-ai-assist      # AI-driven UI iteration? (~1400 tokens)
 ☐ xc-setup          # First time setup? (~800 tokens)
 ☐ xc-testing        # Running test suites? (~1200 tokens)
 ☐ xc-meta           # Maintenance tasks? (~700 tokens)
-☐ xc-hybrid         # Complex workflow needing everything? (~3500 tokens)
+☐ xc-all            # Complex workflow needing everything? (~3500 tokens)
 ```
 
 ### Example Workflows
@@ -131,21 +133,22 @@ Enable: xc-ai-assist (~1400 tokens)
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  Shared Tool Library (22 tools)                     │
-│  ├─ Xcode (5): build, clean, test, list, version   │
+│  Shared Tool Library (23 tools)                     │
+│  ├─ Xcode (6): build, build+run, clean, test, list, version │
 │  ├─ Simulator (12): boot, install, screenshot, etc.│
 │  └─ IDB (6): describe, tap, input, gesture, etc.   │
 └─────────────────────────────────────────────────────┘
          ↓ Tools imported by MCP servers ↓
 ┌─────────────────────────────────────────────────────┐
-│  7 Workflow-Specific MCP Servers                    │
+│  8 Workflow-Specific MCP Servers                    │
 │  ├─ xc-build:       3 tools   (~600 tokens)        │
+│  ├─ xc-run:         4 tools   (~800 tokens)        │
 │  ├─ xc-interact:    6 tools   (~900 tokens)        │
 │  ├─ xc-ai-assist:   7 tools   (~1400 tokens)       │
 │  ├─ xc-setup:       5 tools   (~800 tokens)        │
 │  ├─ xc-testing:     6 tools   (~1200 tokens)       │
 │  ├─ xc-meta:        6 tools   (~700 tokens)        │
-│  └─ xc-hybrid:      23 tools  (~3500 tokens)       │
+│  └─ xc-all:         24 tools  (~3500 tokens)       │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -172,6 +175,7 @@ Enable: xc-ai-assist (~1400 tokens)
 | MCP             | Tools | Token Cost | Use When                                               |
 | --------------- | ----- | ---------- | ------------------------------------------------------ |
 | **xc-build**    | 3     | ~600       | Build validation with clean/scheme discovery            |
+| **xc-run**      | 4     | ~800       | Rapid development: build + install + launch            |
 | **xc-interact** | 6     | ~900       | Testing UI flows with app already built                |
 
 ### 📦 Core Workflow MCPs
@@ -186,17 +190,18 @@ Enable: xc-ai-assist (~1400 tokens)
 
 ### 🚀 Full Access
 
-| MCP           | Tools | Token Cost | Use When                             |
-| ------------- | ----- | ---------- | ------------------------------------ |
-| **xc-hybrid** | 23    | ~3500      | Complex workflows needing everything |
+| MCP       | Tools | Token Cost | Use When                             |
+| --------- | ----- | ---------- | ------------------------------------ |
+| **xc-all** | 23    | ~3500      | Complex workflows needing everything |
 
-**Pro tip**: Don't enable multiple MCPs simultaneously - tool duplication will increase token usage! Use xc-hybrid instead for multi-workflow sessions.
+**Pro tip**: Don't enable multiple MCPs simultaneously - tool duplication will increase token usage! Use xc-all instead for multi-workflow sessions.
 
-## Tool Library (22 Total)
+## Tool Library (23 Total)
 
-### Xcode Tools (5)
+### Xcode Tools (6)
 
 - `xcode_build` - Build with automatic error extraction
+- `xcode_build_and_run` - Build, install, and launch on simulator
 - `xcode_clean` - Clean build artifacts
 - `xcode_test` - Run XCTest suites
 - `xcode_list` - List schemes/targets
@@ -284,7 +289,7 @@ The xclaude-plugin provides 8 modular MCPs with 22 specialized iOS tools. **Alwa
 - Non-coding iOS project operations
 - Environment housekeeping
 
-**Use `xc-hybrid`** (~3500 tokens) when:
+**Use `xc-all`** (~3500 tokens) when:
 
 - Complex workflows requiring multiple tool categories
 - Don't know which single MCP fits the task
@@ -449,17 +454,18 @@ xclaude-plugin/
 │   ├── plugin.json           # Plugin manifest (8 MCP servers)
 │   └── marketplace.json      # Marketplace configuration
 ├── mcp-servers/              # 8 modular MCP servers
-│   ├── shared/               # Shared tool library (22 tools)
+│   ├── shared/               # Shared tool library (23 tools)
 │   │   ├── tools/            # Tool implementations
 │   │   ├── types/            # Shared type definitions
 │   │   └── utils/            # Command execution utilities
 │   ├── xc-build/             # MCP 1: Build validation
-│   ├── xc-interact/          # MCP 2: Pure UI interaction
-│   ├── xc-ai-assist/         # MCP 3: AI UI automation
-│   ├── xc-setup/             # MCP 4: Environment setup
-│   ├── xc-testing/           # MCP 5: Test execution
-│   ├── xc-meta/              # MCP 6: Maintenance
-│   └── xc-hybrid/            # MCP 7: Full toolkit
+│   ├── xc-run/               # MCP 2: Rapid development
+│   ├── xc-interact/          # MCP 3: Pure UI interaction
+│   ├── xc-ai-assist/         # MCP 4: AI UI automation
+│   ├── xc-setup/             # MCP 5: Environment setup
+│   ├── xc-testing/           # MCP 6: Test execution
+│   ├── xc-meta/              # MCP 7: Maintenance
+│   └── xc-all/               # MCP 8: Full toolkit
 ├── skills/                   # 8 Skills (markdown + YAML)
 │   ├── xcode-workflows/
 │   ├── simulator-workflows/
@@ -484,11 +490,11 @@ Query accessibility tree (120ms, ~50 tokens) before screenshots (2000ms, ~170 to
 
 ### Single Source of Truth
 
-22 tools defined once in shared library, imported by 8 MCPs. Update once, benefit everywhere. Type-safe with zero `any` usage.
+23 tools defined once in shared library, imported by 8 MCPs. Update once, benefit everywhere. Type-safe with zero `any` usage.
 
 ### Workflow-Based Organization
 
-MCPs named by developer workflow phase, not technology domain. xc-build for build validation, xc-setup for environment, xc-hybrid for complex sessions.
+MCPs named by developer workflow phase, not technology domain. xc-build for build validation, xc-setup for environment, xc-all for complex sessions.
 
 ## Contributing
 

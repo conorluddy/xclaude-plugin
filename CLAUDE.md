@@ -4,14 +4,14 @@ This file provides essential guidance to Claude Code when working with the xclau
 
 ## Project Overview
 
-**xclaude-plugin** is a production-ready MCP (Model Context Protocol) plugin for iOS development automation. It provides 7 modular, workflow-specific MCP servers that consolidate 22 iOS operations across build, test, simulator control, and UI automation.
+**xclaude-plugin** is a production-ready MCP (Model Context Protocol) plugin for iOS development automation. It provides 8 modular, workflow-specific MCP servers that consolidate 23 iOS operations across build, test, simulator control, and UI automation.
 
 **Status**: ✅ Production-ready (v0.3.0) - All operations fully implemented, tested, and with codecov integration.
 
 **Key Features**:
 
-- **7 modular MCP servers** - Workflow-specific, composable architecture
-- **22 total operations** across Xcode, Simulator, and IDB domains
+- **8 modular MCP servers** - Workflow-specific, composable architecture
+- **23 total operations** across Xcode, Simulator, and IDB domains
 - **8 procedural Skills** (on-demand documentation with examples)
 - **100% TypeScript** with zero tolerance for `any` types
 - **Full test coverage** with codecov reporting
@@ -26,15 +26,15 @@ xclaude-plugin/
 ├── .claude-plugin/                # Plugin configuration
 │   ├── plugin.json               # Plugin manifest (entry point)
 │   └── marketplace.json          # Marketplace configuration
-├── mcp-servers/                   # 7 modular MCP servers
-│   ├── xc-setup/                 # Health check, project info
+├── mcp-servers/                   # 8 modular MCP servers
 │   ├── xc-build/                 # Build, clean, list schemes
-│   ├── xc-testing/               # Test execution, results parsing
+│   ├── xc-run/                   # Build, install, launch
 │   ├── xc-interact/              # Simulator + IDB UI automation
-│   ├── xc-hybrid/                # All-in-one consolidated server
 │   ├── xc-ai-assist/             # AI-specific workflows
-│   ├── xc-build/                 # Advanced build operations
+│   ├── xc-setup/                 # Health check, project info
+│   ├── xc-testing/               # Test execution, results parsing
 │   ├── xc-meta/                  # Metadata and introspection
+│   └── xc-all/                   # All-in-one consolidated server
 │   └── [each server]/
 │       ├── src/
 │       │   ├── index.ts          # Server entry point
