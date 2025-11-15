@@ -23,9 +23,9 @@ import {
   xcodeListDefinition,
 } from "../../shared/tools/xcode/list.js";
 import {
-  buildAndRun,
-  xcodeBuildAndRunDefinition,
-} from "../../shared/tools/xcode/build-and-run.js";
+  buildAndLaunch,
+  xcodeBuildAndLaunchDefinition,
+} from "../../shared/tools/xcode/build-and-launch.js";
 
 class XCBuildAndLaunchServer {
   private server: Server;
@@ -53,7 +53,7 @@ class XCBuildAndLaunchServer {
     // List tools
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: [
-        xcodeBuildAndRunDefinition,
+        xcodeBuildAndLaunchDefinition,
         xcodeCleanDefinition,
         xcodeListDefinition,
       ],
@@ -64,14 +64,15 @@ class XCBuildAndLaunchServer {
       const { name, arguments: args } = request.params;
 
       switch (name) {
-        case "xcode_build_and_run":
+        case "xcode_build_and_launch":
+        case "xcode_build_and_run": // Backward compatibility
           return {
             content: [
               {
                 type: "text",
                 text: JSON.stringify(
-                  await buildAndRun(
-                    args as unknown as Parameters<typeof buildAndRun>[0],
+                  await buildAndLaunch(
+                    args as unknown as Parameters<typeof buildAndLaunch>[0],
                   ),
                 ),
               },

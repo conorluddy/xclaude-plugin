@@ -1,15 +1,15 @@
 /**
- * Xcode Build and Run Tool
+ * Xcode Build and Launch Tool
  *
  * Combines build, install, and launch for rapid development workflow
  */
-import { runCommand, findXcodeProject } from "../../utils/command.js";
+import { runCommand, findXcodeProject, extractBuildErrors, } from "../../utils/command.js";
 import { logger } from "../../utils/logger.js";
-import { resolveDestination } from "../../utils/destination.js";
+import { resolveDestination, listAvailableSimulators, } from "../../utils/destination.js";
 import * as fs from "fs/promises";
 import * as path from "path";
-export const xcodeBuildAndRunDefinition = {
-    name: "xcode_build_and_run",
+export const xcodeBuildAndLaunchDefinition = {
+    name: "xcode_build_and_launch",
     description: "Build, install, and launch iOS app on simulator",
     inputSchema: {
         type: "object",
@@ -88,13 +88,33 @@ async function extractBundleIdentifier(appPath) {
     }
 }
 /**
+ * Format available simulators as helpful suggestions
+ */
+async function formatSimulatorSuggestions() {
+    try {
+        const devices = await listAvailableSimulators();
+        const available = devices.filter((d) => d.available).slice(0, 5);
+        if (available.length === 0) {
+            return "No available simulators found.";
+        }
+        const suggestions = available
+            .map((d) => `- ${d.name} (iOS ${d.osVersion}) - id=${d.udid}`)
+            .join("\n");
+        return `Available simulators:\n${suggestions}${available.length > 5 ? "\n... and more" : ""}\n\nUsage example: destination="id=${available[0]?.udid}"`;
+    }
+    catch {
+        return "Could not retrieve available simulators.";
+    }
+}
+/**
  * Ensure simulator is running and return its UDID
  */
 async function ensureSimulatorRunning(destination) {
     // Extract UDID from destination
     const udidMatch = destination.match(/id=([A-Za-z0-9-]+)/);
     if (!udidMatch) {
-        throw new Error("Could not extract simulator UDID from destination - use explicit id= format or full platform/name/OS");
+        const suggestions = await formatSimulatorSuggestions();
+        throw new Error(`Could not extract simulator UDID from destination.\n\n${suggestions}`);
     }
     const udid = udidMatch[1];
     // Check if simulator is running
@@ -104,6 +124,12 @@ async function ensureSimulatorRunning(destination) {
         logger.info(`Booting simulator ${udid}...`);
         const bootResult = await runCommand("xcrun", ["simctl", "boot", udid]);
         if (bootResult.code !== 0) {
+            // Check if this is an "Invalid device" error
+            if (bootResult.stderr.includes("Invalid device") ||
+                bootResult.stderr.includes("No such file")) {
+                const suggestions = await formatSimulatorSuggestions();
+                throw new Error(`Simulator ${udid} not found or unavailable.\n\n${suggestions}`);
+            }
             logger.warn(`Failed to boot simulator: ${bootResult.stderr}`);
             // Continue anyway - it might already be booted
         }
@@ -113,7 +139,7 @@ async function ensureSimulatorRunning(destination) {
 /**
  * Build iOS app and immediately install and launch on simulator
  */
-export async function buildAndRun(params) {
+export async function buildAndLaunch(params) {
     try {
         // Validation
         if (!params.scheme) {
@@ -142,6 +168,17 @@ export async function buildAndRun(params) {
         // Resolve destination
         const resolution = await resolveDestination(params.destination, projectPath);
         if (resolution.warning) {
+            // If the warning is about a simulator not being found, provide helpful suggestions
+            if (resolution.warning.includes("No available simulator found") ||
+                resolution.warning.includes("Failed to resolve destination")) {
+                const suggestions = await formatSimulatorSuggestions();
+                return {
+                    success: false,
+                    error: resolution.warning,
+                    details: suggestions,
+                    operation: "build_and_run",
+                };
+            }
             logger.warn(`Destination warning: ${resolution.warning}`);
         }
         const resolvedDest = resolution.destination;
@@ -171,10 +208,15 @@ export async function buildAndRun(params) {
             const buildResult = await runCommand("xcodebuild", buildArgs);
             result.build_duration = ((Date.now() - buildStartTime) / 1000).toFixed(1);
             if (buildResult.code !== 0) {
+                // Extract detailed errors and warnings from build output
+                const errors = extractBuildErrors(buildResult.stdout + "\n" + buildResult.stderr);
+                const errorDetails = errors.length > 0
+                    ? errors.join("\n")
+                    : `Build failed with no detailed error output. Check xcodebuild log for more information.`;
                 return {
                     success: false,
                     error: `Build failed in ${result.build_duration}s`,
-                    details: buildResult.stderr,
+                    details: errorDetails,
                 };
             }
         }
@@ -228,7 +270,7 @@ export async function buildAndRun(params) {
         const totalDuration = parseFloat(result.build_duration || "0") +
             parseFloat(result.install_duration || "0") +
             parseFloat(result.launch_duration || "0");
-        result.message = `Build and run successful in ${totalDuration.toFixed(1)}s (build: ${result.build_duration}s, install: ${result.install_duration}s, launch: ${result.launch_duration}s)`;
+        result.message = `Build and launch successful in ${totalDuration.toFixed(1)}s (build: ${result.build_duration}s, install: ${result.install_duration}s, launch: ${result.launch_duration}s)`;
         return {
             success: true,
             data: result,
@@ -244,3 +286,6 @@ export async function buildAndRun(params) {
         };
     }
 }
+// Backward compatibility exports
+export const xcodeBuildAndRunDefinition = xcodeBuildAndLaunchDefinition;
+export const buildAndRun = buildAndLaunch;

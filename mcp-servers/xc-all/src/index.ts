@@ -20,9 +20,9 @@ import {
   xcodeBuildDefinition,
 } from "../../shared/tools/xcode/build.js";
 import {
-  buildAndRun,
-  xcodeBuildAndRunDefinition,
-} from "../../shared/tools/xcode/build-and-run.js";
+  buildAndLaunch,
+  xcodeBuildAndLaunchDefinition,
+} from "../../shared/tools/xcode/build-and-launch.js";
 import {
   xcodeClean,
   xcodeCleanDefinition,
@@ -137,7 +137,7 @@ class XCAllServer {
       tools: [
         // Xcode (6 tools)
         xcodeBuildDefinition,
-        xcodeBuildAndRunDefinition,
+        xcodeBuildAndLaunchDefinition,
         xcodeCleanDefinition,
         xcodeTestDefinition,
         xcodeListDefinition,
@@ -183,14 +183,15 @@ class XCAllServer {
               },
             ],
           };
-        case "xcode_build_and_run":
+        case "xcode_build_and_launch":
+        case "xcode_build_and_run": // Backward compatibility
           return {
             content: [
               {
                 type: "text",
                 text: JSON.stringify(
-                  await buildAndRun(
-                    args as unknown as Parameters<typeof buildAndRun>[0],
+                  await buildAndLaunch(
+                    args as unknown as Parameters<typeof buildAndLaunch>[0],
                   ),
                 ),
               },

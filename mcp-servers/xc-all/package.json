@@ -1,6 +1,6 @@
 {
   "name": "@xclaude/xc-all",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Full iOS development toolkit MCP with all 23 tools for human+AI collaboration",
   "type": "module",
   "main": "dist/index.js",

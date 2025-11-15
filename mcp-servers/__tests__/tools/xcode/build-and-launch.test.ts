@@ -1,9 +1,9 @@
 /**
- * Tests for build-and-run.ts - Build, install, and launch tool
+ * Tests for build-and-launch.ts - Build, install, and launch tool
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { buildAndRun } from "../../../shared/tools/xcode/build-and-run.js";
+import { buildAndLaunch } from "../../../shared/tools/xcode/build-and-launch.js";
 
 // Mock command execution
 vi.mock("../../../shared/utils/command.js", () => ({
@@ -21,6 +21,7 @@ vi.mock("fs/promises", () => ({
 // Mock destination resolver
 vi.mock("../../../shared/utils/destination.js", () => ({
   resolveDestination: vi.fn(),
+  listAvailableSimulators: vi.fn(),
 }));
 
 import * as command from "../../../shared/utils/command.js";
@@ -31,12 +32,17 @@ const mockRunCommand = command.runCommand as ReturnType<typeof vi.fn>;
 const mockFindXcodeProject = command.findXcodeProject as ReturnType<
   typeof vi.fn
 >;
+const mockExtractBuildErrors = command.extractBuildErrors as ReturnType<
+  typeof vi.fn
+>;
 const mockResolveDestination = destination.resolveDestination as ReturnType<
   typeof vi.fn
 >;
+const mockListAvailableSimulators =
+  destination.listAvailableSimulators as ReturnType<typeof vi.fn>;
 const mockReaddir = fs.readdir as ReturnType<typeof vi.fn>;
 
-describe("Build and Run Tool", () => {
+describe("Build and Launch Tool", () => {
   const mockProjectPath = "/path/to/MyApp.xcodeproj";
   const mockScheme = "MyApp";
   const mockDestination = "platform=iOS Simulator,name=iPhone 15,OS=18.0";
@@ -55,9 +61,9 @@ describe("Build and Run Tool", () => {
     });
   });
 
-  describe("buildAndRun", () => {
+  describe("buildAndLaunch", () => {
     it("should validate scheme is required", async () => {
-      const result = await buildAndRun({
+      const result = await buildAndLaunch({
         destination: mockDestination,
       } as any);
 
@@ -66,7 +72,7 @@ describe("Build and Run Tool", () => {
     });
 
     it("should validate destination is required", async () => {
-      const result = await buildAndRun({
+      const result = await buildAndLaunch({
         scheme: mockScheme,
       } as any);
 
@@ -81,7 +87,7 @@ describe("Build and Run Tool", () => {
         stderr: "No project",
       });
 
-      await buildAndRun({
+      await buildAndLaunch({
         scheme: mockScheme,
         destination: mockDestination,
       });
@@ -92,7 +98,7 @@ describe("Build and Run Tool", () => {
     it("should return error if project not found", async () => {
       mockFindXcodeProject.mockResolvedValue(null);
 
-      const result = await buildAndRun({
+      const result = await buildAndLaunch({
         scheme: mockScheme,
         destination: mockDestination,
       });
@@ -108,7 +114,7 @@ describe("Build and Run Tool", () => {
         stderr: "",
       });
 
-      await buildAndRun({
+      await buildAndLaunch({
         project_path: mockProjectPath,
         scheme: mockScheme,
         destination: "platform=iOS Simulator,name=iPhone 15",
@@ -128,7 +134,7 @@ describe("Build and Run Tool", () => {
         stderr: "",
       });
 
-      await buildAndRun({
+      await buildAndLaunch({
         project_path: workspacePath,
         scheme: mockScheme,
         destination: mockDestination,
@@ -150,7 +156,7 @@ describe("Build and Run Tool", () => {
         stderr: "",
       });
 
-      await buildAndRun({
+      await buildAndLaunch({
         project_path: mockProjectPath,
         scheme: mockScheme,
         destination: mockDestination,
@@ -172,7 +178,7 @@ describe("Build and Run Tool", () => {
         stderr: "",
       });
 
-      await buildAndRun({
+      await buildAndLaunch({
         project_path: mockProjectPath,
         scheme: mockScheme,
         destination: mockDestination,
@@ -194,7 +200,7 @@ describe("Build and Run Tool", () => {
         stderr: "",
       });
 
-      await buildAndRun({
+      await buildAndLaunch({
         project_path: mockProjectPath,
         scheme: mockScheme,
         destination: mockDestination,
@@ -208,13 +214,23 @@ describe("Build and Run Tool", () => {
     });
 
     it("should return error if build fails", async () => {
+      const buildStdout = `Build output
+error: Cannot find 'foo' in scope
+warning: Unused variable 'bar'
+Build failed`;
+
       mockRunCommand.mockResolvedValue({
         code: 1,
-        stdout: "Build output",
-        stderr: "Build failed",
+        stdout: buildStdout,
+        stderr: "",
       });
 
-      const result = await buildAndRun({
+      mockExtractBuildErrors.mockReturnValue([
+        "error: Cannot find 'foo' in scope",
+        "warning: Unused variable 'bar'",
+      ]);
+
+      const result = await buildAndLaunch({
         project_path: mockProjectPath,
         scheme: mockScheme,
         destination: mockDestination,
@@ -222,6 +238,9 @@ describe("Build and Run Tool", () => {
 
       expect(result.success).toBe(false);
       expect(result.error).toContain("Build failed");
+      expect(result.details).toContain("error: Cannot find 'foo' in scope");
+      expect(result.details).toContain("warning: Unused variable 'bar'");
+      expect(mockExtractBuildErrors).toHaveBeenCalledWith(buildStdout + "\n");
     });
 
     it("should skip build if skip_build is true", async () => {
@@ -247,7 +266,7 @@ describe("Build and Run Tool", () => {
 
       (fs.readdir as any) = readdirMock;
 
-      await buildAndRun({
+      await buildAndLaunch({
         project_path: mockProjectPath,
         scheme: mockScheme,
         destination: mockDestination,
@@ -261,6 +280,75 @@ describe("Build and Run Tool", () => {
       expect(buildCalls).toHaveLength(0);
 
       (fs.readdir as any) = originalReaddir;
+    });
+
+    it("should return error if simulator not found during destination resolution", async () => {
+      mockResolveDestination.mockResolvedValue({
+        destination: mockDestination,
+        wasResolved: false,
+        warning:
+          'No available simulator found for "iPhone 14". Available: iPhone 15, iPhone 16',
+      });
+
+      mockListAvailableSimulators.mockResolvedValue([
+        {
+          name: "iPhone 15",
+          udid: "UDID-15",
+          runtime: "iOS",
+          osVersion: "18.0",
+          available: true,
+        },
+        {
+          name: "iPhone 16",
+          udid: "UDID-16",
+          runtime: "iOS",
+          osVersion: "18.0",
+          available: true,
+        },
+      ]);
+
+      const result = await buildAndLaunch({
+        project_path: mockProjectPath,
+        scheme: mockScheme,
+        destination: "platform=iOS Simulator,name=iPhone 14",
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("No available simulator found");
+      expect(result.details).toContain("Available simulators");
+      expect(result.details).toContain("iPhone 15");
+      expect(result.details).toContain("iPhone 16");
+    });
+
+    it("should return error with simulator suggestions if destination resolution fails", async () => {
+      mockResolveDestination.mockResolvedValue({
+        destination: "platform=iOS Simulator,name=iPhone 14,OS=18.0",
+        wasResolved: false,
+        warning:
+          'No available simulator found for "iPhone 14". Available: iPhone 15',
+      });
+
+      mockListAvailableSimulators.mockResolvedValue([
+        {
+          name: "iPhone 15",
+          udid: "UDID-15",
+          runtime: "iOS",
+          osVersion: "18.0",
+          available: true,
+        },
+      ]);
+
+      const result = await buildAndLaunch({
+        project_path: mockProjectPath,
+        scheme: mockScheme,
+        destination: "platform=iOS Simulator,name=iPhone 14",
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("No available simulator found");
+      expect(result.details).toContain("Available simulators");
+      expect(result.details).toContain("iPhone 15");
+      expect(result.details).toContain("id=UDID-15");
     });
   });
 });

@@ -95,9 +95,9 @@ export interface VersionResultData {
 }
 
 /**
- * Build and run operation parameters
+ * Build and launch operation parameters
  */
-export interface BuildAndRunParams {
+export interface BuildAndLaunchParams {
   project_path?: string;
   scheme: string;
   configuration?: "Debug" | "Release";
@@ -106,9 +106,9 @@ export interface BuildAndRunParams {
 }
 
 /**
- * Build and run result data
+ * Build and launch result data
  */
-export interface BuildAndRunResultData {
+export interface BuildAndLaunchResultData {
   message: string;
   build_duration?: string;
   install_duration?: string;
@@ -117,3 +117,7 @@ export interface BuildAndRunResultData {
   app_path?: string;
   simulator_udid?: string;
 }
+
+// Backward compatibility aliases
+export type BuildAndRunParams = BuildAndLaunchParams;
+export type BuildAndRunResultData = BuildAndLaunchResultData;

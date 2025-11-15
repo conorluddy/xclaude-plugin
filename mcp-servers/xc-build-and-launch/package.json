@@ -1,6 +1,6 @@
 {
   "name": "@xclaude/xc-build-and-launch",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Build, install, and launch iOS app on simulator - rapid development MCP",
   "type": "module",
   "main": "dist/index.js",
