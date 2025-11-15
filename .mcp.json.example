@@ -7,9 +7,16 @@
         "XC_LOG_LEVEL": "info"
       }
     },
-    "xc-compile": {
+    "xc-build": {
       "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-compile/dist/index.js"],
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-build/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info"
+      }
+    },
+    "xc-build-and-launch": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-build-and-launch/dist/index.js"],
       "env": {
         "XC_LOG_LEVEL": "info"
       }
@@ -28,20 +35,6 @@
         "XC_LOG_LEVEL": "info"
       }
     },
-    "xc-hybrid": {
-      "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-hybrid/dist/index.js"],
-      "env": {
-        "XC_LOG_LEVEL": "info"
-      }
-    },
-    "xc-build": {
-      "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-build/dist/index.js"],
-      "env": {
-        "XC_LOG_LEVEL": "info"
-      }
-    },
     "xc-ai-assist": {
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-ai-assist/dist/index.js"],
@@ -52,6 +45,13 @@
     "xc-meta": {
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-meta/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info"
+      }
+    },
+    "xc-all": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-all/dist/index.js"],
       "env": {
         "XC_LOG_LEVEL": "info"
       }

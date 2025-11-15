@@ -84,6 +84,37 @@ That's it. **xc-build-and-launch** is purpose-built for rapid development: build
 - Node.js 18+
 - Optional: IDB (Facebook iOS Development Bridge) for advanced UI automation
 
+## Migration Guide (v0.3.0)
+
+If you're upgrading from an earlier version, note these breaking changes:
+
+### Renamed Server: `xc-run` → `xc-build-and-launch`
+
+**What changed:**
+- Server renamed from **xc-run** to **xc-build-and-launch** for clarity
+- **Removed:** `xcode_build` tool (use `xc-build` MCP for validation-only builds)
+- **Kept:** `xcode_build_and_run`, `xcode_clean`, `xcode_list`
+
+**Action required:**
+1. Update your `.mcp.json` configuration:
+   ```diff
+   - "xc-run": {
+   -   "command": "node",
+   -   "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-run/dist/index.js"]
+   + "xc-build-and-launch": {
+   +   "command": "node",
+   +   "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-build-and-launch/dist/index.js"]
+   ```
+2. In Claude settings, enable "xc-build-and-launch" instead of "xc-run"
+
+### Updated Server Names
+
+Also updated for consistency:
+- `xc-compile` → `xc-build`
+- `xc-hybrid` → `xc-all`
+
+See `.mcp.json.example` for the current configuration.
+
 ## Choosing the Right MCP
 
 ### Enable the Right MCP for Your Task

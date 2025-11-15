@@ -28,7 +28,7 @@ xclaude-plugin/
 │   └── marketplace.json          # Marketplace configuration
 ├── mcp-servers/                   # 8 modular MCP servers
 │   ├── xc-build/                 # Build, clean, list schemes
-│   ├── xc-run/                   # Build, install, launch
+│   ├── xc-build-and-launch/      # Build, install, launch app
 │   ├── xc-interact/              # Simulator + IDB UI automation
 │   ├── xc-ai-assist/             # AI-specific workflows
 │   ├── xc-setup/                 # Health check, project info
@@ -52,7 +52,7 @@ xclaude-plugin/
 │   ├── performance-profiling/
 │   └── state-management/
 ├── .mcp.json                      # Default MCP configuration (loads xc-setup, xc-build)
-├── .mcp.json.example              # Full configuration showing all 7 servers
+├── .mcp.json.example              # Full configuration showing all 8 servers
 └── .gitignore                     # Version control exclusions
 ```
 
@@ -65,12 +65,12 @@ xclaude-plugin/
 
 **Optional Load** (documented in README):
 
+- `xc-build-and-launch` - Build, install, and launch app
 - `xc-testing` - Test execution and result analysis
 - `xc-interact` - Simulator and IDB UI automation
-- `xc-hybrid` - All 22 operations in one server
-- `xc-build` - Advanced build operations
 - `xc-ai-assist` - AI-specific workflows
 - `xc-meta` - Metadata and introspection
+- `xc-all` - All 23 operations in one server
 
 Users can customize `.mcp.json` to load any combination of servers based on their workflow.
 
@@ -99,7 +99,7 @@ npm run coverage       # Generate coverage reports
 
 ## When Adding/Modifying Operations
 
-1. **Add to specific server** - Choose appropriate server (or add to xc-hybrid if generic)
+1. **Add to specific server** - Choose appropriate server (or add to xc-all if generic)
 2. **Implement operation** - Add to `src/operations/` with JSDoc
 3. **Define types** - Update types in same file or shared types
 4. **Add tests** - Create matching `.test.ts` file with full coverage
@@ -226,4 +226,4 @@ interface OperationResult<T> {
 
 ---
 
-**xclaude-plugin v0.2.0** - Modular iOS development automation for Claude Code
+**xclaude-plugin v0.3.0** - Modular iOS development automation for Claude Code
