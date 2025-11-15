@@ -219,6 +219,49 @@ Enable: xc-ai-assist (~1400 tokens)
 
 **Pro tip**: Don't enable multiple MCPs simultaneously - tool duplication will increase token usage! Use xc-all instead for multi-workflow sessions.
 
+## Cheat Sheet - Which Tools Are in Which MCP?
+
+Quick reference to find which MCP has the tools you need:
+
+### Xcode Tools
+
+| Tool | xc-build | xc-build-and-launch | xc-interact | xc-ai-assist | xc-setup | xc-testing | xc-meta | xc-all |
+|------|:--------:|:-------------------:|:-----------:|:------------:|:--------:|:----------:|:-------:|:------:|
+| `xcode_build` | ✅ | ✅ | | ✅ | | | | ✅ |
+| `xcode_build_and_run` | | ✅ | | | | | | ✅ |
+| `xcode_clean` | ✅ | ✅ | | | | | ✅ | ✅ |
+| `xcode_test` | | | | | | ✅ | | ✅ |
+| `xcode_list` | ✅ | ✅ | | | | | ✅ | ✅ |
+| `xcode_version` | | | | | ✅ | | ✅ | ✅ |
+
+### Simulator Tools
+
+| Tool | xc-build | xc-build-and-launch | xc-interact | xc-ai-assist | xc-setup | xc-testing | xc-meta | xc-all |
+|------|:--------:|:-------------------:|:-----------:|:------------:|:--------:|:----------:|:-------:|:------:|
+| `simulator_list` | | | | | ✅ | | | ✅ |
+| `simulator_boot` | | | | | ✅ | | | ✅ |
+| `simulator_shutdown` | | | | | | | ✅ | ✅ |
+| `simulator_create` | | | | | ✅ | | | ✅ |
+| `simulator_delete` | | | | | | | ✅ | ✅ |
+| `simulator_install_app` | | | | | | | | ✅ |
+| `simulator_launch_app` | | | | | | | | ✅ |
+| `simulator_terminate_app` | | | | | | | | ✅ |
+| `simulator_screenshot` | | | | ✅ | | ✅ | | ✅ |
+| `simulator_openurl` | | | | | | | | ✅ |
+| `simulator_get_app_container` | | | | | | | | ✅ |
+| `simulator_health_check` | | | | | ✅ | | ✅ | ✅ |
+
+### IDB Tools
+
+| Tool | xc-build | xc-build-and-launch | xc-interact | xc-ai-assist | xc-setup | xc-testing | xc-meta | xc-all |
+|------|:--------:|:-------------------:|:-----------:|:------------:|:--------:|:----------:|:-------:|:------:|
+| `idb_describe` | | | ✅ | ✅ | | ✅ | | ✅ |
+| `idb_tap` | | | ✅ | ✅ | | ✅ | | ✅ |
+| `idb_input` | | | ✅ | ✅ | | ✅ | | ✅ |
+| `idb_gesture` | | | ✅ | | | ✅ | | ✅ |
+| `idb_find_element` | | | ✅ | ✅ | | | | ✅ |
+| `idb_check_quality` | | | ✅ | ✅ | | | | ✅ |
+
 ## Tool Library (23 Total)
 
 ### Xcode Tools (6)
