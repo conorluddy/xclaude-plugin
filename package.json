@@ -1,6 +1,6 @@
 {
   "name": "xclaude-plugin",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Token-efficient iOS development automation plugin for Claude Code",
   "private": true,
   "workspaces": [

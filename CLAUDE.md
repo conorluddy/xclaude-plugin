@@ -4,13 +4,13 @@ This file provides essential guidance to Claude Code when working with the xclau
 
 ## Project Overview
 
-**xclaude-plugin** is a production-ready MCP (Model Context Protocol) plugin for iOS development automation. It provides 8 modular, workflow-specific MCP servers that consolidate 22 iOS operations across build, test, simulator control, and UI automation.
+**xclaude-plugin** is a production-ready MCP (Model Context Protocol) plugin for iOS development automation. It provides 7 modular, workflow-specific MCP servers that consolidate 22 iOS operations across build, test, simulator control, and UI automation.
 
-**Status**: ✅ Production-ready (v0.2.0) - All operations fully implemented, tested, and with codecov integration.
+**Status**: ✅ Production-ready (v0.3.0) - All operations fully implemented, tested, and with codecov integration.
 
 **Key Features**:
 
-- **8 modular MCP servers** - Workflow-specific, composable architecture
+- **7 modular MCP servers** - Workflow-specific, composable architecture
 - **22 total operations** across Xcode, Simulator, and IDB domains
 - **8 procedural Skills** (on-demand documentation with examples)
 - **100% TypeScript** with zero tolerance for `any` types
@@ -26,9 +26,9 @@ xclaude-plugin/
 ├── .claude-plugin/                # Plugin configuration
 │   ├── plugin.json               # Plugin manifest (entry point)
 │   └── marketplace.json          # Marketplace configuration
-├── mcp-servers/                   # 8 modular MCP servers
+├── mcp-servers/                   # 7 modular MCP servers
 │   ├── xc-setup/                 # Health check, project info
-│   ├── xc-compile/               # Build, clean, version management
+│   ├── xc-build/                 # Build, clean, list schemes
 │   ├── xc-testing/               # Test execution, results parsing
 │   ├── xc-interact/              # Simulator + IDB UI automation
 │   ├── xc-hybrid/                # All-in-one consolidated server
@@ -51,8 +51,8 @@ xclaude-plugin/
 │   ├── crash-debugging/
 │   ├── performance-profiling/
 │   └── state-management/
-├── .mcp.json                      # Default MCP configuration (loads xc-setup, xc-compile)
-├── .mcp.json.example              # Full configuration showing all 8 servers
+├── .mcp.json                      # Default MCP configuration (loads xc-setup, xc-build)
+├── .mcp.json.example              # Full configuration showing all 7 servers
 └── .gitignore                     # Version control exclusions
 ```
 
@@ -61,7 +61,7 @@ xclaude-plugin/
 **Default Load** (in `.mcp.json`):
 
 - `xc-setup` - Environment validation, project introspection
-- `xc-compile` - Build, clean, version checking
+- `xc-build` - Build, clean, list schemes
 
 **Optional Load** (documented in README):
 
@@ -117,8 +117,8 @@ npm run test               # Run all tests
 npm run coverage           # Generate coverage reports
 
 # Individual server commands (from root)
-npm run build --workspace=xc-compile    # Build specific server
-npm run test --workspace=xc-compile     # Test specific server
+npm run build --workspace=xc-build      # Build specific server
+npm run test --workspace=xc-build       # Test specific server
 
 # Development
 npm run clean              # Remove all dist/ directories
@@ -152,7 +152,7 @@ Each server in `mcp-servers/` follows the same pattern:
 ```typescript
 // src/index.ts - Server entry point
 export const server = new Server({
-  name: "xc-compile",
+  name: "xc-build",
   version: "0.2.0",
   tools: [
     {

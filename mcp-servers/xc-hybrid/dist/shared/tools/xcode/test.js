@@ -8,7 +8,7 @@ import { logger } from "../../utils/logger.js";
 import { resolveDestination } from "../../utils/destination.js";
 export const xcodeTestDefinition = {
     name: "xcode_test",
-    description: "Run Xcode test suite",
+    description: "Run Xcode test suite for iOS apps",
     inputSchema: {
         type: "object",
         properties: {
@@ -22,10 +22,13 @@ export const xcodeTestDefinition = {
             },
             destination: {
                 type: "string",
-                description: "Test destination. Supports multiple formats:\n" +
-                    '- Explicit: "platform=iOS Simulator,name=iPhone 15,OS=18.0" (recommended)\n' +
-                    '- Auto-resolve: "platform=iOS Simulator,name=iPhone 15" (will auto-detect latest OS)\n' +
-                    '- UDID: "id=ABC-123-DEF" (direct device identifier)',
+                description: "Test destination. IMPORTANT: For iOS apps, ALWAYS specify a simulator destination to avoid provisioning errors.\n" +
+                    "Recommended formats:\n" +
+                    '- Auto-resolve (best): "platform=iOS Simulator,name=iPhone 15" (finds latest OS automatically)\n' +
+                    '- Explicit: "platform=iOS Simulator,name=iPhone 15,OS=18.0"\n' +
+                    '- UDID: "id=ABC-123-DEF" (if you know the simulator UDID)\n\n' +
+                    'COMMON ERROR: Omitting destination causes Xcode to target Mac/physical device, resulting in provisioning/signing failures.\n' +
+                    'Use simulator_list tool first to find available simulators if needed.',
             },
             test_plan: {
                 type: "string",
@@ -69,7 +72,8 @@ export async function xcodeTest(params) {
         }
         if (params.destination) {
             // Resolve destination (auto-complete OS version if needed)
-            const resolution = await resolveDestination(params.destination);
+            // Pass projectPath for potential project-specific config
+            const resolution = await resolveDestination(params.destination, projectPath);
             // Log resolution details
             if (resolution.wasResolved) {
                 logger.info(`Resolved destination: ${resolution.details}`);

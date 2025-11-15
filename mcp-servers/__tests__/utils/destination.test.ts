@@ -9,15 +9,28 @@ import {
   listAvailableSimulators,
 } from "../../shared/utils/destination.js";
 import * as commandModule from "../../shared/utils/command.js";
+import * as configModule from "../../shared/utils/config.js";
 
 // Mock the command module
 vi.mock("../../shared/utils/command.js", () => ({
   runCommand: vi.fn(),
 }));
 
+// Mock the config module
+vi.mock("../../shared/utils/config.js", () => ({
+  saveUsage: vi.fn().mockResolvedValue(undefined),
+  loadConfig: vi
+    .fn()
+    .mockResolvedValue({ maxRecentHistory: 10, recentSimulators: [] }),
+  getDefaultSimulator: vi.fn().mockResolvedValue(undefined),
+  getRecentSimulators: vi.fn().mockResolvedValue([]),
+}));
+
 describe("destination resolver", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Re-setup config mocks after clearing
+    vi.mocked(configModule.saveUsage).mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -304,6 +317,98 @@ describe("destination resolver", () => {
       await expect(listAvailableSimulators()).rejects.toThrow(
         "Failed to query simulators",
       );
+    });
+  });
+
+  describe("usage tracking integration", () => {
+    const mockSimulatorList = `
+-- iOS 18.0 --
+    iPhone 15 (AAAA-BBBB-CCCC) (Shutdown)
+-- iOS 17.5 --
+    iPhone 15 (DDDD-EEEE-FFFF) (Shutdown)
+    `;
+
+    beforeEach(() => {
+      vi.mocked(commandModule.runCommand).mockResolvedValue({
+        code: 0,
+        stdout: mockSimulatorList,
+        stderr: "",
+      });
+      vi.mocked(configModule.saveUsage).mockResolvedValue();
+    });
+
+    it("should track usage when resolving incomplete destination", async () => {
+      const destination = "platform=iOS Simulator,name=iPhone 15";
+      await resolveDestination(destination);
+
+      expect(configModule.saveUsage).toHaveBeenCalledWith(
+        "platform=iOS Simulator,name=iPhone 15,OS=18.0",
+        undefined,
+      );
+    });
+
+    it("should track usage when passing through explicit OS destination", async () => {
+      const destination = "platform=iOS Simulator,name=iPhone 15,OS=17.5";
+      await resolveDestination(destination);
+
+      expect(configModule.saveUsage).toHaveBeenCalledWith(
+        destination,
+        undefined,
+      );
+    });
+
+    it("should track usage when passing through UDID destination", async () => {
+      const destination = "id=ABC-123-DEF";
+      await resolveDestination(destination);
+
+      expect(configModule.saveUsage).toHaveBeenCalledWith(
+        destination,
+        undefined,
+      );
+    });
+
+    it("should pass projectPath to saveUsage", async () => {
+      const destination = "platform=iOS Simulator,name=iPhone 15";
+      const projectPath = "/path/to/project";
+
+      await resolveDestination(destination, projectPath);
+
+      expect(configModule.saveUsage).toHaveBeenCalledWith(
+        "platform=iOS Simulator,name=iPhone 15,OS=18.0",
+        projectPath,
+      );
+    });
+
+    it("should not fail if saveUsage throws error", async () => {
+      vi.mocked(configModule.saveUsage).mockRejectedValue(
+        new Error("Write failed"),
+      );
+
+      const destination = "platform=iOS Simulator,name=iPhone 15";
+      const result = await resolveDestination(destination);
+
+      expect(result.wasResolved).toBe(true);
+      expect(result.destination).toBe(
+        "platform=iOS Simulator,name=iPhone 15,OS=18.0",
+      );
+    });
+
+    it("should not track usage for unresolvable destinations", async () => {
+      const destination = "platform=iOS Simulator,name=NonExistent";
+      await resolveDestination(destination);
+
+      expect(configModule.saveUsage).not.toHaveBeenCalled();
+    });
+
+    it("should not track usage when resolution fails", async () => {
+      vi.mocked(commandModule.runCommand).mockRejectedValue(
+        new Error("simctl failed"),
+      );
+
+      const destination = "platform=iOS Simulator,name=iPhone 15";
+      await resolveDestination(destination);
+
+      expect(configModule.saveUsage).not.toHaveBeenCalled();
     });
   });
 });

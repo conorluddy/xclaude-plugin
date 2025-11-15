@@ -1,0 +1,4 @@
+{
+  "defaultSimulator": "platform=iOS Simulator,name=iPhone 15",
+  "maxRecentHistory": 10
+}

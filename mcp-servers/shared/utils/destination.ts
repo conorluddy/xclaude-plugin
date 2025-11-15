@@ -1,9 +1,11 @@
 /**
  * Destination resolver utilities for xcodebuild operations.
  * Handles auto-resolution of incomplete destination strings by querying available simulators.
+ * Integrates with config system to track usage and provide defaults.
  */
 
 import { runCommand } from "./command.js";
+import { saveUsage } from "./config.js";
 
 /**
  * Represents a parsed simulator device from simctl output
@@ -199,12 +201,15 @@ export function validateDestination(destination: string): {
  * Resolve a destination string, auto-completing it if necessary.
  *
  * This function handles several cases:
- * - If destination includes "id=" (UDID), pass through unchanged
- * - If destination includes "OS=", pass through unchanged
- * - If destination has "name=" but no "OS=", query simulators and add OS version
+ * - If destination includes "id=" (UDID), pass through unchanged and track usage
+ * - If destination includes "OS=", pass through unchanged and track usage
+ * - If destination has "name=" but no "OS=", query simulators, add OS version, and track usage
  * - Otherwise, pass through unchanged with warning
  *
+ * After successful resolution, automatically tracks usage for future reference.
+ *
  * @param destination - Original destination string
+ * @param projectPath - Optional project path for project-specific tracking
  * @returns Resolution result with resolved destination and metadata
  *
  * @example
@@ -224,12 +229,21 @@ export function validateDestination(destination: string): {
  */
 export async function resolveDestination(
   destination: string,
+  projectPath?: string,
 ): Promise<DestinationResolutionResult> {
   // Validate first
   const validation = validateDestination(destination);
 
-  // If destination already includes OS version or is using UDID, pass through
+  // If destination already includes OS version or is using UDID, pass through and track
   if (destination.includes("OS=") || destination.includes("id=")) {
+    // Track usage for explicit destinations
+    await saveUsage(destination, projectPath).catch((error) => {
+      // Non-critical - log but don't fail
+      console.warn(
+        `Failed to track usage: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    });
+
     return {
       destination,
       wasResolved: false,
@@ -271,6 +285,14 @@ export async function resolveDestination(
 
     // Append OS version to destination
     const resolvedDestination = `${destination},OS=${bestMatch.osVersion}`;
+
+    // Track usage for successfully resolved destination
+    await saveUsage(resolvedDestination, projectPath).catch((error) => {
+      // Non-critical - log but don't fail
+      console.warn(
+        `Failed to track usage: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    });
 
     return {
       destination: resolvedDestination,
