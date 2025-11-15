@@ -3,17 +3,17 @@
  *
  * Enumerate schemes and targets
  */
-import { runCommand, findXcodeProject } from '../../utils/command.js';
-import { logger } from '../../utils/logger.js';
+import { runCommand, findXcodeProject } from "../../utils/command.js";
+import { logger } from "../../utils/logger.js";
 export const xcodeListDefinition = {
-    name: 'xcode_list',
-    description: 'List Xcode schemes and targets',
+    name: "xcode_list",
+    description: "List Xcode schemes and targets",
     inputSchema: {
-        type: 'object',
+        type: "object",
         properties: {
             project_path: {
-                type: 'string',
-                description: 'Path to .xcodeproj or .xcworkspace (auto-detected if omitted)',
+                type: "string",
+                description: "Path to .xcodeproj/.xcworkspace (auto-detected)",
             },
         },
     },
@@ -25,21 +25,21 @@ export async function xcodeList(params) {
         if (!projectPath) {
             return {
                 success: false,
-                error: 'No Xcode project found in current directory',
-                operation: 'list',
+                error: "No Xcode project found in current directory",
+                operation: "list",
             };
         }
         // Build command args
-        const args = ['-list'];
-        if (projectPath.endsWith('.xcworkspace')) {
-            args.push('-workspace', projectPath);
+        const args = ["-list"];
+        if (projectPath.endsWith(".xcworkspace")) {
+            args.push("-workspace", projectPath);
         }
         else {
-            args.push('-project', projectPath);
+            args.push("-project", projectPath);
         }
         // Execute list command
         logger.info(`Listing schemes for project: ${projectPath}`);
-        const result = await runCommand('xcodebuild', args);
+        const result = await runCommand("xcodebuild", args);
         // Parse schemes and targets
         const output = result.stdout;
         const schemesMatch = output.match(/Schemes:\s*([\s\S]*?)(?=\n\n|Build Configurations:|$)/);
@@ -47,14 +47,14 @@ export async function xcodeList(params) {
         const schemes = schemesMatch
             ? schemesMatch[1]
                 .trim()
-                .split('\n')
+                .split("\n")
                 .map((s) => s.trim())
                 .filter(Boolean)
             : [];
         const targets = targetsMatch
             ? targetsMatch[1]
                 .trim()
-                .split('\n')
+                .split("\n")
                 .map((t) => t.trim())
                 .filter(Boolean)
             : [];
@@ -70,11 +70,11 @@ export async function xcodeList(params) {
         };
     }
     catch (error) {
-        logger.error('List operation failed', error);
+        logger.error("List operation failed", error);
         return {
             success: false,
             error: String(error),
-            operation: 'list',
+            operation: "list",
         };
     }
 }

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * XC-Run MCP Server
+ * XC-Build-And-Launch MCP Server
  *
- * Rapid development MCP - build, install, and launch iOS apps
- * Combines build, install, and launch for streamlined development workflow
+ * Build, install, and launch iOS app on simulator
+ * Purpose-built for rapid development workflow
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -14,10 +14,6 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 
 // Import tool definitions and implementations
-import {
-  xcodeBuild,
-  xcodeBuildDefinition,
-} from "../../shared/tools/xcode/build.js";
 import {
   xcodeClean,
   xcodeCleanDefinition,
@@ -31,17 +27,17 @@ import {
   xcodeBuildAndRunDefinition,
 } from "../../shared/tools/xcode/build-and-run.js";
 
-class XCRunServer {
+class XCBuildAndLaunchServer {
   private server: Server;
 
   constructor() {
     this.server = new Server(
       {
-        name: "xc-run",
+        name: "xc-build-and-launch",
         version: "0.3.0",
-        title: "Rapid Development",
+        title: "Build and Launch",
         description:
-          "Rapid development MCP for iOS projects - build, build+run, clean, and list. Perfect for iterative development.",
+          "Build, install, and launch iOS app on simulator for rapid development iteration.",
       },
       {
         capabilities: {
@@ -57,7 +53,6 @@ class XCRunServer {
     // List tools
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: [
-        xcodeBuildDefinition,
         xcodeBuildAndRunDefinition,
         xcodeCleanDefinition,
         xcodeListDefinition,
@@ -69,20 +64,6 @@ class XCRunServer {
       const { name, arguments: args } = request.params;
 
       switch (name) {
-        case "xcode_build":
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(
-                  await xcodeBuild(
-                    args as unknown as Parameters<typeof xcodeBuild>[0],
-                  ),
-                ),
-              },
-            ],
-          };
-
         case "xcode_build_and_run":
           return {
             content: [
@@ -134,9 +115,9 @@ class XCRunServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("xc-run MCP server running");
+    console.error("xc-build-and-launch MCP server running");
   }
 }
 
-const server = new XCRunServer();
+const server = new XCBuildAndLaunchServer();
 server.run().catch(console.error);

@@ -17,15 +17,13 @@ import * as path from "path";
 
 export const xcodeBuildAndRunDefinition: ToolDefinition = {
   name: "xcode_build_and_run",
-  description:
-    "Build iOS app and immediately install and launch on simulator (rapid development workflow)",
+  description: "Build, install, and launch iOS app on simulator",
   inputSchema: {
     type: "object",
     properties: {
       project_path: {
         type: "string",
-        description:
-          "Path to .xcodeproj or .xcworkspace (auto-detected if omitted)",
+        description: "Path to .xcodeproj/.xcworkspace (auto-detected)",
       },
       scheme: {
         type: "string",
@@ -39,12 +37,7 @@ export const xcodeBuildAndRunDefinition: ToolDefinition = {
       destination: {
         type: "string",
         description:
-          "Simulator destination. IMPORTANT: Must specify a simulator destination.\\n" +
-          "Recommended formats:\\n" +
-          '- Auto-resolve (best): "platform=iOS Simulator,name=iPhone 15" (finds latest OS automatically)\\n' +
-          '- Explicit: "platform=iOS Simulator,name=iPhone 15,OS=18.0"\\n' +
-          '- UDID: "id=ABC-123-DEF" (if you know the simulator UDID)\\n\\n' +
-          "Use simulator_list tool to find available simulators if needed.",
+          'Simulator destination. Formats: "platform=iOS Simulator,name=iPhone 15" (auto-resolves OS) | "platform=iOS Simulator,name=iPhone 15,OS=18.0" | "id=UDID"',
       },
       skip_build: {
         type: "boolean",
