@@ -1,0 +1,4 @@
+/**
+ * Xcode tool types
+ */
+export {};

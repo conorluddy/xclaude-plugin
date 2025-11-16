@@ -6,12 +6,12 @@
  * Device lifecycle operations
  */
 export type DeviceLifecycleOperation =
-  | 'boot'
-  | 'shutdown'
-  | 'create'
-  | 'delete'
-  | 'erase'
-  | 'clone';
+  | "boot"
+  | "shutdown"
+  | "create"
+  | "delete"
+  | "erase"
+  | "clone";
 
 /**
  * Device lifecycle parameters
@@ -25,7 +25,7 @@ export interface DeviceLifecycleParams {
 }
 
 /**
- * App lifecycle parameters
+ * App lifecycle parameters (generic - prefer specific types below)
  */
 export interface AppLifecycleParams {
   device_id?: string;
@@ -36,10 +36,28 @@ export interface AppLifecycleParams {
 }
 
 /**
+ * Install app parameters
+ */
+export interface InstallAppParams {
+  device_id?: string;
+  app_path: string;
+}
+
+/**
+ * Launch app parameters
+ */
+export interface LaunchAppParams {
+  device_id?: string;
+  app_identifier: string;
+  arguments?: string[];
+  environment?: Record<string, string>;
+}
+
+/**
  * List devices parameters
  */
 export interface ListDevicesParams {
-  availability?: 'available' | 'unavailable' | 'all';
+  availability?: "available" | "unavailable" | "all";
   device_type?: string;
   runtime?: string;
 }
@@ -76,7 +94,7 @@ export interface OpenURLParams {
 export interface GetAppContainerParams {
   device_id?: string;
   app_identifier: string;
-  container_type?: 'data' | 'bundle' | 'group';
+  container_type?: "data" | "bundle" | "group";
 }
 
 /**
