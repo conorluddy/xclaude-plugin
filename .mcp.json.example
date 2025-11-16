@@ -14,9 +14,9 @@
         "XC_LOG_LEVEL": "info"
       }
     },
-    "xc-build-and-launch": {
+    "xc-launch": {
       "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-build-and-launch/dist/index.js"],
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-launch/dist/index.js"],
       "env": {
         "XC_LOG_LEVEL": "info"
       }

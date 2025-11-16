@@ -7,14 +7,14 @@
   },
   "metadata": {
     "description": "iOS development automation plugin for Claude Code",
-    "version": "0.0.1"
+    "version": "0.4.0"
   },
   "plugins": [
     {
       "name": "xclaude-plugin",
       "source": "./",
-      "description": "Complete iOS development automation with 3 consolidated dispatchers (Xcode, Simulator, IDB) and 8 procedural Skills. Build, test, and automate iOS apps with minimal token overhead.",
-      "version": "0.0.1",
+      "description": "Modular iOS development automation suite. 8 workflow-specific MCP servers (400-3500 tokens) with 24 tools across Xcode, Simulator, and IDB. Enable only what you need!",
+      "version": "0.4.0",
       "author": {
         "name": "Conor Luddy",
         "url": "https://github.com/conorluddy"

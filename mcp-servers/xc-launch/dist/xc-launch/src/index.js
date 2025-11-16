@@ -1,25 +1,24 @@
 #!/usr/bin/env node
 /**
- * XC-Build-And-Launch MCP Server
+ * XC-Launch MCP Server
  *
- * Build, install, and launch iOS app on simulator
- * Purpose-built for rapid development workflow
+ * Simulator app lifecycle operations
+ * Provides: install, launch primitives for rapid development
  */
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema, } from "@modelcontextprotocol/sdk/types.js";
 // Import tool definitions and implementations
-import { xcodeClean, xcodeCleanDefinition, } from "../../shared/tools/xcode/clean.js";
-import { xcodeList, xcodeListDefinition, } from "../../shared/tools/xcode/list.js";
-import { buildAndLaunch, xcodeBuildAndLaunchDefinition, } from "../../shared/tools/xcode/build-and-launch.js";
-class XCBuildAndLaunchServer {
+import { simulatorInstallApp, simulatorInstallAppDefinition, } from "../../shared/tools/simulator/install-app.js";
+import { simulatorLaunchApp, simulatorLaunchAppDefinition, } from "../../shared/tools/simulator/launch-app.js";
+class XCLaunchServer {
     server;
     constructor() {
         this.server = new Server({
-            name: "xc-build-and-launch",
-            version: "0.3.0",
-            title: "Build and Launch",
-            description: "Build, install, and launch iOS app on simulator for rapid development iteration.",
+            name: "xc-launch",
+            version: "0.4.0",
+            title: "Launch Toolkit",
+            description: "Simulator app lifecycle: install and launch operations for rapid development.",
         }, {
             capabilities: {
                 tools: {},
@@ -30,41 +29,27 @@ class XCBuildAndLaunchServer {
     registerTools() {
         // List tools
         this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
-            tools: [
-                xcodeBuildAndLaunchDefinition,
-                xcodeCleanDefinition,
-                xcodeListDefinition,
-            ],
+            tools: [simulatorInstallAppDefinition, simulatorLaunchAppDefinition],
         }));
         // Handle tool calls
         this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
             const { name, arguments: args } = request.params;
             switch (name) {
-                case "xcode_build_and_launch":
-                case "xcode_build_and_run": // Backward compatibility
+                case "simulator_install_app":
                     return {
                         content: [
                             {
                                 type: "text",
-                                text: JSON.stringify(await buildAndLaunch(args)),
+                                text: JSON.stringify(await simulatorInstallApp(args)),
                             },
                         ],
                     };
-                case "xcode_clean":
+                case "simulator_launch_app":
                     return {
                         content: [
                             {
                                 type: "text",
-                                text: JSON.stringify(await xcodeClean(args)),
-                            },
-                        ],
-                    };
-                case "xcode_list":
-                    return {
-                        content: [
-                            {
-                                type: "text",
-                                text: JSON.stringify(await xcodeList(args)),
+                                text: JSON.stringify(await simulatorLaunchApp(args)),
                             },
                         ],
                     };
@@ -76,8 +61,8 @@ class XCBuildAndLaunchServer {
     async run() {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
-        console.error("xc-build-and-launch MCP server running");
+        console.error("xc-launch MCP server running");
     }
 }
-const server = new XCBuildAndLaunchServer();
+const server = new XCLaunchServer();
 server.run().catch(console.error);

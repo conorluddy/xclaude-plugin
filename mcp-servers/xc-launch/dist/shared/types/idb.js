@@ -1,0 +1,4 @@
+/**
+ * IDB tool types
+ */
+export {};
