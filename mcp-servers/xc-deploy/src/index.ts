@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * XC-Build-And-Launch MCP Server
+ * XC-Deploy MCP Server
  *
- * Build, install, and launch iOS app on simulator
- * Purpose-built for rapid development workflow
+ * Composable primitives for iOS deployment workflow
+ * Provides: build, install, launch as independent operations
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -15,6 +15,10 @@ import {
 
 // Import tool definitions and implementations
 import {
+  xcodeBuild,
+  xcodeBuildDefinition,
+} from "../../shared/tools/xcode/build.js";
+import {
   xcodeClean,
   xcodeCleanDefinition,
 } from "../../shared/tools/xcode/clean.js";
@@ -23,21 +27,25 @@ import {
   xcodeListDefinition,
 } from "../../shared/tools/xcode/list.js";
 import {
-  buildAndLaunch,
-  xcodeBuildAndLaunchDefinition,
-} from "../../shared/tools/xcode/build-and-launch.js";
+  simulatorInstallApp,
+  simulatorInstallAppDefinition,
+} from "../../shared/tools/simulator/install-app.js";
+import {
+  simulatorLaunchApp,
+  simulatorLaunchAppDefinition,
+} from "../../shared/tools/simulator/launch-app.js";
 
-class XCBuildAndLaunchServer {
+class XCDeployServer {
   private server: Server;
 
   constructor() {
     this.server = new Server(
       {
-        name: "xc-build-and-launch",
-        version: "0.3.0",
-        title: "Build and Launch",
+        name: "xc-deploy",
+        version: "0.4.0",
+        title: "Deploy Toolkit",
         description:
-          "Build, install, and launch iOS app on simulator for rapid development iteration.",
+          "Composable iOS deployment primitives: build, install, launch as independent operations.",
       },
       {
         capabilities: {
@@ -53,7 +61,9 @@ class XCBuildAndLaunchServer {
     // List tools
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: [
-        xcodeBuildAndLaunchDefinition,
+        xcodeBuildDefinition,
+        simulatorInstallAppDefinition,
+        simulatorLaunchAppDefinition,
         xcodeCleanDefinition,
         xcodeListDefinition,
       ],
@@ -64,15 +74,44 @@ class XCBuildAndLaunchServer {
       const { name, arguments: args } = request.params;
 
       switch (name) {
-        case "xcode_build_and_launch":
-        case "xcode_build_and_run": // Backward compatibility
+        case "xcode_build":
           return {
             content: [
               {
                 type: "text",
                 text: JSON.stringify(
-                  await buildAndLaunch(
-                    args as unknown as Parameters<typeof buildAndLaunch>[0],
+                  await xcodeBuild(
+                    args as unknown as Parameters<typeof xcodeBuild>[0],
+                  ),
+                ),
+              },
+            ],
+          };
+
+        case "simulator_install_app":
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  await simulatorInstallApp(
+                    args as unknown as Parameters<
+                      typeof simulatorInstallApp
+                    >[0],
+                  ),
+                ),
+              },
+            ],
+          };
+
+        case "simulator_launch_app":
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  await simulatorLaunchApp(
+                    args as unknown as Parameters<typeof simulatorLaunchApp>[0],
                   ),
                 ),
               },
@@ -116,9 +155,9 @@ class XCBuildAndLaunchServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("xc-build-and-launch MCP server running");
+    console.error("xc-deploy MCP server running");
   }
 }
 
-const server = new XCBuildAndLaunchServer();
+const server = new XCDeployServer();
 server.run().catch(console.error);
