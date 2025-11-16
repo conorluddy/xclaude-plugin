@@ -4,14 +4,14 @@ This file provides essential guidance to Claude Code when working with the xclau
 
 ## Project Overview
 
-**xclaude-plugin** is a production-ready MCP (Model Context Protocol) plugin for iOS development automation. It provides 8 modular, workflow-specific MCP servers that consolidate 24 iOS operations across build, test, simulator control, and UI automation.
+**xclaude-plugin** is a production-ready MCP (Model Context Protocol) plugin for iOS development automation. It provides 8 modular, workflow-specific MCP servers that consolidate 23 iOS operations across build, test, simulator control, and UI automation.
 
 **Status**: ✅ Production-ready (v0.4.0) - All operations fully implemented, tested, and with codecov integration.
 
 **Key Features**:
 
 - **8 modular MCP servers** - Workflow-specific, composable architecture
-- **24 total operations** across Xcode, Simulator, and IDB domains
+- **23 total operations** across Xcode, Simulator, and IDB domains
 - **8 procedural Skills** (on-demand documentation with examples)
 - **100% TypeScript** with zero tolerance for `any` types
 - **Full test coverage** with codecov reporting

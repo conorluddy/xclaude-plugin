@@ -3,7 +3,7 @@
  * XC-All MCP Server
  *
  * Full toolkit for human+AI collaboration
- * All 24 tools available for maximum flexibility
+ * All 23 tools available for maximum flexibility
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -19,10 +19,6 @@ import {
   xcodeBuild,
   xcodeBuildDefinition,
 } from "../../shared/tools/xcode/build.js";
-import {
-  buildAndLaunch,
-  xcodeBuildAndLaunchDefinition,
-} from "../../shared/tools/xcode/build-and-launch.js";
 import {
   xcodeClean,
   xcodeCleanDefinition,
@@ -117,7 +113,7 @@ class XCAllServer {
     this.server = new Server(
       {
         name: "xc-all",
-        version: "0.3.0",
+        version: "0.4.0",
         title: "Complete Toolkit",
         description:
           "Full iOS development toolkit for human+AI collaboration - all 23 tools",
@@ -135,9 +131,8 @@ class XCAllServer {
   private registerTools() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: [
-        // Xcode (6 tools)
+        // Xcode (5 tools)
         xcodeBuildDefinition,
-        xcodeBuildAndLaunchDefinition,
         xcodeCleanDefinition,
         xcodeTestDefinition,
         xcodeListDefinition,
@@ -178,20 +173,6 @@ class XCAllServer {
                 text: JSON.stringify(
                   await xcodeBuild(
                     args as unknown as Parameters<typeof xcodeBuild>[0],
-                  ),
-                ),
-              },
-            ],
-          };
-        case "xcode_build_and_launch":
-        case "xcode_build_and_run": // Backward compatibility
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(
-                  await buildAndLaunch(
-                    args as unknown as Parameters<typeof buildAndLaunch>[0],
                   ),
                 ),
               },

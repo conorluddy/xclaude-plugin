@@ -10,7 +10,7 @@ import * as fs from "fs/promises";
 import * as path from "path";
 export const xcodeBuildAndLaunchDefinition = {
     name: "xcode_build_and_launch",
-    description: "Build, install, and launch iOS app on simulator",
+    description: "Build, install, and launch iOS app on simulator. Check project's CLAUDE.md for preferred simulator and SDK defaults.",
     inputSchema: {
         type: "object",
         properties: {
@@ -29,7 +29,7 @@ export const xcodeBuildAndLaunchDefinition = {
             },
             destination: {
                 type: "string",
-                description: 'Simulator destination. Formats: "platform=iOS Simulator,name=iPhone 15" (auto-resolves OS) | "platform=iOS Simulator,name=iPhone 15,OS=18.0" | "id=UDID"',
+                description: 'Simulator destination. Formats: "platform=iOS Simulator,name=iPhone 15" (auto-resolves OS) | "platform=iOS Simulator,name=iPhone 15,OS=18.0" | "id=UDID". Use preferred simulator from project CLAUDE.md if available.',
             },
             skip_build: {
                 type: "boolean",

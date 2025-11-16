@@ -3,7 +3,7 @@
  * XC-All MCP Server
  *
  * Full toolkit for human+AI collaboration
- * All 24 tools available for maximum flexibility
+ * All 23 tools available for maximum flexibility
  */
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -11,7 +11,6 @@ import { CallToolRequestSchema, ListToolsRequestSchema, } from "@modelcontextpro
 // Import ALL tools
 // Xcode
 import { xcodeBuild, xcodeBuildDefinition, } from "../../shared/tools/xcode/build.js";
-import { buildAndLaunch, xcodeBuildAndLaunchDefinition, } from "../../shared/tools/xcode/build-and-launch.js";
 import { xcodeClean, xcodeCleanDefinition, } from "../../shared/tools/xcode/clean.js";
 import { xcodeTest, xcodeTestDefinition, } from "../../shared/tools/xcode/test.js";
 import { xcodeList, xcodeListDefinition, } from "../../shared/tools/xcode/list.js";
@@ -41,7 +40,7 @@ class XCAllServer {
     constructor() {
         this.server = new Server({
             name: "xc-all",
-            version: "0.3.0",
+            version: "0.4.0",
             title: "Complete Toolkit",
             description: "Full iOS development toolkit for human+AI collaboration - all 23 tools",
         }, {
@@ -54,9 +53,8 @@ class XCAllServer {
     registerTools() {
         this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
             tools: [
-                // Xcode (6 tools)
+                // Xcode (5 tools)
                 xcodeBuildDefinition,
-                xcodeBuildAndLaunchDefinition,
                 xcodeCleanDefinition,
                 xcodeTestDefinition,
                 xcodeListDefinition,
@@ -93,16 +91,6 @@ class XCAllServer {
                             {
                                 type: "text",
                                 text: JSON.stringify(await xcodeBuild(args)),
-                            },
-                        ],
-                    };
-                case "xcode_build_and_launch":
-                case "xcode_build_and_run": // Backward compatibility
-                    return {
-                        content: [
-                            {
-                                type: "text",
-                                text: JSON.stringify(await buildAndLaunch(args)),
                             },
                         ],
                     };
