@@ -3,7 +3,7 @@
  * XC-All MCP Server
  *
  * Full toolkit for human+AI collaboration
- * All 23 tools available for maximum flexibility
+ * All 24 tools available for maximum flexibility
  */
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";

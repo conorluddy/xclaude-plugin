@@ -7,17 +7,17 @@ Modular task-based MCP architecture for iOS development workflows.
 ```
 mcp-servers/
 ├── shared/                    # Single source of truth
-│   ├── tools/                # 22 individual tools
+│   ├── tools/                # 24 individual tools
 │   ├── types/                # Shared type definitions
 │   └── utils/                # Shared utilities
-├── xc-compile/               # MCP 1: Ultra-minimal build (~300 tokens)
-├── xc-interact/              # MCP 2: Pure UI interaction (~900 tokens)
-├── xc-build/                 # MCP 3: Build validation (~600 tokens)
+├── xc-build/                 # MCP 1: Build validation (~600 tokens)
+├── xc-launch/                # MCP 2: Simulator lifecycle (~400 tokens)
+├── xc-interact/              # MCP 3: Pure UI interaction (~900 tokens)
 ├── xc-ai-assist/             # MCP 4: AI UI automation (~1400 tokens)
 ├── xc-setup/                 # MCP 5: Environment setup (~800 tokens)
 ├── xc-testing/               # MCP 6: E2E testing (~1200 tokens)
 ├── xc-meta/                  # MCP 7: Project maintenance (~700 tokens)
-└── xc-hybrid/                # MCP 8: Full toolkit (~3500 tokens)
+└── xc-all/                   # MCP 8: Full toolkit (~3500 tokens)
 ```
 
 ## Key Features
@@ -25,26 +25,42 @@ mcp-servers/
 - **Modular Design**: Each tool is a standalone, testable function
 - **Non-Exclusive Sets**: Tools can appear in multiple MCP servers
 - **Workflow-Specific**: Each MCP server is optimized for a specific dev phase
-- **Token Efficient**: Enable only the MCPs you need (600-3500 tokens)
+- **Token Efficient**: Enable only the MCPs you need (400-3500 tokens)
 - **Type-Safe**: Zero `any` usage, full TypeScript type safety
+- **Composable**: Combine small MCPs for custom workflows
 
 ## The 8 MCP Servers
 
 ### 🔥 Surgical MCPs (Ultra-Focused)
 
-#### 1. **xc-compile** - Ultra-Minimal Build
-**Use when**: Tight code→build→fix loops, minimal token overhead, only care about "did it compile?"
+#### 1. **xc-build** - Build Validation
+**Use when**: CI/CD, quick compilation checks, scheme discovery, need clean operations
 
-**Tools** (1):
+**Tools** (3):
 - `xcode_build` - Build with automatic error extraction (up to 10 errors)
+- `xcode_clean` - Clean build artifacts
+- `xcode_list` - List available schemes
 
-**Token cost**: ~300
+**Token cost**: ~600
 
-**Why enable**: You're in rapid iteration mode fixing compilation errors. No scheme discovery, no cleaning, just build and show errors. Perfect for LLM-driven TDD where you need instant feedback with minimal context.
+**Why enable**: Core build operations with scheme discovery and clean. Perfect for CI/CD pipelines or when you need to explore project structure. Combine with xc-launch for development loop.
 
 ---
 
-#### 2. **xc-interact** - Pure UI Interaction
+#### 2. **xc-launch** - Simulator Lifecycle
+**Use when**: Development loop (build → install → launch), rapid iteration
+
+**Tools** (2):
+- `simulator_install_app` - Install .app bundle on simulator
+- `simulator_launch_app` - Launch installed app by bundle ID
+
+**Token cost**: ~400
+
+**Why enable**: Minimal simulator operations for development workflow. Combine with xc-build for complete build → install → launch loop. No Xcode build operations (use xc-build), no screenshots (use xc-interact).
+
+---
+
+#### 3. **xc-interact** - Pure UI Interaction
 **Use when**: Testing UI flows with app already built and running, no build overhead needed
 
 **Tools** (6):
@@ -62,20 +78,6 @@ mcp-servers/
 ---
 
 ### 📦 Core Workflow MCPs
-
-#### 3. **xc-build** - Build Validation
-**Use when**: CI/CD, quick compilation checks, scheme discovery, need clean operations
-
-**Tools** (3):
-- `xcode_build` - Build Xcode project
-- `xcode_clean` - Clean build artifacts
-- `xcode_list` - List available schemes
-
-**Token cost**: ~600
-
-**Why enable**: More comprehensive than xc-compile - includes scheme discovery and clean operations. Use for CI/CD pipelines or when you need to explore project structure.
-
----
 
 #### 4. **xc-ai-assist** - AI UI Automation
 **Use when**: AI making UI changes, iterating on UX, testing UI flows with visual feedback
@@ -147,14 +149,17 @@ mcp-servers/
 
 ### 🚀 Full Access
 
-#### 8. **xc-hybrid** - Full Toolkit
+#### 8. **xc-all** - Full Toolkit
 **Use when**: Human+AI collaboration, complex workflows, need full access
 
-**Tools** (23): All tools from all categories
+**Tools** (24): All tools from all categories
+- **Xcode** (6): build, build_and_launch, clean, test, list, version
+- **Simulator** (12): list, boot, shutdown, create, delete, install_app, launch_app, terminate_app, screenshot, openurl, get_app_container, health_check
+- **IDB** (6): describe, tap, input, gesture, find_element, check_quality
 
 **Token cost**: ~3500
 
-**Why enable**: Maximum flexibility - all 22 tools available. Use when workflow is unpredictable or you need access to everything. Equivalent to old monolithic dispatcher but with better organization.
+**Why enable**: Maximum flexibility - all 24 tools available. Use when workflow is unpredictable or you need access to everything. Includes `xcode_build_and_launch` convenience tool for one-step build → install → launch.
 
 ## Quick Start
 
@@ -162,40 +167,51 @@ mcp-servers/
 
 ```bash
 cd mcp-servers
-./build.sh
+npm run build
 ```
 
 Or build individually:
 
 ```bash
-cd xc-build
-npm install
-npm run build
+npm run build --workspace=xc-build
+npm run build --workspace=xc-launch
+# ... etc
 ```
 
 ### Enable in Claude
 
-**IMPORTANT**: Enable **ONE MCP at a time** for optimal token efficiency. If you enable multiple MCPs, shared tools will appear multiple times and increase token usage.
+**Choose your workflow pattern:**
 
-In Claude's MCP settings, toggle the server you need:
+#### Pattern 1: Single Workflow (Minimal Tokens)
+Enable one focused MCP for your current task:
 
 ```
-☐ xc-compile        # Ultra-minimal: just build (~300 tokens)
-☐ xc-interact       # Pure UI automation (~900 tokens)
-☐ xc-build          # Build + clean + schemes (~600 tokens)
-☐ xc-ai-assist      # Build + UI + screenshots (~1400 tokens)
-☐ xc-setup          # Environment setup (~800 tokens)
-☐ xc-testing        # Tests + UI flows (~1200 tokens)
-☐ xc-meta           # Maintenance tasks (~700 tokens)
-☐ xc-hybrid         # Everything (~3500 tokens)
+☑ xc-interact       # Pure UI automation (~900 tokens)
 ```
 
-**Pro tip**: Use xc-hybrid if your workflow spans multiple categories, rather than enabling multiple focused MCPs.
+#### Pattern 2: Development Loop (Composable)
+Enable xc-build + xc-launch for build → install → launch workflow:
 
-## Tool Library (22 Total)
+```
+☑ xc-build          # Build + clean + schemes (~600 tokens)
+☑ xc-launch         # Install + launch (~400 tokens)
+Total: ~1000 tokens
+```
 
-### Xcode Tools (5)
+#### Pattern 3: Complex Workflows (All-in-One)
+Enable xc-all when you need multiple capabilities:
+
+```
+☑ xc-all            # Everything (~3500 tokens)
+```
+
+**Pro tip**: Avoid enabling multiple MCPs with overlapping tools (e.g., xc-build + xc-ai-assist both have `xcode_build`). This causes tool duplication and wastes tokens. Use xc-all instead for multi-capability workflows.
+
+## Tool Library (24 Total)
+
+### Xcode Tools (6)
 - `xcode_build` - Build project
+- `xcode_build_and_launch` - Build, install, and launch in one step (xc-all only)
 - `xcode_clean` - Clean artifacts
 - `xcode_test` - Run tests
 - `xcode_list` - List schemes/targets
@@ -230,7 +246,8 @@ In Claude's MCP settings, toggle the server you need:
 1. Create tool file in `shared/tools/{category}/{tool-name}.ts`
 2. Export `{toolName}Definition` and `{toolName}()` function
 3. Import in relevant MCP server(s)
-4. Rebuild affected servers
+4. Add tests in `shared/tools/{category}/{tool-name}.test.ts`
+5. Rebuild affected servers
 
 ### Adding a New MCP Server
 
@@ -238,7 +255,8 @@ In Claude's MCP settings, toggle the server you need:
 2. Create `src/index.ts` (copy from existing)
 3. Create `package.json` and `tsconfig.json`
 4. Add to `plugin.json` mcpServers
-5. Add to `build.sh`
+5. Add to root `package.json` workspaces
+6. Add build script to `mcp-servers/package.json`
 
 ### Type Safety Rules
 
@@ -260,6 +278,7 @@ In Claude's MCP settings, toggle the server you need:
 - Enable only what you need
 - Clear mental model (workflow-based)
 - Reduced token overhead
+- Composable workflows (xc-build + xc-launch)
 - No overlap confusion
 
 ### For Developers
@@ -267,24 +286,26 @@ In Claude's MCP settings, toggle the server you need:
 - Easy testing (isolated functions)
 - Simple maintenance (update once)
 - Type-safe throughout
+- Clear separation of concerns
 
 ## Comparison: Old vs New
 
-| Aspect | Old (3 Dispatchers) | New (8 MCP Servers) |
-|--------|---------------------|---------------------|
+| Aspect | Old (Monolithic) | New (8 MCP Servers) |
+|--------|------------------|---------------------|
 | **MCP Servers** | 1 monolithic | 8 workflow-specific |
-| **Tools Exposed** | 22 (always) | 1-23 (configurable) |
-| **Token Cost** | ~2200 (fixed) | 300-3500 (flexible) |
+| **Tools Exposed** | 22 (always) | 2-24 (configurable) |
+| **Token Cost** | ~2200 (fixed) | 400-3500 (flexible) |
 | **Modularity** | Via Skills | Via MCP toggle |
 | **Discoverability** | Need inspection | Named by workflow |
 | **Code Organization** | Monolithic files | Modular functions |
 
 ## Token Cost Examples
 
-**Scenario 1: Fixing compilation errors**
+**Scenario 1: Development loop (build → install → launch)**
 ```
-✅ xc-compile (300 tokens)
-Total: 300 tokens - 87% less than old architecture!
+✅ xc-build (600 tokens)
+✅ xc-launch (400 tokens)
+Total: 1000 tokens - composable workflow!
 ```
 
 **Scenario 2: Testing UI flows (app already built)**
@@ -308,14 +329,14 @@ Total: 1400 tokens - 36% less than old architecture!
 Total: 3200 tokens + duplication overhead
 
 ✅ Do this instead:
-✅ xc-hybrid (3500 tokens)
+✅ xc-all (3500 tokens)
 Total: 3500 tokens - all tools, no duplication
 ```
 
-**Scenario 5: Everything**
+**Scenario 5: One-step build and launch**
 ```
-✅ xc-hybrid (3500 tokens)
-Total: 3500 tokens - 59% more than old, but full modular architecture
+✅ xc-all (3500 tokens)
+Use xcode_build_and_launch tool for build → install → launch in one step
 ```
 
 ## Requirements

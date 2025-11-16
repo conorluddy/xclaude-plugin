@@ -4,14 +4,14 @@ This file provides essential guidance to Claude Code when working with the xclau
 
 ## Project Overview
 
-**xclaude-plugin** is a production-ready MCP (Model Context Protocol) plugin for iOS development automation. It provides 8 modular, workflow-specific MCP servers that consolidate 23 iOS operations across build, test, simulator control, and UI automation.
+**xclaude-plugin** is a production-ready MCP (Model Context Protocol) plugin for iOS development automation. It provides 8 modular, workflow-specific MCP servers that consolidate 24 iOS operations across build, test, simulator control, and UI automation.
 
-**Status**: ✅ Production-ready (v0.3.0) - All operations fully implemented, tested, and with codecov integration.
+**Status**: ✅ Production-ready (v0.4.0) - All operations fully implemented, tested, and with codecov integration.
 
 **Key Features**:
 
 - **8 modular MCP servers** - Workflow-specific, composable architecture
-- **23 total operations** across Xcode, Simulator, and IDB domains
+- **24 total operations** across Xcode, Simulator, and IDB domains
 - **8 procedural Skills** (on-demand documentation with examples)
 - **100% TypeScript** with zero tolerance for `any` types
 - **Full test coverage** with codecov reporting
@@ -28,7 +28,7 @@ xclaude-plugin/
 │   └── marketplace.json          # Marketplace configuration
 ├── mcp-servers/                   # 8 modular MCP servers
 │   ├── xc-build/                 # Build, clean, list schemes
-│   ├── xc-build-and-launch/      # Build, install, launch app
+│   ├── xc-launch/                # Simulator lifecycle: install and launch
 │   ├── xc-interact/              # Simulator + IDB UI automation
 │   ├── xc-ai-assist/             # AI-specific workflows
 │   ├── xc-setup/                 # Health check, project info
@@ -65,12 +65,12 @@ xclaude-plugin/
 
 **Optional Load** (documented in README):
 
-- `xc-build-and-launch` - Build, install, and launch app
+- `xc-launch` - Simulator lifecycle: install and launch app
 - `xc-testing` - Test execution and result analysis
 - `xc-interact` - Simulator and IDB UI automation
 - `xc-ai-assist` - AI-specific workflows
 - `xc-meta` - Metadata and introspection
-- `xc-all` - All 23 operations in one server
+- `xc-all` - All 24 operations in one server
 
 Users can customize `.mcp.json` to load any combination of servers based on their workflow.
 
@@ -226,4 +226,4 @@ interface OperationResult<T> {
 
 ---
 
-**xclaude-plugin v0.3.0** - Modular iOS development automation for Claude Code
+**xclaude-plugin v0.4.0** - Modular iOS development automation for Claude Code
