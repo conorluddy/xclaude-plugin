@@ -37,9 +37,9 @@
         "XC_LOG_LEVEL": "info"
       }
     },
-    "xc-deploy": {
+    "xc-launch": {
       "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-deploy/dist/index.js"],
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-launch/dist/index.js"],
       "env": {
         "XC_LOG_LEVEL": "info"
       }

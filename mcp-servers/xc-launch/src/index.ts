@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * XC-Deploy MCP Server
+ * XC-Launch MCP Server
  *
- * Composable primitives for iOS deployment workflow
- * Provides: build, install, launch as independent operations
+ * Simulator app lifecycle operations
+ * Provides: install, launch primitives for rapid development
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -15,18 +15,6 @@ import {
 
 // Import tool definitions and implementations
 import {
-  xcodeBuild,
-  xcodeBuildDefinition,
-} from "../../shared/tools/xcode/build.js";
-import {
-  xcodeClean,
-  xcodeCleanDefinition,
-} from "../../shared/tools/xcode/clean.js";
-import {
-  xcodeList,
-  xcodeListDefinition,
-} from "../../shared/tools/xcode/list.js";
-import {
   simulatorInstallApp,
   simulatorInstallAppDefinition,
 } from "../../shared/tools/simulator/install-app.js";
@@ -35,17 +23,17 @@ import {
   simulatorLaunchAppDefinition,
 } from "../../shared/tools/simulator/launch-app.js";
 
-class XCDeployServer {
+class XCLaunchServer {
   private server: Server;
 
   constructor() {
     this.server = new Server(
       {
-        name: "xc-deploy",
+        name: "xc-launch",
         version: "0.4.0",
-        title: "Deploy Toolkit",
+        title: "Launch Toolkit",
         description:
-          "Composable iOS deployment primitives: build, install, launch as independent operations.",
+          "Simulator app lifecycle: install and launch operations for rapid development.",
       },
       {
         capabilities: {
@@ -60,13 +48,7 @@ class XCDeployServer {
   private registerTools() {
     // List tools
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
-      tools: [
-        xcodeBuildDefinition,
-        simulatorInstallAppDefinition,
-        simulatorLaunchAppDefinition,
-        xcodeCleanDefinition,
-        xcodeListDefinition,
-      ],
+      tools: [simulatorInstallAppDefinition, simulatorLaunchAppDefinition],
     }));
 
     // Handle tool calls
@@ -74,20 +56,6 @@ class XCDeployServer {
       const { name, arguments: args } = request.params;
 
       switch (name) {
-        case "xcode_build":
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(
-                  await xcodeBuild(
-                    args as unknown as Parameters<typeof xcodeBuild>[0],
-                  ),
-                ),
-              },
-            ],
-          };
-
         case "simulator_install_app":
           return {
             content: [
@@ -118,34 +86,6 @@ class XCDeployServer {
             ],
           };
 
-        case "xcode_clean":
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(
-                  await xcodeClean(
-                    args as unknown as Parameters<typeof xcodeClean>[0],
-                  ),
-                ),
-              },
-            ],
-          };
-
-        case "xcode_list":
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(
-                  await xcodeList(
-                    args as unknown as Parameters<typeof xcodeList>[0],
-                  ),
-                ),
-              },
-            ],
-          };
-
         default:
           throw new Error(`Unknown tool: ${name}`);
       }
@@ -155,9 +95,9 @@ class XCDeployServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("xc-deploy MCP server running");
+    console.error("xc-launch MCP server running");
   }
 }
 
-const server = new XCDeployServer();
+const server = new XCLaunchServer();
 server.run().catch(console.error);
