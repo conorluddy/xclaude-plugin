@@ -13,7 +13,7 @@ import { resolveDestination } from "../../utils/destination.js";
 export const xcodeTestDefinition: ToolDefinition = {
   name: "xcode_test",
   description:
-    "Run Xcode test suite for iOS apps. Check project's CLAUDE.md for preferred simulator and SDK defaults when destination is not specified.",
+    "Run Xcode test suite for iOS apps. Check project's CLAUDE.md for preferred simulator and SDK defaults when parameters are not explicitly provided.",
   inputSchema: {
     type: "object",
     properties: {
@@ -28,7 +28,7 @@ export const xcodeTestDefinition: ToolDefinition = {
       destination: {
         type: "string",
         description:
-          'Simulator destination. Formats: "platform=iOS Simulator,name=iPhone 15" (auto-resolves OS) | "platform=iOS Simulator,name=iPhone 15,OS=18.0" | "id=UDID". If not specified, check CLAUDE.md for project preferred simulator.',
+          'Simulator destination. Formats: "platform=iOS Simulator,name=iPhone 15" (auto-resolves OS) | "platform=iOS Simulator,name=iPhone 15,OS=18.0" | "id=UDID". If not specified, agents should check CLAUDE.md for project defaults.',
       },
       test_plan: {
         type: "string",
