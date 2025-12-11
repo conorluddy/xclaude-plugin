@@ -5,6 +5,7 @@
  */
 import { runCommand } from '../../utils/command.js';
 import { logger } from '../../utils/logger.js';
+import { resolveSimulatorTarget } from '../../utils/simulator.js';
 export const idbTapDefinition = {
     name: 'idb_tap',
     description: 'Tap at UI coordinates',
@@ -42,6 +43,7 @@ export async function idbTap(params) {
             };
         }
         const target = params.target || 'booted';
+        const resolvedTarget = await resolveSimulatorTarget(target);
         const duration = params.duration || 0.1;
         // Execute tap command
         logger.info(`Tapping at (${params.x}, ${params.y})`);
@@ -50,8 +52,8 @@ export async function idbTap(params) {
             'tap',
             String(Math.round(params.x)),
             String(Math.round(params.y)),
-            '--target',
-            target,
+            '--udid',
+            resolvedTarget,
             '--duration',
             String(duration),
         ]);

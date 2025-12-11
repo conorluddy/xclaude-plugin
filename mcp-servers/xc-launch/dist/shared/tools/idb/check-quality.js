@@ -5,6 +5,7 @@
  */
 import { runCommand } from '../../utils/command.js';
 import { logger } from '../../utils/logger.js';
+import { resolveSimulatorTarget } from '../../utils/simulator.js';
 export const idbCheckQualityDefinition = {
     name: 'idb_check_quality',
     description: 'Check accessibility data quality (use before deciding on screenshot)',
@@ -21,9 +22,11 @@ export const idbCheckQualityDefinition = {
 export async function idbCheckQuality(params) {
     try {
         const target = params.target || 'booted';
+        // Resolve target to actual UDID
+        const resolvedTarget = await resolveSimulatorTarget(target);
         // Execute describe to get all elements
         logger.info('Checking accessibility quality');
-        const result = await runCommand('idb', ['ui', 'describe-all', '--target', target, '--json']);
+        const result = await runCommand('idb', ['ui', 'describe-all', '--udid', resolvedTarget, '--json']);
         // Parse and analyze
         const json = JSON.parse(result.stdout);
         let totalElements = 0;

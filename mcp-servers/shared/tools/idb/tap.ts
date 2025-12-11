@@ -8,6 +8,7 @@ import type { ToolDefinition, ToolResult } from '../../types/base.js';
 import type { TapParams, TapResultData } from '../../types/idb.js';
 import { runCommand } from '../../utils/command.js';
 import { logger } from '../../utils/logger.js';
+import { resolveSimulatorTarget } from '../../utils/simulator.js';
 
 export const idbTapDefinition: ToolDefinition = {
   name: 'idb_tap',
@@ -48,6 +49,7 @@ export async function idbTap(params: TapParams): Promise<ToolResult<TapResultDat
     }
 
     const target = params.target || 'booted';
+    const resolvedTarget = await resolveSimulatorTarget(target);
     const duration = params.duration || 0.1;
 
     // Execute tap command
@@ -57,8 +59,8 @@ export async function idbTap(params: TapParams): Promise<ToolResult<TapResultDat
       'tap',
       String(Math.round(params.x)),
       String(Math.round(params.y)),
-      '--target',
-      target,
+      '--udid',
+      resolvedTarget,
       '--duration',
       String(duration),
     ]);

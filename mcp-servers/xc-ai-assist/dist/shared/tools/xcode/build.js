@@ -82,11 +82,24 @@ export async function xcodeBuild(params) {
         // Execute build
         logger.info(`Building project: ${params.scheme}`);
         const startTime = Date.now();
-        const result = await runCommand("xcodebuild", args);
+        const result = await runCommand("xcodebuild", args, {
+            maxBuffer: 50 * 1024 * 1024,
+            timeout: 20 * 60 * 1000,
+        });
         const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+        const trimOutput = (output) => {
+            const lines = output.split('\n');
+            if (lines.length > 1000) {
+                return `... (${lines.length - 1000} lines trimmed) ...\n${lines.slice(-1000).join('\n')}`;
+            }
+            return output;
+        };
+        const trimmedStdout = trimOutput(result.stdout);
+        const trimmedStderr = trimOutput(result.stderr);
+        const combinedOutput = trimmedStdout + "\n" + trimmedStderr;
         // Extract errors if build failed
         const errors = result.code !== 0
-            ? extractBuildErrors(result.stdout + "\n" + result.stderr)
+            ? extractBuildErrors(combinedOutput)
             : undefined;
         // Return result
         const data = {
