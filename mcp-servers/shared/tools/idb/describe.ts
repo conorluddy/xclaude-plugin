@@ -12,6 +12,7 @@ import type {
 } from "../../types/idb.js";
 import { runCommand } from "../../utils/command.js";
 import { logger } from "../../utils/logger.js";
+import { resolveSimulatorTarget } from "../../utils/simulator.js";
 
 export const idbDescribeDefinition: ToolDefinition = {
   name: "idb_describe",
@@ -47,6 +48,9 @@ export async function idbDescribe(
     const target = params.target || "booted";
     const operation = params.operation || "all";
 
+    // Resolve target to actual UDID
+    const resolvedTarget = await resolveSimulatorTarget(target);
+
     // Execute describe command
     logger.info(`Querying accessibility tree: ${operation}`);
 
@@ -55,8 +59,8 @@ export async function idbDescribe(
       result = await runCommand("idb", [
         "ui",
         "describe-all",
-        "--target",
-        target,
+        "--udid",
+        resolvedTarget,
         "--json",
       ]);
     } else if (
@@ -69,8 +73,8 @@ export async function idbDescribe(
         "describe-point",
         String(params.x),
         String(params.y),
-        "--target",
-        target,
+        "--udid",
+        resolvedTarget,
         "--json",
       ]);
     } else {

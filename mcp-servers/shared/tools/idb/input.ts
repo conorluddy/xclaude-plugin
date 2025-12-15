@@ -8,6 +8,7 @@ import type { ToolDefinition, ToolResult } from '../../types/base.js';
 import type { InputParams, InputResultData } from '../../types/idb.js';
 import { runCommand } from '../../utils/command.js';
 import { logger } from '../../utils/logger.js';
+import { resolveSimulatorTarget } from '../../utils/simulator.js';
 
 export const idbInputDefinition: ToolDefinition = {
   name: 'idb_input',
@@ -48,17 +49,18 @@ export async function idbInput(params: InputParams): Promise<ToolResult<InputRes
     }
 
     const target = params.target || 'booted';
+    const resolvedTarget = await resolveSimulatorTarget(target);
     let result;
 
     // Type text
     if (params.text) {
       logger.info(`Typing text: ${params.text}`);
-      result = await runCommand('idb', ['ui', 'text', params.text, '--target', target]);
+      result = await runCommand('idb', ['ui', 'text', params.text, '--udid', resolvedTarget]);
     }
     // Press single key
     else if (params.key) {
       logger.info(`Pressing key: ${params.key}`);
-      result = await runCommand('idb', ['ui', 'key', params.key, '--target', target]);
+      result = await runCommand('idb', ['ui', 'key', params.key, '--udid', resolvedTarget]);
     }
     // Press key sequence
     else if (params.key_sequence) {
@@ -67,8 +69,8 @@ export async function idbInput(params: InputParams): Promise<ToolResult<InputRes
         'ui',
         'key-sequence',
         ...params.key_sequence,
-        '--target',
-        target,
+        '--udid',
+        resolvedTarget,
       ]);
     } else {
       return {

@@ -66,6 +66,10 @@ describe("xcodeBuild", () => {
       expect(mockRunCommand).toHaveBeenCalledWith(
         "xcodebuild",
         expect.arrayContaining(["-configuration", "Debug"]),
+        expect.objectContaining({
+          maxBuffer: expect.any(Number),
+          timeout: expect.any(Number),
+        }),
       );
     });
 
@@ -81,6 +85,10 @@ describe("xcodeBuild", () => {
       expect(mockRunCommand).toHaveBeenCalledWith(
         "xcodebuild",
         expect.arrayContaining(["-configuration", "Release"]),
+        expect.objectContaining({
+          maxBuffer: expect.any(Number),
+          timeout: expect.any(Number),
+        }),
       );
     });
   });
@@ -99,6 +107,10 @@ describe("xcodeBuild", () => {
       expect(mockRunCommand).toHaveBeenCalledWith(
         "xcodebuild",
         expect.arrayContaining(["-workspace", "/auto/MyApp.xcworkspace"]),
+        expect.objectContaining({
+          maxBuffer: expect.any(Number),
+          timeout: expect.any(Number),
+        }),
       );
     });
 
@@ -127,6 +139,10 @@ describe("xcodeBuild", () => {
       expect(mockRunCommand).toHaveBeenCalledWith(
         "xcodebuild",
         expect.arrayContaining(["-workspace", "/custom/MyApp.xcworkspace"]),
+        expect.objectContaining({
+          maxBuffer: expect.any(Number),
+          timeout: expect.any(Number),
+        }),
       );
     });
 
@@ -143,6 +159,10 @@ describe("xcodeBuild", () => {
       expect(mockRunCommand).toHaveBeenCalledWith(
         "xcodebuild",
         expect.arrayContaining(["-project", "/custom/MyApp.xcodeproj"]),
+        expect.objectContaining({
+          maxBuffer: expect.any(Number),
+          timeout: expect.any(Number),
+        }),
       );
     });
   });
@@ -282,6 +302,10 @@ describe("xcodeBuild", () => {
           "-destination",
           "platform=iOS Simulator,name=iPhone 15",
         ]),
+        expect.objectContaining({
+          maxBuffer: expect.any(Number),
+          timeout: expect.any(Number),
+        }),
       );
     });
 

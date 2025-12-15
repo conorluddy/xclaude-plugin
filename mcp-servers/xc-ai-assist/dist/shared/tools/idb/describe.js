@@ -5,6 +5,7 @@
  */
 import { runCommand } from "../../utils/command.js";
 import { logger } from "../../utils/logger.js";
+import { resolveSimulatorTarget } from "../../utils/simulator.js";
 export const idbDescribeDefinition = {
     name: "idb_describe",
     description: "Query UI accessibility tree",
@@ -35,6 +36,8 @@ export async function idbDescribe(params) {
     try {
         const target = params.target || "booted";
         const operation = params.operation || "all";
+        // Resolve target to actual UDID
+        const resolvedTarget = await resolveSimulatorTarget(target);
         // Execute describe command
         logger.info(`Querying accessibility tree: ${operation}`);
         let result;
@@ -42,8 +45,8 @@ export async function idbDescribe(params) {
             result = await runCommand("idb", [
                 "ui",
                 "describe-all",
-                "--target",
-                target,
+                "--udid",
+                resolvedTarget,
                 "--json",
             ]);
         }
@@ -55,8 +58,8 @@ export async function idbDescribe(params) {
                 "describe-point",
                 String(params.x),
                 String(params.y),
-                "--target",
-                target,
+                "--udid",
+                resolvedTarget,
                 "--json",
             ]);
         }

@@ -21,11 +21,29 @@ describe("idbTap", () => {
 
   it("should tap at provided coordinates", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      // First call: simctl to resolve "booted" target
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              {
+                state: "Booted",
+                name: "iPhone 15",
+                udid: "TEST-UDID-1234",
+              },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      // Second call: idb tap command
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbTap({ x: 150, y: 250 });
 
@@ -45,55 +63,119 @@ describe("idbTap", () => {
 
   it("should use custom tap duration when provided", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              {
+                state: "Booted",
+                name: "iPhone 15",
+                udid: "TEST-UDID-1234",
+              },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     await idbTap({ x: 100, y: 200, duration: 0.5 });
 
     expect(mockRunCommand).toHaveBeenCalledWith(
       "idb",
-      expect.arrayContaining(["--duration", "0.5"]),
+      expect.arrayContaining(["--duration", "0.5", "--udid", "TEST-UDID-1234"]),
     );
   });
 
   it("should use default tap duration of 0.1 seconds", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              {
+                state: "Booted",
+                name: "iPhone 15",
+                udid: "TEST-UDID-1234",
+              },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     await idbTap({ x: 100, y: 200 });
 
     expect(mockRunCommand).toHaveBeenCalledWith(
       "idb",
-      expect.arrayContaining(["--duration", "0.1"]),
+      expect.arrayContaining(["--duration", "0.1", "--udid", "TEST-UDID-1234"]),
     );
   });
 
   it("should use booted target by default", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              {
+                state: "Booted",
+                name: "iPhone 15",
+                udid: "TEST-UDID-1234",
+              },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     await idbTap({ x: 100, y: 200 });
 
     expect(mockRunCommand).toHaveBeenCalledWith(
       "idb",
-      expect.arrayContaining(["--target", "booted"]),
+      expect.arrayContaining(["--udid", "TEST-UDID-1234"]),
     );
   });
 
   it("should handle command execution errors", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockRejectedValue(new Error("Tap failed"));
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              {
+                state: "Booted",
+                name: "iPhone 15",
+                udid: "TEST-UDID-1234",
+              },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockRejectedValueOnce(new Error("Tap failed"));
 
     const result = await idbTap({ x: 100, y: 200 });
 
@@ -102,11 +184,27 @@ describe("idbTap", () => {
 
   it("should return error when command exits with non-zero code", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "Device not found",
-      code: 1,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              {
+                state: "Booted",
+                name: "iPhone 15",
+                udid: "TEST-UDID-1234",
+              },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "Device not found",
+        code: 1,
+      });
 
     const result = await idbTap({ x: 100, y: 200 });
 

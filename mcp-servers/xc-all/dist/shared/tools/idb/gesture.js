@@ -5,6 +5,7 @@
  */
 import { runCommand } from '../../utils/command.js';
 import { logger } from '../../utils/logger.js';
+import { resolveSimulatorTarget } from '../../utils/simulator.js';
 export const idbGestureDefinition = {
     name: 'idb_gesture',
     description: 'Perform swipe gestures or hardware button presses',
@@ -52,6 +53,7 @@ export const idbGestureDefinition = {
 export async function idbGesture(params) {
     try {
         const target = params.target || 'booted';
+        const resolvedTarget = await resolveSimulatorTarget(target);
         if (params.gesture_type === 'swipe') {
             // Validate swipe coordinates
             if (params.start_x === undefined ||
@@ -73,8 +75,8 @@ export async function idbGesture(params) {
                 String(Math.round(params.start_y)),
                 String(Math.round(params.end_x)),
                 String(Math.round(params.end_y)),
-                '--target',
-                target,
+                '--udid',
+                resolvedTarget,
                 '--duration',
                 String(duration),
             ]);
@@ -111,8 +113,8 @@ export async function idbGesture(params) {
                 'ui',
                 'button',
                 params.button_type,
-                '--target',
-                target,
+                '--udid',
+                resolvedTarget,
             ]);
             const data = {
                 message: 'Button press executed',

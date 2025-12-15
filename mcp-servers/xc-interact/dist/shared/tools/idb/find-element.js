@@ -5,6 +5,7 @@
  */
 import { runCommand } from '../../utils/command.js';
 import { logger } from '../../utils/logger.js';
+import { resolveSimulatorTarget } from '../../utils/simulator.js';
 export const idbFindElementDefinition = {
     name: 'idb_find_element',
     description: 'Search UI elements by label or identifier (semantic search)',
@@ -34,13 +35,14 @@ export async function idbFindElement(params) {
             };
         }
         const target = params.target || 'booted';
+        const resolvedTarget = await resolveSimulatorTarget(target);
         // Execute find command
         logger.info(`Finding element: ${params.query}`);
         const result = await runCommand('idb', [
             'ui',
             'describe-all',
-            '--target',
-            target,
+            '--udid',
+            resolvedTarget,
             '--json',
         ]);
         // Parse and filter results

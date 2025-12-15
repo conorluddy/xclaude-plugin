@@ -21,11 +21,23 @@ describe("idbInput", () => {
 
   it("should type text input", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbInput({ text: "Hello World" });
 
@@ -41,11 +53,23 @@ describe("idbInput", () => {
 
   it("should press a single key", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbInput({ key: "return" });
 
@@ -61,11 +85,23 @@ describe("idbInput", () => {
 
   it("should press key sequences", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbInput({ key_sequence: ["delete", "delete", "a"] });
 
@@ -88,23 +124,47 @@ describe("idbInput", () => {
 
   it("should use booted target by default", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     await idbInput({ text: "test" });
 
     expect(mockRunCommand).toHaveBeenCalledWith(
       "idb",
-      expect.arrayContaining(["--target", "booted"]),
+      expect.arrayContaining(["--udid", "TEST-UDID-1234"]),
     );
   });
 
   it("should handle command execution errors", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockRejectedValue(new Error("Input failed"));
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockRejectedValueOnce(new Error("Input failed"));
 
     const result = await idbInput({ text: "test" });
 
@@ -113,11 +173,23 @@ describe("idbInput", () => {
 
   it("should return error when command exits with non-zero code", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "Input not supported",
-      code: 1,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "Input not supported",
+        code: 1,
+      });
 
     const result = await idbInput({ text: "test" });
 

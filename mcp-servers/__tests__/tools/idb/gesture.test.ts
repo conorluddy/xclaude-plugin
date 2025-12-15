@@ -21,11 +21,23 @@ describe("idbGesture", () => {
 
   it("should perform swipe gesture with coordinates", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbGesture({
       gesture_type: "swipe",
@@ -43,6 +55,19 @@ describe("idbGesture", () => {
   });
 
   it("should validate swipe requires all coordinates", async () => {
+    const mockRunCommand = vi.mocked(commandUtils.runCommand);
+    mockRunCommand.mockResolvedValueOnce({
+      stdout: JSON.stringify({
+        devices: {
+          "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+            { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+          ],
+        },
+      }),
+      stderr: "",
+      code: 0,
+    });
+
     const result = await idbGesture({
       gesture_type: "swipe",
       start_x: 100,
@@ -55,11 +80,23 @@ describe("idbGesture", () => {
 
   it("should press hardware button", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbGesture({
       gesture_type: "button",
@@ -77,6 +114,19 @@ describe("idbGesture", () => {
   });
 
   it("should validate button gesture requires button_type", async () => {
+    const mockRunCommand = vi.mocked(commandUtils.runCommand);
+    mockRunCommand.mockResolvedValueOnce({
+      stdout: JSON.stringify({
+        devices: {
+          "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+            { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+          ],
+        },
+      }),
+      stderr: "",
+      code: 0,
+    });
+
     const result = await idbGesture({
       gesture_type: "button",
       // Missing button_type
@@ -88,11 +138,23 @@ describe("idbGesture", () => {
 
   it("should use custom swipe duration when provided", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     await idbGesture({
       gesture_type: "swipe",
@@ -111,11 +173,23 @@ describe("idbGesture", () => {
 
   it("should use default swipe duration of 200ms", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     await idbGesture({
       gesture_type: "swipe",
@@ -133,11 +207,23 @@ describe("idbGesture", () => {
 
   it("should use booted target by default", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: "",
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "",
+        code: 0,
+      });
 
     await idbGesture({
       gesture_type: "button",
@@ -146,13 +232,25 @@ describe("idbGesture", () => {
 
     expect(mockRunCommand).toHaveBeenCalledWith(
       "idb",
-      expect.arrayContaining(["--target", "booted"]),
+      expect.arrayContaining(["--udid", "TEST-UDID-1234"]),
     );
   });
 
   it("should handle command execution errors", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockRejectedValue(new Error("Gesture failed"));
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockRejectedValueOnce(new Error("Gesture failed"));
 
     const result = await idbGesture({
       gesture_type: "button",

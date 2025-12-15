@@ -8,6 +8,7 @@ import type { ToolDefinition, ToolResult } from '../../types/base.js';
 import type { GestureParams, GestureResultData } from '../../types/idb.js';
 import { runCommand } from '../../utils/command.js';
 import { logger } from '../../utils/logger.js';
+import { resolveSimulatorTarget } from '../../utils/simulator.js';
 
 export const idbGestureDefinition: ToolDefinition = {
   name: 'idb_gesture',
@@ -57,6 +58,7 @@ export const idbGestureDefinition: ToolDefinition = {
 export async function idbGesture(params: GestureParams): Promise<ToolResult<GestureResultData>> {
   try {
     const target = params.target || 'booted';
+    const resolvedTarget = await resolveSimulatorTarget(target);
 
     if (params.gesture_type === 'swipe') {
       // Validate swipe coordinates
@@ -85,8 +87,8 @@ export async function idbGesture(params: GestureParams): Promise<ToolResult<Gest
         String(Math.round(params.start_y)),
         String(Math.round(params.end_x)),
         String(Math.round(params.end_y)),
-        '--target',
-        target,
+        '--udid',
+        resolvedTarget,
         '--duration',
         String(duration),
       ]);
@@ -124,8 +126,8 @@ export async function idbGesture(params: GestureParams): Promise<ToolResult<Gest
         'ui',
         'button',
         params.button_type,
-        '--target',
-        target,
+        '--udid',
+        resolvedTarget,
       ]);
 
       const data: GestureResultData = {
