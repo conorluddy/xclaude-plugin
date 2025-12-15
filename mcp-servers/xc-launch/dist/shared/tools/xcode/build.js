@@ -88,19 +88,10 @@ export async function xcodeBuild(params) {
             timeout: XCODEBUILD_CONFIG.BUILD_TIMEOUT_MS,
         });
         const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-        const trimOutput = (output) => {
-            const lines = output.split("\n");
-            const lineLimit = XCODEBUILD_CONFIG.OUTPUT_LINE_LIMIT;
-            if (lines.length > lineLimit) {
-                return `... (${lines.length - lineLimit} lines trimmed) ...\n${lines.slice(-lineLimit).join("\n")}`;
-            }
-            return output;
-        };
-        const trimmedStdout = trimOutput(result.stdout);
-        const trimmedStderr = trimOutput(result.stderr);
-        const combinedOutput = trimmedStdout + "\n" + trimmedStderr;
-        // Extract errors if build failed
-        const errors = result.code !== 0 ? extractBuildErrors(combinedOutput) : undefined;
+        // Extract errors if build failed (scans full output for error lines)
+        const errors = result.code !== 0
+            ? extractBuildErrors(result.stdout + "\n" + result.stderr)
+            : undefined;
         // Return result
         const data = {
             message: `Build ${result.code === 0 ? "succeeded" : "failed"} in ${duration}s`,

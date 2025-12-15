@@ -37,9 +37,6 @@ export const XCODEBUILD_CONFIG = {
 
   /** Build timeout (20 min) - clean builds with SPM resolution can be slow */
   BUILD_TIMEOUT_MS: 20 * 60 * 1000,
-
-  /** Trim output to last N lines to avoid token bloat in responses */
-  OUTPUT_LINE_LIMIT: 1000,
 } as const;
 
 /**

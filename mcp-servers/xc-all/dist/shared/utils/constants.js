@@ -30,8 +30,6 @@ export const XCODEBUILD_CONFIG = {
     OUTPUT_BUFFER_SIZE_BYTES: 50 * 1024 * 1024,
     /** Build timeout (20 min) - clean builds with SPM resolution can be slow */
     BUILD_TIMEOUT_MS: 20 * 60 * 1000,
-    /** Trim output to last N lines to avoid token bloat in responses */
-    OUTPUT_LINE_LIMIT: 1000,
 };
 /**
  * Simulator target resolution configuration
