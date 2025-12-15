@@ -13,6 +13,7 @@ import {
 } from "../../utils/command.js";
 import { logger } from "../../utils/logger.js";
 import { resolveDestination } from "../../utils/destination.js";
+import { XCODEBUILD_CONFIG } from "../../utils/constants.js";
 
 // Re-export types for consumers
 export type { BuildParams, BuildResultData };
@@ -110,15 +111,16 @@ export async function xcodeBuild(
     logger.info(`Building project: ${params.scheme}`);
     const startTime = Date.now();
     const result = await runCommand("xcodebuild", args, {
-      maxBuffer: 50 * 1024 * 1024,
-      timeout: 20 * 60 * 1000,
+      maxBuffer: XCODEBUILD_CONFIG.OUTPUT_BUFFER_SIZE_BYTES,
+      timeout: XCODEBUILD_CONFIG.BUILD_TIMEOUT_MS,
     });
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
 
     const trimOutput = (output: string): string => {
-      const lines = output.split('\n');
-      if (lines.length > 1000) {
-        return `... (${lines.length - 1000} lines trimmed) ...\n${lines.slice(-1000).join('\n')}`;
+      const lines = output.split("\n");
+      const lineLimit = XCODEBUILD_CONFIG.OUTPUT_LINE_LIMIT;
+      if (lines.length > lineLimit) {
+        return `... (${lines.length - lineLimit} lines trimmed) ...\n${lines.slice(-lineLimit).join("\n")}`;
       }
       return output;
     };
@@ -128,9 +130,7 @@ export async function xcodeBuild(
 
     // Extract errors if build failed
     const errors =
-      result.code !== 0
-        ? extractBuildErrors(combinedOutput)
-        : undefined;
+      result.code !== 0 ? extractBuildErrors(combinedOutput) : undefined;
 
     // Return result
     const data: BuildResultData = {

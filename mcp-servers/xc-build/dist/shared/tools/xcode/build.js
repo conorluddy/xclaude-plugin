@@ -6,6 +6,7 @@
 import { runCommand, findXcodeProject, extractBuildErrors, } from "../../utils/command.js";
 import { logger } from "../../utils/logger.js";
 import { resolveDestination } from "../../utils/destination.js";
+import { XCODEBUILD_CONFIG } from "../../utils/constants.js";
 export const xcodeBuildDefinition = {
     name: "xcode_build",
     description: "Build Xcode project for iOS apps. Check project's CLAUDE.md for preferred simulator and SDK defaults when parameters are not explicitly provided.",
@@ -83,14 +84,15 @@ export async function xcodeBuild(params) {
         logger.info(`Building project: ${params.scheme}`);
         const startTime = Date.now();
         const result = await runCommand("xcodebuild", args, {
-            maxBuffer: 50 * 1024 * 1024,
-            timeout: 20 * 60 * 1000,
+            maxBuffer: XCODEBUILD_CONFIG.OUTPUT_BUFFER_SIZE_BYTES,
+            timeout: XCODEBUILD_CONFIG.BUILD_TIMEOUT_MS,
         });
         const duration = ((Date.now() - startTime) / 1000).toFixed(1);
         const trimOutput = (output) => {
-            const lines = output.split('\n');
-            if (lines.length > 1000) {
-                return `... (${lines.length - 1000} lines trimmed) ...\n${lines.slice(-1000).join('\n')}`;
+            const lines = output.split("\n");
+            const lineLimit = XCODEBUILD_CONFIG.OUTPUT_LINE_LIMIT;
+            if (lines.length > lineLimit) {
+                return `... (${lines.length - lineLimit} lines trimmed) ...\n${lines.slice(-lineLimit).join("\n")}`;
             }
             return output;
         };
@@ -98,9 +100,7 @@ export async function xcodeBuild(params) {
         const trimmedStderr = trimOutput(result.stderr);
         const combinedOutput = trimmedStdout + "\n" + trimmedStderr;
         // Extract errors if build failed
-        const errors = result.code !== 0
-            ? extractBuildErrors(combinedOutput)
-            : undefined;
+        const errors = result.code !== 0 ? extractBuildErrors(combinedOutput) : undefined;
         // Return result
         const data = {
             message: `Build ${result.code === 0 ? "succeeded" : "failed"} in ${duration}s`,

@@ -4,23 +4,25 @@
  * Assess accessibility data quality (determines if screenshot needed)
  */
 
-import type { ToolDefinition, ToolResult } from '../../types/base.js';
+import type { ToolDefinition, ToolResult } from "../../types/base.js";
 import type {
   CheckAccessibilityParams,
   AccessibilityQualityResultData,
-} from '../../types/idb.js';
-import { runCommand } from '../../utils/command.js';
-import { logger } from '../../utils/logger.js';
-import { resolveSimulatorTarget } from '../../utils/simulator.js';
+} from "../../types/idb.js";
+import { runCommand } from "../../utils/command.js";
+import { logger } from "../../utils/logger.js";
+import { resolveSimulatorTarget } from "../../utils/simulator.js";
+import { ACCESSIBILITY_QUALITY_CONFIG } from "../../utils/constants.js";
 
 export const idbCheckQualityDefinition: ToolDefinition = {
-  name: 'idb_check_quality',
-  description: 'Check accessibility data quality (use before deciding on screenshot)',
+  name: "idb_check_quality",
+  description:
+    "Check accessibility data quality (use before deciding on screenshot)",
   inputSchema: {
-    type: 'object',
+    type: "object",
     properties: {
       target: {
-        type: 'string',
+        type: "string",
         description: 'Target device (default: "booted")',
       },
     },
@@ -28,17 +30,23 @@ export const idbCheckQualityDefinition: ToolDefinition = {
 };
 
 export async function idbCheckQuality(
-  params: CheckAccessibilityParams
+  params: CheckAccessibilityParams,
 ): Promise<ToolResult<AccessibilityQualityResultData>> {
   try {
-    const target = params.target || 'booted';
+    const target = params.target || "booted";
 
     // Resolve target to actual UDID
     const resolvedTarget = await resolveSimulatorTarget(target);
 
     // Execute describe to get all elements
-    logger.info('Checking accessibility quality');
-    const result = await runCommand('idb', ['ui', 'describe-all', '--udid', resolvedTarget, '--json']);
+    logger.info("Checking accessibility quality");
+    const result = await runCommand("idb", [
+      "ui",
+      "describe-all",
+      "--udid",
+      resolvedTarget,
+      "--json",
+    ]);
 
     // Parse and analyze
     const json = JSON.parse(result.stdout);
@@ -48,22 +56,29 @@ export async function idbCheckQuality(
 
     if (Array.isArray(json)) {
       totalElements = json.length;
-      labeledElements = json.filter((e) => e.label && e.label.length > 0).length;
-      interactiveElements = json.filter((e) => e.type?.includes('Button') || e.type?.includes('TextField')).length;
+      labeledElements = json.filter(
+        (e) => e.label && e.label.length > 0,
+      ).length;
+      interactiveElements = json.filter(
+        (e) => e.type?.includes("Button") || e.type?.includes("TextField"),
+      ).length;
     }
 
     // Calculate quality score
     const labelRatio = totalElements > 0 ? labeledElements / totalElements : 0;
     const score = Math.round(labelRatio * 100);
 
-    // Determine recommendation
-    let recommendation = '';
-    if (score >= 70) {
-      recommendation = 'Accessibility data sufficient - use idb_describe';
-    } else if (score >= 40) {
-      recommendation = 'Moderate accessibility - try idb_describe first, screenshot if needed';
+    // Determine recommendation based on quality thresholds
+    let recommendation = "";
+    if (score >= ACCESSIBILITY_QUALITY_CONFIG.GOOD_QUALITY_SCORE_THRESHOLD) {
+      recommendation = "Accessibility data sufficient - use idb_describe";
+    } else if (
+      score >= ACCESSIBILITY_QUALITY_CONFIG.MODERATE_QUALITY_SCORE_THRESHOLD
+    ) {
+      recommendation =
+        "Moderate accessibility - try idb_describe first, screenshot if needed";
     } else {
-      recommendation = 'Poor accessibility data - screenshot recommended';
+      recommendation = "Poor accessibility data - screenshot recommended";
     }
 
     const data: AccessibilityQualityResultData = {
@@ -81,11 +96,11 @@ export async function idbCheckQuality(
       summary: `Score: ${score}%`,
     };
   } catch (error) {
-    logger.error('Check quality failed', error as Error);
+    logger.error("Check quality failed", error as Error);
     return {
       success: false,
       error: String(error),
-      operation: 'check-quality',
+      operation: "check-quality",
     };
   }
 }
