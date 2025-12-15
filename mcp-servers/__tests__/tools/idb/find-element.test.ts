@@ -21,24 +21,36 @@ describe("idbFindElement", () => {
 
   it("should find elements matching query", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: JSON.stringify([
-        {
-          label: "Login Button",
-          value: null,
-          type: "Button",
-          frame: { x: 100, y: 400, width: 100, height: 50 },
-        },
-        {
-          label: "Sign Up Button",
-          value: null,
-          type: "Button",
-          frame: { x: 220, y: 400, width: 100, height: 50 },
-        },
-      ]),
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify([
+          {
+            label: "Login Button",
+            value: null,
+            type: "Button",
+            frame: { x: 100, y: 400, width: 100, height: 50 },
+          },
+          {
+            label: "Sign Up Button",
+            value: null,
+            type: "Button",
+            frame: { x: 220, y: 400, width: 100, height: 50 },
+          },
+        ]),
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbFindElement({ query: "Button" });
 
@@ -52,18 +64,30 @@ describe("idbFindElement", () => {
 
   it("should perform case-insensitive search", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: JSON.stringify([
-        {
-          label: "EMAIL FIELD",
-          value: "user@example.com",
-          type: "TextField",
-          frame: { x: 20, y: 100, width: 280, height: 40 },
-        },
-      ]),
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify([
+          {
+            label: "EMAIL FIELD",
+            value: "user@example.com",
+            type: "TextField",
+            frame: { x: 20, y: 100, width: 280, height: 40 },
+          },
+        ]),
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbFindElement({ query: "email" });
 
@@ -75,18 +99,30 @@ describe("idbFindElement", () => {
 
   it("should search by value as well as label", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: JSON.stringify([
-        {
-          label: "TextField",
-          value: "user@example.com",
-          type: "TextField",
-          frame: { x: 20, y: 100, width: 280, height: 40 },
-        },
-      ]),
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify([
+          {
+            label: "TextField",
+            value: "user@example.com",
+            type: "TextField",
+            frame: { x: 20, y: 100, width: 280, height: 40 },
+          },
+        ]),
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbFindElement({ query: "example.com" });
 
@@ -99,18 +135,30 @@ describe("idbFindElement", () => {
 
   it("should handle no matching elements", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: JSON.stringify([
-        {
-          label: "Login",
-          value: null,
-          type: "Button",
-          frame: { x: 100, y: 400, width: 100, height: 50 },
-        },
-      ]),
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify([
+          {
+            label: "Login",
+            value: null,
+            type: "Button",
+            frame: { x: 100, y: 400, width: 100, height: 50 },
+          },
+        ]),
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbFindElement({ query: "NonExistent" });
 
@@ -130,17 +178,29 @@ describe("idbFindElement", () => {
 
   it("should use booted target by default", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: JSON.stringify([]),
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify([]),
+        stderr: "",
+        code: 0,
+      });
 
     await idbFindElement({ query: "Button" });
 
     expect(mockRunCommand).toHaveBeenCalledWith(
       "idb",
-      expect.arrayContaining(["--target", "booted"]),
+      expect.arrayContaining(["--udid", "TEST-UDID-1234"]),
     );
   });
 
@@ -155,18 +215,30 @@ describe("idbFindElement", () => {
 
   it("should calculate center coordinates for tap", async () => {
     const mockRunCommand = vi.mocked(commandUtils.runCommand);
-    mockRunCommand.mockResolvedValue({
-      stdout: JSON.stringify([
-        {
-          label: "Button",
-          value: null,
-          type: "Button",
-          frame: { x: 100, y: 200, width: 80, height: 40 },
-        },
-      ]),
-      stderr: "",
-      code: 0,
-    });
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify([
+          {
+            label: "Button",
+            value: null,
+            type: "Button",
+            frame: { x: 100, y: 200, width: 80, height: 40 },
+          },
+        ]),
+        stderr: "",
+        code: 0,
+      });
 
     const result = await idbFindElement({ query: "Button" });
 
