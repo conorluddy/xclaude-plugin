@@ -6,6 +6,7 @@
 import { runCommand, findXcodeProject, extractBuildErrors, } from "../../utils/command.js";
 import { logger } from "../../utils/logger.js";
 import { resolveDestination } from "../../utils/destination.js";
+import { XCODEBUILD_CONFIG } from "../../utils/constants.js";
 export const xcodeBuildDefinition = {
     name: "xcode_build",
     description: "Build Xcode project for iOS apps. Check project's CLAUDE.md for preferred simulator and SDK defaults when parameters are not explicitly provided.",
@@ -83,23 +84,13 @@ export async function xcodeBuild(params) {
         logger.info(`Building project: ${params.scheme}`);
         const startTime = Date.now();
         const result = await runCommand("xcodebuild", args, {
-            maxBuffer: 50 * 1024 * 1024,
-            timeout: 20 * 60 * 1000,
+            maxBuffer: XCODEBUILD_CONFIG.OUTPUT_BUFFER_SIZE_BYTES,
+            timeout: XCODEBUILD_CONFIG.BUILD_TIMEOUT_MS,
         });
         const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-        const trimOutput = (output) => {
-            const lines = output.split('\n');
-            if (lines.length > 1000) {
-                return `... (${lines.length - 1000} lines trimmed) ...\n${lines.slice(-1000).join('\n')}`;
-            }
-            return output;
-        };
-        const trimmedStdout = trimOutput(result.stdout);
-        const trimmedStderr = trimOutput(result.stderr);
-        const combinedOutput = trimmedStdout + "\n" + trimmedStderr;
-        // Extract errors if build failed
+        // Extract errors if build failed (scans full output for error lines)
         const errors = result.code !== 0
-            ? extractBuildErrors(combinedOutput)
+            ? extractBuildErrors(result.stdout + "\n" + result.stderr)
             : undefined;
         // Return result
         const data = {
