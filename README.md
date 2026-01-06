@@ -364,6 +364,10 @@ The xclaude-plugin provides 8 modular MCPs with 24 specialized iOS tools. **Alwa
 - Discovering schemes/targets in project
 - Build validation and configuration
 
+**Use `xc-launch`** (~400 tokens) when:
+
+- Installing and launching an app on the simulator
+
 **Use `xc-interact`** (~900 tokens) when:
 
 - Testing UI flows with app already built
