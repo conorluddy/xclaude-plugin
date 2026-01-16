@@ -26,8 +26,8 @@ export const CACHE_CONFIG = {
  * Large buffer/timeout needed for complex projects with many dependencies
  */
 export const XCODEBUILD_CONFIG = {
-    /** Max stdout/stderr buffer (50MB) - large projects can exceed default 1MB */
-    OUTPUT_BUFFER_SIZE_BYTES: 50 * 1024 * 1024,
+    /** Max stdout/stderr buffer (200MB) - large projects can exceed default 1MB */
+    OUTPUT_BUFFER_SIZE_BYTES: 200 * 1024 * 1024,
     /** Build timeout (20 min) - clean builds with SPM resolution can be slow */
     BUILD_TIMEOUT_MS: 20 * 60 * 1000,
 };
