@@ -72,6 +72,13 @@
         "XC_LOG_LEVEL": "info"
       }
     },
+    "xc-logs": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-logs/dist/index.js"],
+      "env": {
+        "XC_LOG_LEVEL": "info"
+      }
+    },
     "xc-all": {
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-servers/xc-all/dist/index.js"],

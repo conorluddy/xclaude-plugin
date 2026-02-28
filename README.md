@@ -6,7 +6,7 @@
 
 **Modular iOS development automation for Claude Code**
 
-Build, test, and automate iOS apps through natural conversation with Claude. 8 workflow-specific MCP servers with 24 tools across Xcode, Simulator, and IDB.
+Build, test, and automate iOS apps through natural conversation with Claude. 9 workflow-specific MCP servers with 27 tools across Xcode, Simulator, IDB, and Logs.
 
 **Enable only what you need.** Each MCP is purpose-built for specific workflows, keeping your context window lean. Plus, our tools intelligently encapsulate Xcode output (errors, test results, build logs) so Claude processes structured JSON instead of raw 50+ line logs—saving significant tokens and enabling faster feedback loops.
 
@@ -16,9 +16,9 @@ Build, test, and automate iOS apps through natural conversation with Claude. 8 w
 
 ### 🎯 Modular Architecture
 
-- **8 workflow-specific MCP servers** (600-3500 tokens each)
+- **9 workflow-specific MCP servers** (400-3500 tokens each)
 - **Enable only what you need** - Ultra-minimal to full-featured
-- **23 shared tools** across Xcode, Simulator, and IDB
+- **27 shared tools** across Xcode, Simulator, IDB, and Logs
 - **Single source of truth** - tools defined once, imported by MCPs
 
 ### 🔥 Surgical MCPs (Ultra-Focused)
@@ -33,10 +33,11 @@ Build, test, and automate iOS apps through natural conversation with Claude. 8 w
 - **xc-setup** (~800 tokens) - Environment configuration and validation
 - **xc-testing** (~1200 tokens) - Test execution + UI flows
 - **xc-meta** (~700 tokens) - Project maintenance and housekeeping
+- **xc-logs** (~700 tokens) - Runtime logs, build diagnostics, test results, crash reports
 
 ### 🚀 Full Access
 
-- **xc-all** (~3500 tokens) - All 24 tools for complex workflows
+- **xc-all** (~3500 tokens) - All 27 tools for complex workflows
 
 ### 📚 8 Procedural Skills (Loaded On-Demand)
 

@@ -3,7 +3,7 @@
  * XC-All MCP Server
  *
  * Full toolkit for human+AI collaboration
- * All 23 tools available for maximum flexibility
+ * All 27 tools available for maximum flexibility
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -86,6 +86,21 @@ import {
   simulatorHealthCheckDefinition,
 } from "../../shared/tools/simulator/health-check.js";
 
+// Logs
+import { logsShow, logsShowDefinition } from "../../shared/tools/logs/show.js";
+import {
+  logsBuildDiagnostics,
+  logsBuildDiagnosticsDefinition,
+} from "../../shared/tools/logs/build-diagnostics.js";
+import {
+  logsTestResults,
+  logsTestResultsDefinition,
+} from "../../shared/tools/logs/test-results.js";
+import {
+  logsCrashReports,
+  logsCrashReportsDefinition,
+} from "../../shared/tools/logs/crash-reports.js";
+
 // IDB
 import {
   idbDescribe,
@@ -116,7 +131,7 @@ class XCAllServer {
         version: "0.4.0",
         title: "Complete Toolkit",
         description:
-          "Full iOS development toolkit for human+AI collaboration - all 23 tools",
+          "Full iOS development toolkit for human+AI collaboration - all 27 tools",
       },
       {
         capabilities: {
@@ -150,6 +165,11 @@ class XCAllServer {
         simulatorOpenURLDefinition,
         simulatorGetAppContainerDefinition,
         simulatorHealthCheckDefinition,
+        // Logs (4 tools)
+        logsShowDefinition,
+        logsBuildDiagnosticsDefinition,
+        logsTestResultsDefinition,
+        logsCrashReportsDefinition,
         // IDB (6 tools)
         idbDescribeDefinition,
         idbTapDefinition,
@@ -393,6 +413,62 @@ class XCAllServer {
                     args as unknown as Parameters<
                       typeof simulatorHealthCheck
                     >[0],
+                  ),
+                ),
+              },
+            ],
+          };
+
+        // Logs
+        case "logs_show":
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  await logsShow(
+                    args as unknown as Parameters<typeof logsShow>[0],
+                  ),
+                ),
+              },
+            ],
+          };
+        case "logs_build_diagnostics":
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  await logsBuildDiagnostics(
+                    args as unknown as Parameters<
+                      typeof logsBuildDiagnostics
+                    >[0],
+                  ),
+                ),
+              },
+            ],
+          };
+        case "logs_test_results":
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  await logsTestResults(
+                    args as unknown as Parameters<typeof logsTestResults>[0],
+                  ),
+                ),
+              },
+            ],
+          };
+        case "logs_crash_reports":
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  await logsCrashReports(
+                    args as unknown as Parameters<typeof logsCrashReports>[0],
                   ),
                 ),
               },
