@@ -27,13 +27,13 @@ export interface InputParams {
  */
 export interface GestureParams {
   target?: string;
-  gesture_type: 'swipe' | 'button';
+  gesture_type: "swipe" | "button";
   start_x?: number;
   start_y?: number;
   end_x?: number;
   end_y?: number;
-  direction?: 'up' | 'down' | 'left' | 'right';
-  button_type?: 'HOME' | 'LOCK' | 'SIDE_BUTTON' | 'SIRI';
+  direction?: "up" | "down" | "left" | "right";
+  button_type?: "HOME" | "LOCK" | "SIDE_BUTTON" | "SIRI";
   duration?: number;
 }
 
@@ -42,7 +42,7 @@ export interface GestureParams {
  */
 export interface DescribeParams {
   target?: string;
-  operation?: 'all' | 'point';
+  operation?: "all" | "point";
   x?: number;
   y?: number;
 }
@@ -67,7 +67,7 @@ export interface CheckAccessibilityParams {
  */
 export interface ListAppsParams {
   target?: string;
-  filter_type?: 'system' | 'user' | 'internal';
+  filter_type?: "system" | "user" | "internal";
 }
 
 /**
@@ -95,6 +95,8 @@ export interface UIElement {
   label?: string;
   value?: string;
   type?: string;
+  roleDescription?: string;
+  axUniqueId?: string;
   centerX?: number;
   centerY?: number;
   frame?: {
