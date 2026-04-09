@@ -36,14 +36,16 @@ describe("idbDescribe", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: "Sign In",
-            value: null,
+            AXLabel: "Sign In",
+            AXValue: null,
+            AXUniqueId: "sign-in-btn",
+            role_description: "button",
             type: "Button",
             frame: { x: 100, y: 200, width: 80, height: 40 },
           },
           {
-            label: "Email Field",
-            value: "user@example.com",
+            AXLabel: "Email Field",
+            AXValue: "user@example.com",
             type: "TextField",
             frame: { x: 20, y: 100, width: 280, height: 40 },
           },
@@ -58,8 +60,11 @@ describe("idbDescribe", () => {
     if (result.success) {
       expect(result.data.elements).toHaveLength(2);
       expect(result.data.elements![0].label).toBe("Sign In");
+      expect(result.data.elements![0].roleDescription).toBe("button");
+      expect(result.data.elements![0].axUniqueId).toBe("sign-in-btn");
       expect(result.data.elements![0].centerX).toBe(140);
       expect(result.data.elements![0].centerY).toBe(220);
+      expect(result.data.elements![1].value).toBe("user@example.com");
     }
   });
 
@@ -80,8 +85,8 @@ describe("idbDescribe", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: "Login Button",
-            value: null,
+            AXLabel: "Login Button",
+            AXValue: null,
             type: "Button",
             frame: { x: 100, y: 400, width: 100, height: 50 },
           },

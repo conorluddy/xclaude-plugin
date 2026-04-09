@@ -41,7 +41,10 @@ export async function idbCheckQuality(params) {
         let interactiveElements = 0;
         if (Array.isArray(json)) {
             totalElements = json.length;
-            labeledElements = json.filter((e) => e.label && e.label.length > 0).length;
+            labeledElements = json.filter((e) => {
+                const label = e.AXLabel ?? e.label;
+                return typeof label === "string" && label.length > 0;
+            }).length;
             interactiveElements = json.filter((e) => e.type?.includes("Button") || e.type?.includes("TextField")).length;
         }
         // Calculate quality score

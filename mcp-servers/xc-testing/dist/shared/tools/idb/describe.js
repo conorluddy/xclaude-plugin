@@ -6,6 +6,7 @@
 import { runCommand } from "../../utils/command.js";
 import { logger } from "../../utils/logger.js";
 import { resolveSimulatorTarget } from "../../utils/simulator.js";
+import { toUIElement } from "./element.js";
 export const idbDescribeDefinition = {
     name: "idb_describe",
     description: "Query UI accessibility tree",
@@ -76,14 +77,7 @@ export async function idbDescribe(params) {
         // Transform IDB output to our format
         if (Array.isArray(json)) {
             for (const elem of json) {
-                elements.push({
-                    label: elem.label,
-                    value: elem.value,
-                    type: elem.type,
-                    centerX: elem.frame?.x + elem.frame?.width / 2,
-                    centerY: elem.frame?.y + elem.frame?.height / 2,
-                    frame: elem.frame,
-                });
+                elements.push(toUIElement(elem));
             }
         }
         const data = {
