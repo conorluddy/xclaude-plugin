@@ -1,3 +1,6 @@
+Note: This was built back when MCPs used to take up a bunch of context even when unused. The idea was that you could quickly toggle modular plugins on and off as you needed them. Since then MCP has evolved to use very little context when not in use - so I'm not maintaining this any more. You can use my `xc-mcp` or `ios-simulator-skill` repos instead to do the same thing.
+
+
 # xClaude Plugin
 
 ```
