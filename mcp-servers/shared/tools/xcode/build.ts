@@ -36,8 +36,8 @@ export const xcodeBuildDefinition: ToolDefinition = {
       },
       configuration: {
         type: "string",
-        enum: ["Debug", "Release"],
-        description: "Build configuration (default: Debug)",
+        description:
+          "Build configuration (e.g., Debug, Release, Debug-Dev, Release-Prod). If omitted, uses scheme default.",
       },
       destination: {
         type: "string",
@@ -73,12 +73,12 @@ export async function xcodeBuild(
     }
 
     // Build command args
-    const args = [
-      "-scheme",
-      params.scheme,
-      "-configuration",
-      params.configuration || "Debug",
-    ];
+    const args = ["-scheme", params.scheme];
+
+    // Only add configuration if explicitly provided (let xcodebuild use scheme default otherwise)
+    if (params.configuration) {
+      args.push("-configuration", params.configuration);
+    }
 
     if (projectPath.endsWith(".xcworkspace")) {
       args.unshift("-workspace", projectPath);
