@@ -3,7 +3,7 @@
  * XC-All MCP Server
  *
  * Full toolkit for human+AI collaboration
- * All 23 tools available for maximum flexibility
+ * All 27 tools available for maximum flexibility
  */
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -28,6 +28,11 @@ import { simulatorScreenshot, simulatorScreenshotDefinition, } from "../../share
 import { simulatorOpenURL, simulatorOpenURLDefinition, } from "../../shared/tools/simulator/openurl.js";
 import { simulatorGetAppContainer, simulatorGetAppContainerDefinition, } from "../../shared/tools/simulator/get-app-container.js";
 import { simulatorHealthCheck, simulatorHealthCheckDefinition, } from "../../shared/tools/simulator/health-check.js";
+// Logs
+import { logsShow, logsShowDefinition } from "../../shared/tools/logs/show.js";
+import { logsBuildDiagnostics, logsBuildDiagnosticsDefinition, } from "../../shared/tools/logs/build-diagnostics.js";
+import { logsTestResults, logsTestResultsDefinition, } from "../../shared/tools/logs/test-results.js";
+import { logsCrashReports, logsCrashReportsDefinition, } from "../../shared/tools/logs/crash-reports.js";
 // IDB
 import { idbDescribe, idbDescribeDefinition, } from "../../shared/tools/idb/describe.js";
 import { idbTap, idbTapDefinition } from "../../shared/tools/idb/tap.js";
@@ -42,7 +47,7 @@ class XCAllServer {
             name: "xc-all",
             version: "0.4.0",
             title: "Complete Toolkit",
-            description: "Full iOS development toolkit for human+AI collaboration - all 23 tools",
+            description: "Full iOS development toolkit for human+AI collaboration - all 27 tools",
         }, {
             capabilities: {
                 tools: {},
@@ -72,6 +77,11 @@ class XCAllServer {
                 simulatorOpenURLDefinition,
                 simulatorGetAppContainerDefinition,
                 simulatorHealthCheckDefinition,
+                // Logs (4 tools)
+                logsShowDefinition,
+                logsBuildDiagnosticsDefinition,
+                logsTestResultsDefinition,
+                logsCrashReportsDefinition,
                 // IDB (6 tools)
                 idbDescribeDefinition,
                 idbTapDefinition,
@@ -236,6 +246,43 @@ class XCAllServer {
                             {
                                 type: "text",
                                 text: JSON.stringify(await simulatorHealthCheck(args)),
+                            },
+                        ],
+                    };
+                // Logs
+                case "logs_show":
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: JSON.stringify(await logsShow(args)),
+                            },
+                        ],
+                    };
+                case "logs_build_diagnostics":
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: JSON.stringify(await logsBuildDiagnostics(args)),
+                            },
+                        ],
+                    };
+                case "logs_test_results":
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: JSON.stringify(await logsTestResults(args)),
+                            },
+                        ],
+                    };
+                case "logs_crash_reports":
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: JSON.stringify(await logsCrashReports(args)),
                             },
                         ],
                     };
