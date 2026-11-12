@@ -59,3 +59,38 @@ export const ACCESSIBILITY_QUALITY_CONFIG = {
     /** Score >= this but < GOOD: try accessibility first, fallback to screenshot */
     MODERATE_QUALITY_SCORE_THRESHOLD: 40,
 };
+/**
+ * Logs tool configuration
+ */
+export const LOGS_CONFIG = {
+    /** Default time window for log queries in minutes */
+    DEFAULT_LAST_MINUTES: 5,
+    /** Hard ceiling on last_minutes to prevent scanning months of logs */
+    MAX_LAST_MINUTES: 60,
+    /** Default maximum log entries to return */
+    DEFAULT_MAX_ENTRIES: 50,
+    /** Hard ceiling on max_entries to prevent token explosion */
+    MAX_ENTRIES_CEILING: 200,
+    /** Default log level filter */
+    DEFAULT_LOG_LEVEL: "info",
+    /** Timeout for `log show` command in milliseconds */
+    LOG_COMMAND_TIMEOUT_MS: 30 * 1000,
+    /** Default time window for crash report search in hours */
+    DEFAULT_CRASH_HOURS: 24,
+    /** Default number of crash reports to return */
+    DEFAULT_MAX_CRASH_REPORTS: 1,
+    /** Hard ceiling on crash reports to prevent token explosion */
+    MAX_CRASH_REPORTS_CEILING: 5,
+    /** Maximum .ips file size to read in bytes (5MB) */
+    MAX_IPS_FILE_SIZE_BYTES: 5 * 1024 * 1024,
+    /** Maximum backtrace frames per crash report */
+    MAX_BACKTRACE_FRAMES: 20,
+    /** Timeout for xcresulttool commands in milliseconds */
+    XCRESULTTOOL_TIMEOUT_MS: 60 * 1000,
+    /** Xcode DerivedData directory relative to home */
+    DERIVED_DATA_DIR: "Library/Developer/Xcode/DerivedData",
+    /** macOS diagnostic reports directory relative to home */
+    DIAGNOSTIC_REPORTS_DIR: "Library/Logs/DiagnosticReports",
+    /** CoreSimulator logs directory relative to home */
+    CORE_SIMULATOR_LOGS_DIR: "Library/Logs/CoreSimulator",
+};
