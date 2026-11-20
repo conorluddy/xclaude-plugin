@@ -36,20 +36,20 @@ describe("idbCheckQuality", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: "Login Button",
-            value: null,
+            AXLabel: "Login Button",
+            AXValue: null,
             type: "Button",
             frame: { x: 100, y: 400, width: 100, height: 50 },
           },
           {
-            label: "Email Field",
-            value: "user@example.com",
+            AXLabel: "Email Field",
+            AXValue: "user@example.com",
             type: "TextField",
             frame: { x: 20, y: 100, width: 280, height: 40 },
           },
           {
-            label: "Password Field",
-            value: "",
+            AXLabel: "Password Field",
+            AXValue: "",
             type: "TextField",
             frame: { x: 20, y: 150, width: 280, height: 40 },
           },
@@ -86,20 +86,20 @@ describe("idbCheckQuality", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: "Button",
-            value: null,
+            AXLabel: "Button",
+            AXValue: null,
             type: "Button",
             frame: { x: 100, y: 400, width: 100, height: 50 },
           },
           {
-            label: "Field",
-            value: null,
+            AXLabel: "Field",
+            AXValue: null,
             type: "TextField",
             frame: { x: 20, y: 100, width: 280, height: 40 },
           },
           {
-            label: null,
-            value: null,
+            AXLabel: null,
+            AXValue: null,
             type: "View",
             frame: { x: 0, y: 0, width: 100, height: 100 },
           },
@@ -135,20 +135,20 @@ describe("idbCheckQuality", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: null,
-            value: null,
+            AXLabel: null,
+            AXValue: null,
             type: "View",
             frame: { x: 0, y: 0, width: 100, height: 100 },
           },
           {
-            label: null,
-            value: null,
+            AXLabel: null,
+            AXValue: null,
             type: "View",
             frame: { x: 0, y: 0, width: 100, height: 100 },
           },
           {
-            label: null,
-            value: null,
+            AXLabel: null,
+            AXValue: null,
             type: "View",
             frame: { x: 0, y: 0, width: 100, height: 100 },
           },
@@ -184,20 +184,20 @@ describe("idbCheckQuality", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: "Login Button",
-            value: null,
+            AXLabel: "Login Button",
+            AXValue: null,
             type: "Button",
             frame: { x: 100, y: 400, width: 100, height: 50 },
           },
           {
-            label: "Email Field",
-            value: "",
+            AXLabel: "Email Field",
+            AXValue: "",
             type: "TextField",
             frame: { x: 20, y: 100, width: 280, height: 40 },
           },
           {
-            label: "Label",
-            value: null,
+            AXLabel: "Label",
+            AXValue: null,
             type: "Text",
             frame: { x: 20, y: 50, width: 100, height: 40 },
           },

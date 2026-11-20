@@ -36,14 +36,14 @@ describe("idbFindElement", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: "Login Button",
-            value: null,
+            AXLabel: "Login Button",
+            AXValue: null,
             type: "Button",
             frame: { x: 100, y: 400, width: 100, height: 50 },
           },
           {
-            label: "Sign Up Button",
-            value: null,
+            AXLabel: "Sign Up Button",
+            AXValue: null,
             type: "Button",
             frame: { x: 220, y: 400, width: 100, height: 50 },
           },
@@ -79,8 +79,8 @@ describe("idbFindElement", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: "EMAIL FIELD",
-            value: "user@example.com",
+            AXLabel: "EMAIL FIELD",
+            AXValue: "user@example.com",
             type: "TextField",
             frame: { x: 20, y: 100, width: 280, height: 40 },
           },
@@ -114,8 +114,8 @@ describe("idbFindElement", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: "TextField",
-            value: "user@example.com",
+            AXLabel: "TextField",
+            AXValue: "user@example.com",
             type: "TextField",
             frame: { x: 20, y: 100, width: 280, height: 40 },
           },
@@ -150,8 +150,8 @@ describe("idbFindElement", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: "Login",
-            value: null,
+            AXLabel: "Login",
+            AXValue: null,
             type: "Button",
             frame: { x: 100, y: 400, width: 100, height: 50 },
           },
@@ -230,8 +230,8 @@ describe("idbFindElement", () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify([
           {
-            label: "Button",
-            value: null,
+            AXLabel: "Button",
+            AXValue: null,
             type: "Button",
             frame: { x: 100, y: 200, width: 80, height: 40 },
           },
@@ -246,6 +246,51 @@ describe("idbFindElement", () => {
     if (result.success) {
       expect(result.data.matches[0].centerX).toBe(140);
       expect(result.data.matches[0].centerY).toBe(220);
+    }
+  });
+
+  // Regression: idb emits AXLabel/AXValue, not label/value. Earlier
+  // versions of the wrapper read elem.label and silently dropped every
+  // accessibility label, so find-element always returned 0 matches.
+  it("matches against AXLabel as emitted by fb-idb", async () => {
+    const mockRunCommand = vi.mocked(commandUtils.runCommand);
+    mockRunCommand
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify({
+          devices: {
+            "com.apple.CoreSimulator.SimRuntime.iOS-17-0": [
+              { state: "Booted", name: "iPhone 15", udid: "TEST-UDID-1234" },
+            ],
+          },
+        }),
+        stderr: "",
+        code: 0,
+      })
+      .mockResolvedValueOnce({
+        stdout: JSON.stringify([
+          {
+            AXFrame: "{{16, 168}, {370, 68}}",
+            AXLabel: "Add your API key in Settings to enable sync.",
+            AXUniqueId: "settings-api-key-cta",
+            role_description: "button",
+            type: "Button",
+            frame: { x: 16, y: 168, width: 370, height: 68 },
+          },
+        ]),
+        stderr: "",
+        code: 0,
+      });
+
+    const result = await idbFindElement({ query: "Add your API key" });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.count).toBe(1);
+      expect(result.data.matches[0].label).toBe(
+        "Add your API key in Settings to enable sync.",
+      );
+      expect(result.data.matches[0].axUniqueId).toBe("settings-api-key-cta");
+      expect(result.data.matches[0].roleDescription).toBe("button");
     }
   });
 });
